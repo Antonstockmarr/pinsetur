@@ -1,0 +1,34 @@
+{
+  "dependencies": {
+    "secrets1": {
+      "restored": true,
+      "restoreTime": "2023-06-26T14:34:06.418828Z"
+    },
+    "storage1": {
+      "restored": true,
+      "restoreTime": "2023-06-26T14:34:17.8964739Z"
+    }
+  },
+  "parameters": {
+    "subscriptionId": {
+      "Name": "subscriptionId",
+      "Type": "subscription",
+      "Value": "29d237fd-1d03-439f-b5b4-271237d11d1a"
+    },
+    "storage1.resourceGroupName": {
+      "Name": "storage1.resourceGroupName",
+      "Type": "resourceGroup",
+      "Value": "stockmarr-rg"
+    },
+    "storage1.subscriptionId": {
+      "Name": "storage1.subscriptionId",
+      "Type": "subscription",
+      "Value": "29d237fd-1d03-439f-b5b4-271237d11d1a"
+    },
+    "storage1.resourceGroupLocation": {
+      "Name": "storage1.resourceGroupLocation",
+      "Type": "location",
+      "Value": "northeurope"
+    }
+  }
+}
