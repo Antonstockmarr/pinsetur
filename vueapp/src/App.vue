@@ -1,23 +1,19 @@
 <template>
-  <h1>This is the app file</h1>
+  <HeaderNavigation></HeaderNavigation>
   <router-view></router-view>
 </template>
 
 <script lang="ts">
-import { defineComponent } from 'vue';
+import HeaderNavigation from './components/HeaderNavigation.vue'
 
-export default defineComponent({
+export default ({
   name: 'App',
+  components: {
+    HeaderNavigation
+  }
 });
 </script>
 
 <style>
-#app {
-  font-family: Avenir, Helvetica, Arial, sans-serif;
-  -webkit-font-smoothing: antialiased;
-  -moz-osx-font-smoothing: grayscale;
-  text-align: center;
-  color: #2c3e50;
-  margin-top: 60px;
-}
+@import "reset.css";
 </style>
