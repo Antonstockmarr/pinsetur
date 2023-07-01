@@ -1,7 +1,7 @@
 <template>
     <div class="grid">
         <div class="banner-image tile">
-            <img :src="require(`@/assets/2022.jpg`)">
+            <img :src="cover" v-if="!!cover">
         </div>
         <div class="description tile">
             <p>{{description}}</p>
@@ -15,14 +15,19 @@
 <script lang="ts">
 import { defineComponent } from 'vue';
 import json from '../assets/Text.json'
+import { $api } from '../common/apiService'
 
 
 export default defineComponent ({
     name: "HomePage",
     data () {
         return {
-            description: json.description
+            description: json.description,
+            cover: "" as string | undefined
         }
+    },
+    async mounted() {
+        this.cover = await $api.covers.get("latest");
     }
 });
 
