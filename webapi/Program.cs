@@ -1,9 +1,9 @@
 using Microsoft.Extensions.Azure;
 using Serilog;
 using stockmarrdk_api.Repository;
-using stockmarrdk_api.Services;
 using System.Reflection;
 using stockmarrdk_api.Common;
+using stockmarrdk_api.Services;
 
 StaticLogger.EnsureInitialized();
 Log.Information("Azure Storage API Booting Up...");
@@ -38,11 +38,15 @@ try
         else
         {
             clientBuilder.AddBlobServiceClient(connectionString, preferMsi: true);
+            clientBuilder.AddTableServiceClient(connectionString, preferMsi: true);
         }
     });
 
-    // Add Azure Repository Service
-    builder.Services.AddTransient<IAzureStorage, AzureStorage>();
+    // Add Services
+    builder.Services.AddTransient<IImageRepository, ImageRepository>();
+    builder.Services.AddTransient<IImageService, ImageService>();
+    builder.Services.AddTransient<ITripService, TripService>();
+    builder.Services.AddTransient<ITripRepository, TripRepository>();
     Log.Information("Services has been successfully added...");
 
     var app = builder.Build();
