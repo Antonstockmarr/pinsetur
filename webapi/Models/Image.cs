@@ -7,7 +7,7 @@ namespace stockmarrdk_api.Models
         public int Id { get; set; }
         public int Year { get; set; }
         public string Extension { get; set; } = "";
-        public string Name => Year + "/" + Id + "." + Extension;
+        public string Name => Year + "/" + Id + Extension;
         public bool IsCover { get; set; }
 
         public ImageDto ToImageDto()

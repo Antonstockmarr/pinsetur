@@ -4,10 +4,14 @@ namespace stockmarrdk_api.Repository
 {
     public interface IImageRepository
     {
-        Task<List<Image>> GetAllImages();
+        List<Image> GetAllImages();
 
-        Task<Image?> GetImageById(int id);
+        Image? GetImageById(int id);
 
         Task<ImageData?> GetImageDataFromImage(Image image);
+
+        Task UploadImageData(ImageData imageData, Image image);
+
+        void UploadImage(Image image);
     }
 }

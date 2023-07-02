@@ -1,3 +1,7 @@
+import { Image } from "@/Models/Image";
+import { Trip } from "@/Models/Trip";
+import axios from 'axios'
+
 class BaseApiService {
     baseUrl = "api";
     resource;
@@ -13,58 +17,81 @@ class BaseApiService {
   
     handleErrors(err: string) {
       // Note: here you may want to add your errors handling
-      console.log({ message: "Errors is handled here", err });
+      console.log({ message: "Error in API call: ", err });
     }
   }
 
-  class ReadOnlyApiService extends BaseApiService {
-    constructor(resource: string) {
-      super(resource);
-    }
-    async fetch(config = {}) {
-      try {
-        const response = await fetch(this.getUrl(), config);
-        return response;
-      } catch (err: any) {
-        this.handleErrors(err);
-      }
-    }
-    async getResponse(id: string | number) {
-      try {
-        if (!id) throw Error("Id is not provided");
-        const response = await fetch(this.getUrl(id));
-        return response;
-      } catch (err: any) {
-        this.handleErrors(err);
-      }
-    }
-  }
-
-  class ImagesApiService extends ReadOnlyApiService {
+  class ImagesApiService extends BaseApiService {
     constructor() {
         super("images");
     }
+
+    async fetch(year : number | null = null, onlyCovers : boolean | null = null) : Promise<Image[] | null> {
+      // Set query parameters
+      const params: any = {};
+      if (year != null) {
+        params.year = year;
+      }
+      if (onlyCovers != null) {
+        params.onlyCovers = onlyCovers;
+      }
+
+      return axios.get<Image[]>(super.getUrl(), {params: params})
+        .then(response => response.data)
+        .catch(err => {
+          this.handleErrors(err);
+          return null;
+        })
+    }
+
+    async get(id : number ) : Promise<Image | null> {
+      return axios.get<Image>(super.getUrl(id))
+        .then(response => response.data)
+        .catch(err => {
+          this.handleErrors(err);
+          return null;
+        })
+    }
+
+    async download(id : number) : Promise<string | undefined> {
+      return axios({
+        method: 'get',
+        url: super.getUrl(id) + "/download",
+        responseType: "blob"
+      })
+        .then(response => URL.createObjectURL(response.data))
+        .catch(err => {
+          this.handleErrors(err);
+          return undefined;
+        })
+    }
   }
 
-  class CoversApiService extends ReadOnlyApiService {
+  class TripsApiService extends BaseApiService {
     constructor() {
-        super("covers");
+        super("trips");
     }
     
-    async get(id: string | number) {
-      try {
-        const response = await super.getResponse(id);
-        if (response) {
-          const blob = await response?.blob();
-          return URL.createObjectURL(blob)
-        }
-      } catch (err: any) {
-        this.handleErrors(err);
-      }
+    async fetch() : Promise<Trip[] | null> {
+      return axios.get<Trip[]>(super.getUrl())
+        .then(response => response.data)
+        .catch(err => {
+          this.handleErrors(err);
+          return null;
+        })
+    }
+
+    async get(year : number ) : Promise<Trip | null> {
+      return axios.get<Trip>(super.getUrl(year))
+        .then(response => response.data)
+        .catch(err => {
+          this.handleErrors(err);
+          return null;
+        })
     }
   }
 
   export const $api = {
     images: new ImagesApiService(),
-    covers: new CoversApiService()
+    trips: new TripsApiService()
   }

@@ -1,4 +1,5 @@
 ﻿using Microsoft.AspNetCore.Mvc;
+using stockmarrdk_api.Common;
 using stockmarrdk_api.Dto;
 using stockmarrdk_api.Models;
 using stockmarrdk_api.Services;
@@ -18,14 +19,14 @@ namespace stockmarrdk_api.Controllers
         }
 
         [HttpGet()]
-        public async Task<ActionResult<List<ImageDto>>> GetImages([FromQuery] int? year, [FromQuery] bool? onlyCovers)
+        public ActionResult GetImages([FromQuery] int? year, [FromQuery] bool? onlyCovers)
         {
             List<Image>? images;
             if (onlyCovers is not null && (bool)onlyCovers)
             {
                 if (year is not null)
                 {
-                    Image? cover = await _imageService.GetCoverFromYear((int)year);
+                    Image? cover = _imageService.GetCoverFromYear((int)year);
                     if (cover is not null)
                     {
                         images = new List<Image>() { cover };                    
@@ -37,16 +38,16 @@ namespace stockmarrdk_api.Controllers
                 }
                 else
                 {
-                    images = await _imageService.GetAllCovers();
+                    images = _imageService.GetAllCovers();
                 }
             }
             if (year is not null)
             {
-                images = await _imageService.GetAllImagesFromYear((int)year);
+                images = _imageService.GetAllImagesFromYear((int)year);
             }
             else
             {
-                images = await _imageService.GetAllImages();
+                images = _imageService.GetAllImages();
             }
 
             // Returns an empty array if no files are present at the storage container
@@ -54,9 +55,9 @@ namespace stockmarrdk_api.Controllers
         }
 
         [HttpGet("{id}")]
-        public async Task<IActionResult> Get(int id)
+        public IActionResult Get(int id)
         {
-            Image? image = await _imageService.GetImageFromId(id);
+            Image? image = _imageService.GetImageFromId(id);
             if (image is null)
             {
                 // Was not, return error message to client
@@ -83,6 +84,25 @@ namespace stockmarrdk_api.Controllers
             {
                 return File(imageData.Content, imageData.ContentType, imageData.Id.ToString());
             }
+        }
+
+        [HttpPost]
+        public async Task<IActionResult> UploadAsync([FromForm] ImageUploadDto image)
+        {
+            try
+            {
+                await _imageService.UploadImage(image);
+            }
+            catch (BadRequestException ex)
+            {
+                return StatusCode(StatusCodes.Status400BadRequest, ex.Message);
+            }
+            catch (Exception ex)
+            {
+                return StatusCode(StatusCodes.Status500InternalServerError, ex.Message);
+            }
+
+            return StatusCode(StatusCodes.Status200OK);
         }
     }
 }

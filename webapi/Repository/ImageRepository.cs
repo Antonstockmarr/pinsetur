@@ -40,20 +40,37 @@ namespace stockmarrdk_api.Repository
             };
         }
 
-        Task<List<Image>> IImageRepository.GetAllImages()
+        public List<Image> GetAllImages()
         {
-            return Task.FromResult(_imageTableClient.Query<ImageEntity>().Select(imageEntity => imageEntity.ToImage()).OrderByDescending(image => image.Year).ToList());
+            return _imageTableClient.Query<ImageEntity>().Select(imageEntity => imageEntity.ToImage()).OrderByDescending(image => image.Year).ToList();
         }
 
-        Task<Image?> IImageRepository.GetImageById(int id)
+        public Image? GetImageById(int id)
         {
             ImageEntity? imageEntity = _imageTableClient.Query<ImageEntity>(imageEntity => imageEntity.PartitionKey == "Image" && imageEntity.RowKey == id.ToString()).SingleOrDefault();
             if (imageEntity is null)
-                return Task.FromResult<Image?>(null);
+                return null;
             else
             {
-                return Task.FromResult((Image?)imageEntity.ToImage());
+                return (Image?)imageEntity.ToImage();
             }
+        }
+
+        public async Task UploadImageData(ImageData imageData, Image image)
+        {
+            BlobClient imageBlob = _imageContainerClient.GetBlobClient(image.Name);
+
+            if (imageBlob.Exists())
+            {
+                throw new Exception("Blob already exists");
+            }
+
+            await imageBlob.UploadAsync(BinaryData.FromBytes(imageData.Content));
+        }
+
+        public void UploadImage(Image image)
+        {
+            _imageTableClient.AddEntity(new ImageEntity(image));
         }
     }
 }

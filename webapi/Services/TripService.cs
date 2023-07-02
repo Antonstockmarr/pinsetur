@@ -12,14 +12,14 @@ namespace stockmarrdk_api.Services
             _tripRepository = tripRepository;
         }
 
-        public Task<List<Trip>> GetAllTrips()
+        public List<Trip> GetAllTrips()
         {
-            return Task.FromResult(_tripRepository.GetAllTrips());
+            return _tripRepository.GetAllTrips();
         }
 
-        public Task<Trip?> GetTrip(int year)
+        public Trip? GetTrip(int year)
         {
-            return Task.FromResult(_tripRepository.GetTripFromYear(year));
+            return _tripRepository.GetTripFromYear(year);
         }
     }
 }

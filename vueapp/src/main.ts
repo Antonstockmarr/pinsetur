@@ -1,8 +1,13 @@
 import { createApp } from 'vue'
 import App from './App.vue'
 import router from './router'
+import { BootstrapVueNext } from 'bootstrap-vue-next'
 
-const app = createApp(App)
+// Import Bootstrap and BootstrapVue CSS files (order is important)
+import 'bootstrap/dist/css/bootstrap.css'
+import 'bootstrap-vue-next/dist/bootstrap-vue-next.css'
 
-app.use(router)
-app.mount('#app')
+createApp(App)
+    .use(router)
+    .use(BootstrapVueNext)
+    .mount('#app')

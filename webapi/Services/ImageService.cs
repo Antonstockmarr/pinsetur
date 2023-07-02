@@ -1,5 +1,9 @@
-﻿using stockmarrdk_api.Models;
+﻿using Microsoft.AspNetCore.Http;
+using stockmarrdk_api.Common;
+using stockmarrdk_api.Dto;
+using stockmarrdk_api.Models;
 using stockmarrdk_api.Repository;
+using System.Linq;
 
 namespace stockmarrdk_api.Services
 {
@@ -7,24 +11,26 @@ namespace stockmarrdk_api.Services
     {
         private readonly IImageRepository _imageRepository;
 
+        private readonly string[] permittedExtensions = { ".png", ".jpg", ".jpeg" };
+
         public ImageService(IImageRepository imageRepository)
         {
             _imageRepository = imageRepository;
         }
 
-        public async Task<List<Image>> GetAllImages()
+        public List<Image> GetAllImages()
         {
-            return await _imageRepository.GetAllImages();
+            return _imageRepository.GetAllImages();
         }
 
-        public async Task<List<Image>> GetAllImagesFromYear(int year)
+        public List<Image> GetAllImagesFromYear(int year)
         {
-            return (await _imageRepository.GetAllImages()).FindAll(image => image.Year == year);
+            return _imageRepository.GetAllImages().FindAll(image => image.Year == year);
         }
 
         public async Task<ImageData?> GetImageDataFromId(int id)
         {
-            Image? image = await _imageRepository.GetImageById(id);
+            Image? image = _imageRepository.GetImageById(id);
             if (image is null)
             {
                 return null;
@@ -35,19 +41,50 @@ namespace stockmarrdk_api.Services
             }
         }
 
-        public async Task<Image?> GetImageFromId(int id)
+        public Image? GetImageFromId(int id)
         {
-            return await _imageRepository.GetImageById(id);
+            return _imageRepository.GetImageById(id);
         }
 
-        public async Task<List<Image>> GetAllCovers()
+        public List<Image> GetAllCovers()
         {
-            return (await _imageRepository.GetAllImages()).FindAll(image => image.IsCover);
+            return _imageRepository.GetAllImages().FindAll(image => image.IsCover);
         }
 
-        public async Task<Image?> GetCoverFromYear(int year)
+        public Image? GetCoverFromYear(int year)
         {
-            return (await GetAllCovers()).FirstOrDefault(image => image.Year == year);
+            return GetAllCovers().FirstOrDefault(image => image.Year == year);
         }
+
+        public async Task UploadImage(ImageUploadDto image)
+        {
+            int id = Math.Abs(Guid.NewGuid().GetHashCode());
+            string extension = Path.GetExtension(image.File.FileName);
+
+            string lowerExtention = extension.ToLowerInvariant();
+
+            if (string.IsNullOrEmpty(lowerExtention) || !permittedExtensions.Contains(lowerExtention))
+            {
+                throw new BadRequestException("File type is not supported");
+            }
+
+            if (image.File.Length == 0)
+            {
+                throw new BadRequestException("File is empty");
+            }
+
+            using var fileStream = image.File.OpenReadStream();
+            byte[] bytes = new byte[image.File.Length];
+            fileStream.Read(bytes, 0, (int)image.File.Length);
+
+            ImageData newImageData = new()
+            { Id = id, Content = bytes, ContentType = image.File.ContentType };
+
+            Image newImage = new() { Id = id, Extension = extension, IsCover = false, Year = image.Year };
+
+            await _imageRepository.UploadImageData(newImageData, newImage);
+            _imageRepository.UploadImage(newImage);
+        }
+
     }
 }

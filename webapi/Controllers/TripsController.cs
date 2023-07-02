@@ -17,17 +17,17 @@ namespace stockmarrdk_api.Controllers
         }
 
         [HttpGet()]
-        public async Task<ActionResult<List<Trip>>> GetTrips()
+        public IActionResult GetTrips()
         {
-            List<Trip> trips = await _tripService.GetAllTrips();
+            List<Trip> trips = _tripService.GetAllTrips();
 
             return StatusCode(StatusCodes.Status200OK, trips);
         }
 
         [HttpGet("{year}")]
-        public async Task<IActionResult> GetTrip(int year)
+        public IActionResult GetTrip(int year)
         {
-            Trip? trip = await _tripService.GetTrip(year);
+            Trip? trip = _tripService.GetTrip(year);
 
             if (trip is null)
             {
