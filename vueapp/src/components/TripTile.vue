@@ -3,6 +3,7 @@
         :title="trip?.year.toString()"
         :subtitle="trip?.location"
         :img-src="image ?? require('@/assets/Loading_icon.gif')"
+        :style="cardStyle"
         img-alt="Image"
         img-top
     >
@@ -21,8 +22,12 @@ export default defineComponent({
   name: 'TripTile',
   props: {
     trip: {
-        type: Object as PropType<Trip | null>,
+        type: Object as PropType<Trip>,
         required: true
+    },
+    cardStyle: {
+      type: String,
+      required: false
     }
   },
   data() {
@@ -35,13 +40,10 @@ export default defineComponent({
         console.log("Go To trip " + this.trip?.year)
     }
   },
-  watch: { 
-        trip: async function(newTrip : Trip | null) { // watch it
-            console.log(newTrip)
-            if (newTrip != null && newTrip.locationImageId != null) {
-                this.image = await $api.images.download(newTrip?.locationImageId);
-            }
-        }
+  async mounted() { 
+    if (this.trip.locationImageId != null) {
+        this.image = await $api.images.download(this.trip.locationImageId) ?? undefined;
+    }
   }
 })
 

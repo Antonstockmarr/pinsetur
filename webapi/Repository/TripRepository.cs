@@ -1,5 +1,4 @@
 ﻿using Azure.Data.Tables;
-using Azure.Storage.Blobs;
 using stockmarrdk_api.Models;
 using stockmarrdk_api.TableEntities;
 
@@ -15,6 +14,12 @@ namespace stockmarrdk_api.Repository
 
             _tripTableClient = tableServiceClient.GetTableClient(storageTableName);
         }
+
+        public void CreateTrip(Trip trip)
+        {
+            _tripTableClient.AddEntity(new TripEntity(trip));
+        }
+
         public List<Trip> GetAllTrips()
         {
             return _tripTableClient.Query<TripEntity>().Select(tripEntity => tripEntity.ToTrip()).OrderByDescending(trip => trip.Year).ToList();
@@ -29,6 +34,11 @@ namespace stockmarrdk_api.Repository
             {
                 return (Trip?)tripEntity.ToTrip();
             }
+        }
+
+        public void UpdateTrip(Trip trip)
+        {
+            _tripTableClient.UpdateEntity(entity: new TripEntity(trip), ifMatch: Azure.ETag.All, mode: TableUpdateMode.Replace);
         }
     }
 }

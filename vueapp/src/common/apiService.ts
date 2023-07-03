@@ -53,7 +53,7 @@ class BaseApiService {
         })
     }
 
-    async download(id : number) : Promise<string | undefined> {
+    async download(id : number) : Promise<string | null> {
       return axios({
         method: 'get',
         url: super.getUrl(id) + "/download",
@@ -62,7 +62,7 @@ class BaseApiService {
         .then(response => URL.createObjectURL(response.data))
         .catch(err => {
           this.handleErrors(err);
-          return undefined;
+          return null;
         })
     }
   }

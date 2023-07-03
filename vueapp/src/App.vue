@@ -1,6 +1,8 @@
 <template>
   <HeaderNavigation></HeaderNavigation>
-  <router-view></router-view>
+  <div class="wrapper">
+    <router-view></router-view>
+  </div>
 </template>
 
 <script lang="ts">
@@ -16,4 +18,9 @@ export default ({
 
 <style>
 @import "reset.css";
+
+.wrapper {
+  max-width: 1500px;
+  margin: auto;
+}
 </style>

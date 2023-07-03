@@ -4,8 +4,11 @@ namespace stockmarrdk_api.Repository
 {
     public interface ITripRepository
     {
-        public List<Trip> GetAllTrips();
+        List<Trip> GetAllTrips();
 
-        public Trip? GetTripFromYear(int year);
+        Trip? GetTripFromYear(int year);
+
+        void CreateTrip(Trip trip);
+        void UpdateTrip(Trip trip);
     }
 }

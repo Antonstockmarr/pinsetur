@@ -1,11 +1,17 @@
-﻿namespace stockmarrdk_api.Models
+﻿using System.ComponentModel.DataAnnotations;
+
+namespace stockmarrdk_api.Models
 {
     public class Trip
     {
-        public int Year { get; set; }
-        public string Location { get; set; } = "";
-        public string Address { get; set; } = "";
-        public string Description { get; set; } = "";
-        public int LocationImageId { get; set; }
+        public required int Year { get; set; }
+        [DisplayFormat(ConvertEmptyStringToNull = false)]
+        public string? Location { get; set; }
+        [DisplayFormat(ConvertEmptyStringToNull = false)]
+        public string? Address { get; set; }
+        [DisplayFormat(ConvertEmptyStringToNull = false)]
+        public string? Description { get; set; }
+        [DisplayFormat(ConvertEmptyStringToNull = false)]
+        public int? LocationImageId { get; set; }
     }
 }
