@@ -44,6 +44,7 @@ try
 
     // Add Services
     builder.Services.AddTransient<IImageRepository, ImageRepository>();
+    builder.Services.AddTransient<IImageDataRepository, ImageDataRepository>();
     builder.Services.AddTransient<IImageService, ImageService>();
     builder.Services.AddTransient<ITripService, TripService>();
     builder.Services.AddTransient<ITripRepository, TripRepository>();

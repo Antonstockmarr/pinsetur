@@ -8,12 +8,42 @@ namespace stockmarrdk_api.Services
     public class ImageService : IImageService
     {
         private readonly IImageRepository _imageRepository;
+        private readonly IImageDataRepository _imageDataRepository;
+        private readonly ITripRepository _tripRepository;
 
         private readonly string[] permittedExtensions = { ".png", ".jpg", ".jpeg" };
 
-        public ImageService(IImageRepository imageRepository)
+        public ImageService(IImageRepository imageRepository, IImageDataRepository imageDataRepository, ITripRepository tripRepository)
         {
             _imageRepository = imageRepository;
+            _imageDataRepository = imageDataRepository;
+            _tripRepository = tripRepository;
+        }
+
+        public async Task<Image?> DeleteImageFromId(int id)
+        {
+            Image? image = _imageRepository.DeleteImageById(id);
+            if (image != null)
+            {
+                await _imageDataRepository.DeleteImageDataByImage(image);
+
+                // Update references
+                List<Trip> trips = _tripRepository.GetAllTrips();
+                trips.ForEach(trip =>
+                {
+                    if (trip.CoverImageId == id)
+                    {
+                        trip.CoverImageId = null;
+                        _tripRepository.UpdateTrip(trip);
+                    }
+                    if (trip.LocationImageId == id)
+                    {
+                        trip.LocationImageId = null;
+                        _tripRepository.UpdateTrip(trip);
+                    }
+                });
+            }
+            return image;
         }
 
         public List<Image> GetAllImages()
@@ -35,7 +65,7 @@ namespace stockmarrdk_api.Services
             }
             else
             {
-                return await _imageRepository.GetImageDataFromImage(image);
+                return await _imageDataRepository.GetImageDataFromImage(image);
             }
         }
 
@@ -70,7 +100,7 @@ namespace stockmarrdk_api.Services
 
             Image newImage = new() { Id = id, Extension = extension, Year = image.Year };
 
-            await _imageRepository.UploadImageData(newImageData, newImage);
+            await _imageDataRepository.UploadImageData(newImageData, newImage);
             _imageRepository.UploadImage(newImage);
 
             return newImage;

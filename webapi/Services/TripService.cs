@@ -13,6 +13,11 @@ namespace stockmarrdk_api.Services
             _tripRepository = tripRepository;
         }
 
+        public Trip? DeleteTrip(int year)
+        {
+            return _tripRepository.DeleteTrip(year);
+        }
+
         public List<Trip> GetAllTrips()
         {
             return _tripRepository.GetAllTrips();

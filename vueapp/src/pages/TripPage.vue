@@ -42,6 +42,21 @@
             {{ trip?.locationImageId }}
         </b-col>
     </b-row>
+    <b-row>
+        <b-col>
+           coverImageId 
+        </b-col>
+        <b-col>
+            {{ trip?.coverImageId }}
+        </b-col>
+    </b-row>
+
+    <div v-if="gallery && gallery.length > 0">
+        <h1>Gallery</h1>
+        <div v-for="image in gallery" :key="image.id">
+            {{ image }}
+        </div>
+    </div>
     
     
 </template>
@@ -49,6 +64,7 @@
 
 <script lang="ts">
 import { Trip } from '@/Models/Trip';
+import { Image } from '@/Models/Image';
 import { $api } from '@/common/apiService';
 import { defineComponent } from 'vue';
 
@@ -63,11 +79,14 @@ export default defineComponent ({
     },
     data () {
         return {
-            trip: null as Trip | null
+            trip: null as Trip | null,
+            gallery: [] as Image[] | null
         }
     },
     async mounted() {
         this.trip = await $api.trips.get(Number.parseInt(this.id));
+
+        this.gallery = await $api.images.fetch(this.trip?.year);
     }
 });
 </script>

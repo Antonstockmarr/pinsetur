@@ -18,6 +18,7 @@ namespace stockmarrdk_api.Controllers
         }
 
         [HttpGet()]
+        [ProducesResponseType(StatusCodes.Status200OK, Type = typeof(List<Trip>))]
         public IActionResult GetTrips()
         {
             List<Trip> trips = _tripService.GetAllTrips();
@@ -26,6 +27,8 @@ namespace stockmarrdk_api.Controllers
         }
 
         [HttpGet("{year}")]
+        [ProducesResponseType(StatusCodes.Status200OK, Type = typeof(Trip))]
+        [ProducesResponseType(StatusCodes.Status404NotFound)]
         public IActionResult GetTrip(int year)
         {
             Trip? trip = _tripService.GetTrip(year);
@@ -41,6 +44,9 @@ namespace stockmarrdk_api.Controllers
         }
 
         [HttpPost]
+        [ProducesResponseType(StatusCodes.Status200OK, Type = typeof(Trip))]
+        [ProducesResponseType(StatusCodes.Status409Conflict, Type = typeof(string))]
+        [ProducesResponseType(StatusCodes.Status500InternalServerError, Type = typeof(string))]
         public IActionResult PostTrip([FromForm] Trip trip)
         {
             try
@@ -60,6 +66,9 @@ namespace stockmarrdk_api.Controllers
         }
 
         [HttpPatch]
+        [ProducesResponseType(StatusCodes.Status200OK, Type = typeof(Trip))]
+        [ProducesResponseType(StatusCodes.Status404NotFound)]
+        [ProducesResponseType(StatusCodes.Status500InternalServerError, Type = typeof(string))]
         public IActionResult PatchTrip([FromForm] Trip trip)
         {
             try
@@ -72,6 +81,30 @@ namespace stockmarrdk_api.Controllers
                 else
                 {
                     return StatusCode(StatusCodes.Status200OK, updatedTrip);
+                }
+            }
+            catch (Exception ex)
+            {
+                return StatusCode(StatusCodes.Status500InternalServerError, ex.Message);
+            }
+        }
+
+        [HttpDelete("{year}")]
+        [ProducesResponseType(StatusCodes.Status200OK, Type = typeof(Trip))]
+        [ProducesResponseType(StatusCodes.Status204NoContent)]
+        [ProducesResponseType(StatusCodes.Status500InternalServerError, Type = typeof(string))]
+        public IActionResult DeleteTrip(int year)
+        {
+            try
+            {
+                Trip? deletedTrip = _tripService.DeleteTrip(year);
+                if (deletedTrip == null)
+                {
+                    return StatusCode(StatusCodes.Status204NoContent);
+                }
+                else
+                {
+                    return StatusCode(StatusCodes.Status200OK, deletedTrip);
                 }
             }
             catch (Exception ex)

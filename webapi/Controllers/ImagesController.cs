@@ -19,6 +19,7 @@ namespace stockmarrdk_api.Controllers
         }
 
         [HttpGet()]
+        [ProducesResponseType(StatusCodes.Status200OK, Type = typeof(List<ImageDto>))]
         public ActionResult GetImages([FromQuery] int? year)
         {
             List<Image>? images;
@@ -36,6 +37,8 @@ namespace stockmarrdk_api.Controllers
         }
 
         [HttpGet("{id}")]
+        [ProducesResponseType(StatusCodes.Status200OK, Type = typeof(ImageDto))]
+        [ProducesResponseType(StatusCodes.Status404NotFound)]
         public IActionResult Get(int id)
         {
             Image? image = _imageService.GetImageFromId(id);
@@ -51,6 +54,9 @@ namespace stockmarrdk_api.Controllers
         }
 
         [HttpGet("{id}/download")]
+        [ProducesResponseType(StatusCodes.Status404NotFound, Type = typeof(string))]
+        [ProducesResponseType(StatusCodes.Status200OK)]
+
         public async Task<IActionResult> Download(int id)
         {
             ImageData? imageData = await _imageService.GetImageDataFromId(id);
@@ -68,6 +74,9 @@ namespace stockmarrdk_api.Controllers
         }
 
         [HttpPost]
+        [ProducesResponseType(StatusCodes.Status200OK, Type = typeof(ImageDto))]
+        [ProducesResponseType(StatusCodes.Status409Conflict, Type = typeof(string))]
+        [ProducesResponseType(StatusCodes.Status500InternalServerError, Type = typeof(string))]
         public async Task<IActionResult> UploadAsync([FromForm] ImageUploadDto image)
         {
             try
@@ -83,7 +92,31 @@ namespace stockmarrdk_api.Controllers
             {
                 return StatusCode(StatusCodes.Status500InternalServerError, ex.Message);
             }
+        }
 
+        [HttpDelete("{id}")]
+        [ProducesResponseType(StatusCodes.Status200OK, Type = typeof(ImageDto))]
+        [ProducesResponseType(StatusCodes.Status204NoContent)]
+        [ProducesResponseType(StatusCodes.Status500InternalServerError, Type = typeof(string))]
+        public async Task<IActionResult> Delete(int id)
+        {
+            try
+            {
+                Image? deletedImage = await _imageService.DeleteImageFromId(id);
+                if (deletedImage == null)
+                {
+                    return StatusCode(StatusCodes.Status204NoContent);
+                }
+                else
+                {
+                    return StatusCode(StatusCodes.Status200OK, deletedImage.ToImageDto());
+                }
+            }
+            catch (Exception ex)
+            {
+                return StatusCode(StatusCodes.Status500InternalServerError, ex.Message);
+            }
         }
     }
+
 }

@@ -20,6 +20,13 @@ namespace stockmarrdk_api.Repository
             _tripTableClient.AddEntity(new TripEntity(trip));
         }
 
+        public Trip? DeleteTrip(int year)
+        {
+            Trip? trip = GetTripFromYear(year);
+            _tripTableClient.DeleteEntity(partitionKey: "Trip", rowKey: year.ToString());
+            return trip;
+        }
+
         public List<Trip> GetAllTrips()
         {
             return _tripTableClient.Query<TripEntity>().Select(tripEntity => tripEntity.ToTrip()).OrderByDescending(trip => trip.Year).ToList();
