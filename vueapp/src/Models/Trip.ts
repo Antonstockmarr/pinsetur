@@ -3,5 +3,6 @@ export interface Trip {
     location: string,
     address: string,
     description: string,
-    locationImageId: number
+    locationImageId: number | null,
+    coverImageId: number | null
 }

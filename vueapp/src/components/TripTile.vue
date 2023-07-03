@@ -41,7 +41,10 @@ export default defineComponent({
     }
   },
   async mounted() { 
-    if (this.trip.locationImageId != null) {
+    if (this.trip.coverImageId != null) {
+        this.image = await $api.images.download(this.trip.coverImageId) ?? undefined;
+    }
+    else if (this.trip.locationImageId != null) {
         this.image = await $api.images.download(this.trip.locationImageId) ?? undefined;
     }
   }

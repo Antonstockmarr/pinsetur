@@ -46,6 +46,10 @@ namespace stockmarrdk_api.Services
             {
                 oldTrip.LocationImageId = trip.LocationImageId;
             }
+            if (trip.CoverImageId != null)
+            {
+                oldTrip.CoverImageId = trip.CoverImageId;
+            }
             _tripRepository.UpdateTrip(oldTrip);
             return oldTrip;
         }

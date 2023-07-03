@@ -45,16 +45,19 @@ export default defineComponent ({
         }
     },
     async mounted() {
-        const covers = await $api.images.fetch(null, true);
-        if (covers != null && covers.length > 0) {
-            const latestCover = covers[0];
-            this.cover = await $api.images.download(latestCover.id) ?? undefined;
-        }
-
         const trips = await $api.trips.fetch();
         if (trips && trips.length > 0) {
             this.nextTrip = trips.shift() ?? null;
             this.previousTrips = trips;
+        }
+        if (this.previousTrips) {
+            for (let i = 0; i < this.previousTrips.length; i++) {
+                const coverId = this.previousTrips[i].coverImageId;
+                if (coverId) {
+                    this.cover = await $api.images.download(coverId) ?? undefined;
+                    break;
+                }
+            }
         }
     }
 });

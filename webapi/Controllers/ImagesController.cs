@@ -19,28 +19,9 @@ namespace stockmarrdk_api.Controllers
         }
 
         [HttpGet()]
-        public ActionResult GetImages([FromQuery] int? year, [FromQuery] bool? onlyCovers)
+        public ActionResult GetImages([FromQuery] int? year)
         {
             List<Image>? images;
-            if (onlyCovers is not null && (bool)onlyCovers)
-            {
-                if (year is not null)
-                {
-                    Image? cover = _imageService.GetCoverFromYear((int)year);
-                    if (cover is not null)
-                    {
-                        images = new List<Image>() { cover };                    
-                    }
-                    else
-                    {
-                        images = new List<Image>();
-                    }
-                }
-                else
-                {
-                    images = _imageService.GetAllCovers();
-                }
-            }
             if (year is not null)
             {
                 images = _imageService.GetAllImagesFromYear((int)year);
@@ -91,7 +72,8 @@ namespace stockmarrdk_api.Controllers
         {
             try
             {
-                await _imageService.UploadImage(image);
+                Image newImage = await _imageService.UploadImage(image);
+                return StatusCode(StatusCodes.Status200OK, newImage.ToImageDto());
             }
             catch (BadRequestException ex)
             {
@@ -102,7 +84,6 @@ namespace stockmarrdk_api.Controllers
                 return StatusCode(StatusCodes.Status500InternalServerError, ex.Message);
             }
 
-            return StatusCode(StatusCodes.Status200OK);
         }
     }
 }

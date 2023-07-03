@@ -26,14 +26,11 @@ class BaseApiService {
         super("images");
     }
 
-    async fetch(year : number | null = null, onlyCovers : boolean | null = null) : Promise<Image[] | null> {
+    async fetch(year : number | null = null) : Promise<Image[] | null> {
       // Set query parameters
       const params: any = {};
       if (year != null) {
         params.year = year;
-      }
-      if (onlyCovers != null) {
-        params.onlyCovers = onlyCovers;
       }
 
       return axios.get<Image[]>(super.getUrl(), {params: params})

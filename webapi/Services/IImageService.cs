@@ -5,18 +5,14 @@ namespace stockmarrdk_api.Services
 {
     public interface IImageService
     {
-        public List<Image> GetAllImages();
+        List<Image> GetAllImages();
 
-        public List<Image> GetAllImagesFromYear(int year);
+        List<Image> GetAllImagesFromYear(int year);
 
-        public Image? GetImageFromId(int id);
+        Image? GetImageFromId(int id);
 
-        public Task<ImageData?> GetImageDataFromId(int id);
+        Task<ImageData?> GetImageDataFromId(int id);
 
-        public List<Image> GetAllCovers();
-
-        public Image? GetCoverFromYear(int year);
-
-        public Task UploadImage(ImageUploadDto image);
+        Task<Image> UploadImage(ImageUploadDto image);
     }
 }

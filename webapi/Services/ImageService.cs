@@ -1,9 +1,7 @@
-﻿using Microsoft.AspNetCore.Http;
-using stockmarrdk_api.Common;
+﻿using stockmarrdk_api.Common;
 using stockmarrdk_api.Dto;
 using stockmarrdk_api.Models;
 using stockmarrdk_api.Repository;
-using System.Linq;
 
 namespace stockmarrdk_api.Services
 {
@@ -46,17 +44,7 @@ namespace stockmarrdk_api.Services
             return _imageRepository.GetImageById(id);
         }
 
-        public List<Image> GetAllCovers()
-        {
-            return _imageRepository.GetAllImages().FindAll(image => image.IsCover);
-        }
-
-        public Image? GetCoverFromYear(int year)
-        {
-            return GetAllCovers().FirstOrDefault(image => image.Year == year);
-        }
-
-        public async Task UploadImage(ImageUploadDto image)
+        public async Task<Image> UploadImage(ImageUploadDto image)
         {
             int id = Math.Abs(Guid.NewGuid().GetHashCode());
             string extension = Path.GetExtension(image.File.FileName);
@@ -80,11 +68,12 @@ namespace stockmarrdk_api.Services
             ImageData newImageData = new()
             { Id = id, Content = bytes, ContentType = image.File.ContentType };
 
-            Image newImage = new() { Id = id, Extension = extension, IsCover = false, Year = image.Year };
+            Image newImage = new() { Id = id, Extension = extension, Year = image.Year };
 
             await _imageRepository.UploadImageData(newImageData, newImage);
             _imageRepository.UploadImage(newImage);
-        }
 
+            return newImage;
+        }
     }
 }

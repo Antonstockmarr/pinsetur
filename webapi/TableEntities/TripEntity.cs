@@ -11,6 +11,7 @@ namespace stockmarrdk_api.TableEntities
         public string Address { get; set; } = "";
         public string Description { get; set; } = "";
         public int? LocationImageId { get; set; }
+        public int? CoverImageId { get; set; }
 
         // ITableEntity Properties
         public virtual string PartitionKey { get; set; } = "Trip";
@@ -27,11 +28,12 @@ namespace stockmarrdk_api.TableEntities
             Address = trip.Address ?? "";
             Description = trip.Description ?? "";
             LocationImageId = trip.LocationImageId;
+            CoverImageId = trip.CoverImageId;
         }
 
         public Trip ToTrip()
         {
-            return new Trip { Year = Year, Location = Location, Address = Address, Description = Description, LocationImageId = LocationImageId };
+            return new Trip { Year = Year, Location = Location, Address = Address, Description = Description, LocationImageId = LocationImageId, CoverImageId = CoverImageId };
         }
     }
 }
