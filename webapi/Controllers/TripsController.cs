@@ -62,7 +62,7 @@ namespace stockmarrdk_api.Controllers
                 return StatusCode(StatusCodes.Status500InternalServerError, ex.Message);
             }
 
-            return StatusCode(StatusCodes.Status200OK);
+            return StatusCode(StatusCodes.Status200OK, trip);
         }
 
         [HttpPatch]
