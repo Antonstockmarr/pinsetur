@@ -47,6 +47,9 @@ export default defineComponent({
     else if (this.trip.locationImageId != null) {
         this.image = await $api.images.download(this.trip.locationImageId) ?? undefined;
     }
+    else {
+      this.image = require("@/assets/NO_IMAGE.jpg");
+    }
   }
 })
 
