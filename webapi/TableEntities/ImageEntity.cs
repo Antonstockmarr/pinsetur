@@ -27,9 +27,9 @@ namespace stockmarrdk_api.TableEntities
             RowKey = Id.ToString();
         }
 
-        public Image ToImage()
-        {
-            return new Image { Id = Id, Year = Year, Extension = Extension};
+        public Image ToImage(string containerUri)
+        {   
+            return new Image { Id = Id, Year = Year, Extension = Extension, ContainerUri = containerUri};
         }
     }
 }

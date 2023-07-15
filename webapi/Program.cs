@@ -48,6 +48,8 @@ try
     builder.Services.AddTransient<IImageService, ImageService>();
     builder.Services.AddTransient<ITripService, TripService>();
     builder.Services.AddTransient<ITripRepository, TripRepository>();
+    builder.Services.AddTransient<ITokenService, TokenService>();
+    builder.Services.AddTransient<ITokenRepository, TokenRepository>();
     Log.Information("Services has been successfully added...");
 
     var app = builder.Build();

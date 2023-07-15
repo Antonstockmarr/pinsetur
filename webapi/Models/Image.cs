@@ -6,12 +6,14 @@ namespace stockmarrdk_api.Models
     {
         public required int Id { get; set; }
         public required int Year { get; set; }
+        public string ContainerUri { get; set; } = "";
         public string Extension { get; set; } = "";
         public string Name => Year + "/" + Id + Extension;
+        public string Uri => ContainerUri + "/" + Name;
 
         public ImageDto ToImageDto()
         {
-            return new ImageDto { Id = Id, Year = Year };
+            return new ImageDto { Id = Id, Year = Year, Uri = Uri };
         }
 
 

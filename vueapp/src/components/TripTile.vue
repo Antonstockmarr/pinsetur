@@ -2,7 +2,7 @@
     <b-card
         :title="trip?.year.toString()"
         :subtitle="trip?.location"
-        :img-src="image ?? require('@/assets/Loading_icon.gif')"
+        :img-src="image"
         :style="cardStyle"
         img-alt="Image"
         img-top
@@ -28,6 +28,10 @@ export default defineComponent({
     cardStyle: {
       type: String,
       required: false
+    },
+    token: {
+      type: String,
+      required: true
     }
   },
   data() {
@@ -35,17 +39,15 @@ export default defineComponent({
         image: undefined as string | undefined
     }
   },
-  methods: {
-    seeTrip() {
-        console.log("Go To trip " + this.trip?.year)
-    }
-  },
   async mounted() { 
+    this.image = require('@/assets/Loading_icon.gif')
     if (this.trip.coverImageId != null) {
-        this.image = await $api.images.download(this.trip.coverImageId) ?? undefined;
+      const coverImage = await $api.images.get(this.trip.coverImageId)
+      this.image = coverImage?.uri + "?" + this.token;
     }
     else if (this.trip.locationImageId != null) {
-        this.image = await $api.images.download(this.trip.locationImageId) ?? undefined;
+      const locationImage = await $api.images.get(this.trip.locationImageId)
+      this.image = locationImage?.uri + "?" + this.token;
     }
     else {
       this.image = require("@/assets/NO_IMAGE.jpg");

@@ -1,4 +1,5 @@
 export interface Image {
     id: number,
-    year: number
+    year: number,
+    uri: string
 }

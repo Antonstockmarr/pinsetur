@@ -1,4 +1,5 @@
 ﻿using Azure.Data.Tables;
+using Azure.Storage.Blobs;
 using stockmarrdk_api.Models;
 using stockmarrdk_api.TableEntities;
 
@@ -7,17 +8,22 @@ namespace stockmarrdk_api.Repository
     public class ImageRepository : IImageRepository
     {
         private readonly TableClient _imageTableClient;
+        private readonly string containerUri;
 
 
-        public ImageRepository(IConfiguration configuration, TableServiceClient tableServiceClient)
+        public ImageRepository(IConfiguration configuration, TableServiceClient tableServiceClient, BlobServiceClient blobServiceClient)
         {
             string? storageTableName = configuration.GetValue<string>("ImagesTableName");
             _imageTableClient = tableServiceClient.GetTableClient(storageTableName);
+            string? storageContainerName = configuration.GetValue<string>("ImagesContainerName");
+
+            BlobContainerClient imageContainerClient = blobServiceClient.GetBlobContainerClient(storageContainerName);
+            containerUri = imageContainerClient.Uri.ToString();
         }
 
         public List<Image> GetAllImages()
         {
-            return _imageTableClient.Query<ImageEntity>().Select(imageEntity => imageEntity.ToImage()).OrderByDescending(image => image.Year).ToList();
+            return _imageTableClient.Query<ImageEntity>().Select(imageEntity => imageEntity.ToImage(containerUri)).OrderByDescending(image => image.Year).ToList();
         }
 
         public Image? GetImageById(int id)
@@ -27,7 +33,7 @@ namespace stockmarrdk_api.Repository
                 return null;
             else
             {
-                return (Image?)imageEntity.ToImage();
+                return (Image?)imageEntity.ToImage(containerUri);
             }
         }
 

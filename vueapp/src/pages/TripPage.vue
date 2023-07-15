@@ -56,7 +56,7 @@
         <div v-for="image in gallery" :key="image.id" class="image">
             <b-card
                 :body-text="image.id.toString()"
-                :img-src="imageMap.get(image.id) ?? require('@/assets/Loading_icon.gif')"
+                :img-src="image.uri + '?' + token ?? require('@/assets/Loading_icon.gif')"
             ></b-card>
         </div>
     </div>
@@ -82,19 +82,16 @@ export default defineComponent ({
     },
     data () {
         return {
+            token: null as string | null,
             trip: null as Trip | null,
-            gallery: [] as Image[] | null,
-            imageMap: new Map<number, string>()
+            gallery: [] as Image[] | null
         }
     },
     async mounted() {
+        this.token = await $api.token.get();
         this.trip = await $api.trips.get(Number.parseInt(this.id));
 
         this.gallery = await $api.images.fetch(this.trip?.year);
-        this.gallery?.forEach(async image => {
-            const imageData = await $api.images.download(image.id);
-            this.imageMap.set(image.id, imageData ?? "require('@/assets/NO_IMAGE.jpg')");
-        });
     }
 });
 </script>

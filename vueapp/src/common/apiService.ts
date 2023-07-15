@@ -49,19 +49,6 @@ class BaseApiService {
           return null;
         })
     }
-
-    async download(id : number) : Promise<string | null> {
-      return axios({
-        method: 'get',
-        url: super.getUrl(id) + "/download",
-        responseType: "blob"
-      })
-        .then(response => URL.createObjectURL(response.data))
-        .catch(err => {
-          this.handleErrors(err);
-          return null;
-        })
-    }
   }
 
   class TripsApiService extends BaseApiService {
@@ -88,7 +75,23 @@ class BaseApiService {
     }
   }
 
+  class TokenService extends BaseApiService {
+    constructor() {
+        super("token");
+    }
+
+    async get() : Promise<string | null> {
+      return axios.get<string>(super.getUrl())
+        .then(response => response.data)
+        .catch(err => {
+          this.handleErrors(err);
+          return null;
+        })
+    }
+  }
+
   export const $api = {
     images: new ImagesApiService(),
-    trips: new TripsApiService()
+    trips: new TripsApiService(),
+    token: new TokenService()
   }

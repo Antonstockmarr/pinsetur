@@ -1,20 +1,20 @@
 <template>
     <div class="grid">
         <div class="banner-image tile">
-            <img :src="cover ?? require('@/assets/Loading_icon.gif')">
+            <img :src="cover">
         </div>
         <div class="description tile">
             <p>{{description}}</p>
         </div>
         <div class="next-trip tile">
             <h1>Næste tur</h1>
-            <TripTile :trip="nextTrip" v-if="nextTrip"></TripTile>
+            <TripTile :trip="nextTrip" v-if="nextTrip" :token="token ?? ''"></TripTile>
         </div>
         <div class="trip-slider tile">
             <h1>Tidligere ture</h1>
             <div class="previous-trip-cards" v-if="previousTrips">
                 <div v-for="trip in previousTrips" :key="trip.year" class="previous-trip-card">
-                    <TripTile :trip="trip" :card-style="'min-width: calc(25vw);'"></TripTile>
+                    <TripTile :trip="trip" :card-style="'min-width: calc(25vw);'" :token="token ?? ''"></TripTile>
                 </div>
             </div>
         </div>
@@ -30,6 +30,7 @@ import { Image } from "@/Models/Image";
 import TripTile from '@/components/TripTile.vue'
 import { Trip } from '@/Models/Trip';
 
+
 export default defineComponent ({
     name: "HomePage",
     components: {
@@ -38,13 +39,16 @@ export default defineComponent ({
     data () {
         return {
             description: json.description,
-            cover: undefined as string | undefined,
+            cover: "" as string,
             test: null as Image[] | null,
             nextTrip: null as Trip | null,
-            previousTrips: null as Trip[] | null
+            previousTrips: null as Trip[] | null,
+            token: null as string | null
         }
     },
     async mounted() {
+        this.cover = require('@/assets/Loading_icon.gif')
+        this.token = await $api.token.get();
         const trips = await $api.trips.fetch();
         if (trips && trips.length > 0) {
             this.nextTrip = trips.shift() ?? null;
@@ -54,7 +58,10 @@ export default defineComponent ({
             for (let i = 0; i < this.previousTrips.length; i++) {
                 const coverId = this.previousTrips[i].coverImageId;
                 if (coverId) {
-                    this.cover = await $api.images.download(coverId) ?? undefined;
+                    const coverImage = await $api.images.get(coverId);
+                    if (coverImage && this.token) {
+                        this.cover = coverImage.uri + "?" + this.token
+                    }
                     break;
                 }
             }
