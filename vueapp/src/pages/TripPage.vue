@@ -51,6 +51,8 @@
         </b-col>
     </b-row>
 
+    <GoogleMap :address="trip?.address" v-if="trip?.address"></GoogleMap>
+
     <div v-if="gallery && gallery.length > 0">
         <h1>Gallery</h1>
         <div v-for="image in gallery" :key="image.id" class="image">
@@ -67,6 +69,7 @@
 
 <script lang="ts">
 import { Trip } from '@/Models/Trip';
+import GoogleMap from '@/components/GoogleMap.vue'
 import { Image } from '@/Models/Image';
 import { $api } from '@/common/apiService';
 import { defineComponent } from 'vue';
@@ -74,6 +77,9 @@ import { defineComponent } from 'vue';
 
 export default defineComponent ({
     name: "TripPage",
+    components: {
+        GoogleMap
+    },
     props: {
         id: {
             type: String,
