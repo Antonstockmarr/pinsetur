@@ -41,6 +41,7 @@ export default defineComponent({
   left: 0;
   height: 100px;
   background-color: var(--col4);
+  z-index: 10;
 }
 
 .title {

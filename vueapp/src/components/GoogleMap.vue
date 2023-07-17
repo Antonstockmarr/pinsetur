@@ -4,7 +4,7 @@
       :center="center"
       :zoom="8"
       map-type-id="terrain"
-      style="width: 500px; height: 300px"
+      style="width: 100%; height: 100%"
   >
     <GMapMarker
         :key="1"
@@ -58,3 +58,11 @@ export default defineComponent({
 })
 
 </script>
+
+<style scoped>
+.vue-map-container,
+.vue-map-container .vue-map {
+    width: 100%;
+    height: 100%;
+}
+</style>

@@ -4,5 +4,7 @@ export interface Trip {
     address: string,
     description: string,
     locationImageId: number | null,
-    coverImageId: number | null
+    coverImageId: number | null,
+    startDate: string,
+    endDate: string
 }
