@@ -20,8 +20,7 @@ export default defineComponent({
   },
   methods: {
     logOut() {
-      document.cookie.split(";").forEach(function(c) { document.cookie = c.replace(/^ +/, "").replace(/=.*/, "=;expires=" + new Date().toUTCString() + ";path=/"); });
-      location.href = `https://login.microsoftonline.com/common/oauth2/v2.0/logout?post_logout_redirect_uri=${this.baseUrl}`;
+      location.href = `${this.baseUrl}/.auth/logout`;
     }
   }
 });
