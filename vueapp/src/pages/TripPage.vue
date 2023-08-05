@@ -1,17 +1,27 @@
 <template>
-    <b-button @click="$router.back()">
-        Tilbage
-    </b-button>
-    <h1>{{ trip?.year }} - {{ trip?.location }}</h1>
+    <div class="trip-header">
+        <div class="back-button">
+            <b-button size="lg" @click="$router.back()">
+                Tilbage
+            </b-button>
+        </div>
+        <h1>{{ trip?.year }} - {{ trip?.location }}</h1>
+        <div v-if="trip" class="calender-cards">
+            <CalendarCard :start-date="trip?.startDate" :end-date="trip?.endDate"/>
+        </div>
+    </div>
     <div class="grid">
         <div class="banner-image tile" v-if="trip?.coverImageId">
             <img :src="coverUri">
         </div>
-        <div class="location-image tile" v-if="trip?.locationImageId">
-            <img :src="locationImageUri">
+        <div class="location-image tile">
+            <img v-if="trip?.locationImageId || loading" :src="loading ? require('@/assets/Loading_icon.gif') : locationImageUri">
+            <p v-else>Billede af stedet mangler</p>
         </div>
-        <div class="map tile" v-if="trip?.address">
+        <div class="map tile">
             <GoogleMap :address="trip?.address" v-if="trip?.address"></GoogleMap>
+            <img v-else-if="loading" :src="require('@/assets/Loading_icon.gif')">
+            <p v-else>Addresse mangler</p>
         </div>
         <div class="description tile">
             <p>{{ trip?.address }}</p>
@@ -35,6 +45,7 @@
 <script lang="ts">
 import { Trip } from '@/Models/Trip';
 import GoogleMap from '@/components/GoogleMap.vue'
+import CalendarCard from '@/components/CalendarCard.vue';
 import { Image } from '@/Models/Image';
 import { $api } from '@/common/apiService';
 import { defineComponent } from 'vue';
@@ -43,7 +54,8 @@ import { defineComponent } from 'vue';
 export default defineComponent ({
     name: "TripPage",
     components: {
-        GoogleMap
+        GoogleMap,
+        CalendarCard
     },
     props: {
         id: {
@@ -57,10 +69,12 @@ export default defineComponent ({
             trip: null as Trip | null,
             coverUri: "" as string,
             locationImageUri: "" as string,
-            gallery: [] as Image[] | null
+            gallery: [] as Image[] | null,
+            loading: true as boolean
         }
     },
     async mounted() {
+        this.loading = true
         this.coverUri = require('@/assets/Loading_icon.gif')
         this.locationImageUri = require('@/assets/Loading_icon.gif')
         this.token = await $api.token.get();
@@ -84,11 +98,13 @@ export default defineComponent ({
                 image.id === this.trip?.coverImageId
                 )
         }
+        this.loading = false
     }
 });
 </script>
 
 <style scoped>
+
 
 .grid {
     display: grid;
@@ -96,6 +112,26 @@ export default defineComponent ({
     gap: 30px;
     padding: 30px 30px;
 }
+
+.trip-header {
+    display: grid;
+    grid-template-columns: 20% 1fr 20%;
+    position: relative;
+    padding: 30px 30px 0 30px;
+    
+    & h1 {
+        text-align: center;
+        margin: 0;
+        font-size: 44px;
+        line-height: 65px;
+    }
+}
+
+.back-button {
+    float: left;
+    height: 65px;
+}
+
 
 .banner-image {
     grid-column: 1 / span 2;
