@@ -3,11 +3,15 @@
         :title="trip?.year.toString()"
         :subtitle="trip?.location"
         :img-src="image"
-        :style="cardStyle"
+        :style="'border: 2px black solid; box-shadow: 6px 6px 2px 1px rgba(0, 0, 0, .5); min-width: 25vw;' + cardStyle"
         img-alt="Image"
         img-top
     >
-        <b-button href="#" variant="primary" :to="`/trips/${trip?.year}`" v-if="trip != null">Se detaljer</b-button>
+      <template #footer>
+        <div class="d-grid gap-2">
+          <b-button href="#" variant="primary" :to="`/trips/${trip?.year}`" v-if="trip != null">Se detaljer</b-button>
+        </div>
+      </template>
     </b-card>
 </template>
 

@@ -11,32 +11,37 @@
         </div>
     </div>
     <div class="grid">
-        <div class="banner-image tile" v-if="trip?.coverImageId">
+        <ContentCard class="banner-image" v-if="trip?.coverImageId">
             <img :src="coverUri">
-        </div>
-        <div class="location-image tile">
+        </ContentCard>
+        <ContentCard class="location-image">
             <img v-if="trip?.locationImageId || loading" :src="loading ? require('@/assets/Loading_icon.gif') : locationImageUri">
             <p v-else>Billede af stedet mangler</p>
-        </div>
-        <div class="map tile">
+        </ContentCard>
+        <ContentCard class="map">
             <GoogleMap :address="trip?.address" v-if="trip?.address"></GoogleMap>
             <img v-else-if="loading" :src="require('@/assets/Loading_icon.gif')">
             <p v-else>Addresse mangler</p>
-        </div>
-        <div class="description tile">
+        </ContentCard>
+        <ContentCard class="description">
             <p>{{ trip?.address }}</p>
             <p>{{ trip?.description }}</p>
-        </div>
+        </ContentCard>
     </div>
-    
-    <div v-if="gallery && gallery.length > 0">
-        <h1>Gallery</h1>
-        <div v-for="image in gallery" :key="image.id" class="image">
-            <b-card
+
+    <div class="image-gallery">
+        <b-card v-if="gallery && gallery.length > 0">
+            <b-card-header>
+                <h1>Billedgalleri</h1>
+                <b-button></b-button>
+            </b-card-header>
+            <div v-for="image in gallery" :key="image.id" class="image">
+                <b-card
                 :body-text="image.id.toString()"
                 :img-src="image.uri + '?' + token ?? require('@/assets/Loading_icon.gif')"
-            ></b-card>
-        </div>
+                ></b-card>
+            </div>
+        </b-card>
     </div>
     
 </template>
@@ -46,6 +51,7 @@
 import { Trip } from '@/Models/Trip';
 import GoogleMap from '@/components/GoogleMap.vue'
 import CalendarCard from '@/components/CalendarCard.vue';
+import ContentCard from '@/components/ContentCard.vue'
 import { Image } from '@/Models/Image';
 import { $api } from '@/common/apiService';
 import { defineComponent } from 'vue';
@@ -55,7 +61,8 @@ export default defineComponent ({
     name: "TripPage",
     components: {
         GoogleMap,
-        CalendarCard
+        CalendarCard,
+        ContentCard
     },
     props: {
         id: {
@@ -169,4 +176,7 @@ export default defineComponent ({
     align-content: center;
 }
 
+.image-gallery {
+    padding: 30px 30px;
+}
 </style>
