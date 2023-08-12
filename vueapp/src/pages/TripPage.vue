@@ -30,19 +30,30 @@
     </div>
 
     <div class="image-gallery">
-        <b-card v-if="gallery && gallery.length > 0">
-            <b-card-header>
-                <h1>Billedgalleri</h1>
-                <b-button></b-button>
+        <b-card v-if="gallery">
+            <b-card-header class="gallery-header">
+                <h1 class="gallery-title">Billedgalleri</h1>
+                <b-button class="upload-button" size="lg" variant="primary" @click="() => showUploadImage = true">Upload</b-button>
             </b-card-header>
-            <div v-for="image in gallery" :key="image.id" class="image">
-                <b-card
-                :body-text="image.id.toString()"
-                :img-src="image.uri + '?' + token ?? require('@/assets/Loading_icon.gif')"
-                ></b-card>
-            </div>
+            <BCardGroup deck>
+                <div v-for="image in gallery" :key="image.id" class="image">
+                    <b-card
+                    :style="'border: 2px black solid; box-shadow: 6px 6px 2px 1px rgba(0, 0, 0, .5); min-width: 25vw;'"
+                    :body-text="image.id.toString()"
+                    :img-src="image.uri + '?' + token ?? require('@/assets/Loading_icon.gif')"
+                    >
+                    </b-card>
+                </div>
+            </BCardGroup>
         </b-card>
     </div>
+
+    <ImageUploadForm
+        v-if="trip"
+        v-model:showForm="showUploadImage"
+        :year="trip.year"
+        v-on:submitted="fetchGallery"
+    />
     
 </template>
 
@@ -52,6 +63,7 @@ import { Trip } from '@/Models/Trip';
 import GoogleMap from '@/components/GoogleMap.vue'
 import CalendarCard from '@/components/CalendarCard.vue';
 import ContentCard from '@/components/ContentCard.vue'
+import ImageUploadForm from '@/components/ImageUploadForm.vue';
 import { Image } from '@/Models/Image';
 import { $api } from '@/common/apiService';
 import { defineComponent } from 'vue';
@@ -62,7 +74,8 @@ export default defineComponent ({
     components: {
         GoogleMap,
         CalendarCard,
-        ContentCard
+        ContentCard,
+        ImageUploadForm
     },
     props: {
         id: {
@@ -77,7 +90,8 @@ export default defineComponent ({
             coverUri: "" as string,
             locationImageUri: "" as string,
             gallery: [] as Image[] | null,
-            loading: true as boolean
+            loading: true as boolean,
+            showUploadImage: false as boolean
         }
     },
     async mounted() {
@@ -99,14 +113,22 @@ export default defineComponent ({
                 this.locationImageUri = locationImage.uri + '?' + this.token;
             }
         }
-        const images = await $api.images.fetch(this.trip?.year);
-        if (images) {
-            this.gallery = images.filter(image =>
-                image.id === this.trip?.coverImageId
-                )
-        }
+        await this.fetchGallery()
         this.loading = false
+    },
+    methods: {
+        async fetchGallery() {
+            console.log('fetched gallery')
+            const images = await $api.images.fetch(this.trip?.year);
+            if (images) {
+                this.gallery = images.filter(image =>
+                    image.id !== this.trip?.coverImageId &&
+                    image.id !== this.trip?.locationImageId
+                    )
+            }
+        }        
     }
+
 });
 </script>
 
@@ -178,5 +200,24 @@ export default defineComponent ({
 
 .image-gallery {
     padding: 30px 30px;
+}
+
+.gallery-title {
+    float: left;
+    font-size: 32px;
+    line-height: 52px;
+    margin: 0;
+}
+
+.upload-button {
+    float: right;
+    height: 52px;
+}
+
+.gallery-header::after { 
+   content: " ";
+   display: block; 
+   height: 0; 
+   clear: both;
 }
 </style>

@@ -49,6 +49,26 @@ class BaseApiService {
           return null;
         })
     }
+
+    async upload(image: File, year: number) : Promise<Image | null> {
+      const form = new FormData()
+      form.append('year', year.toString())
+      form.append('file', image)
+      return fetch(super.getUrl(), {
+        method: 'POST',
+        body: form
+        }
+      )
+      .then(response => {
+        if (!response.ok) {
+          this.handleErrors(response.statusText);
+          return null;
+        }
+        else {
+          return response.json() as Promise<Image>
+        }
+      })
+    }
   }
 
   class TripsApiService extends BaseApiService {
