@@ -30,21 +30,21 @@
     </div>
 
     <div class="image-gallery">
-        <b-card v-if="gallery">
+        <b-card
+            v-if="gallery"
+            :style="'border: 2px black solid; box-shadow: 6px 6px 2px 1px rgba(0, 0, 0, .5);'"
+        >
             <b-card-header class="gallery-header">
                 <h1 class="gallery-title">Billedgalleri</h1>
                 <b-button class="upload-button" size="lg" variant="primary" @click="() => showUploadImage = true">Upload</b-button>
             </b-card-header>
-            <BCardGroup deck>
-                <div v-for="image in gallery" :key="image.id" class="image">
-                    <b-card
-                    :style="'border: 2px black solid; box-shadow: 6px 6px 2px 1px rgba(0, 0, 0, .5); min-width: 25vw;'"
-                    :body-text="image.id.toString()"
-                    :img-src="image.uri + '?' + token ?? require('@/assets/Loading_icon.gif')"
-                    >
-                    </b-card>
+            <div class="gallery-display-box">
+                <div v-for="image, index in gallery" :key="image.id" class="image" @click="showGalleryCarousel(index)">
+                    <img
+                    :src="image.uri + '?' + token ?? require('@/assets/Loading_icon.gif')"
+                    />
                 </div>
-            </BCardGroup>
+            </div>
         </b-card>
     </div>
 
@@ -53,6 +53,14 @@
         v-model:showForm="showUploadImage"
         :year="trip.year"
         v-on:submitted="fetchGallery"
+    />
+
+    <ImageCarousel
+        v-if="gallery && token"
+        v-model:show="showImageCarousel"
+        v-model:selectedIndex="selectedImage"
+        :images="gallery"
+        :token="token"
     />
     
 </template>
@@ -64,6 +72,7 @@ import GoogleMap from '@/components/GoogleMap.vue'
 import CalendarCard from '@/components/CalendarCard.vue';
 import ContentCard from '@/components/ContentCard.vue'
 import ImageUploadForm from '@/components/ImageUploadForm.vue';
+import ImageCarousel from '@/components/ImageCarousel.vue';
 import { Image } from '@/Models/Image';
 import { $api } from '@/common/apiService';
 import { defineComponent } from 'vue';
@@ -75,7 +84,8 @@ export default defineComponent ({
         GoogleMap,
         CalendarCard,
         ContentCard,
-        ImageUploadForm
+        ImageUploadForm,
+        ImageCarousel
     },
     props: {
         id: {
@@ -91,7 +101,9 @@ export default defineComponent ({
             locationImageUri: "" as string,
             gallery: [] as Image[] | null,
             loading: true as boolean,
-            showUploadImage: false as boolean
+            showUploadImage: false as boolean,
+            showImageCarousel: false as boolean,
+            selectedImage: -1 as number
         }
     },
     async mounted() {
@@ -118,7 +130,6 @@ export default defineComponent ({
     },
     methods: {
         async fetchGallery() {
-            console.log('fetched gallery')
             const images = await $api.images.fetch(this.trip?.year);
             if (images) {
                 this.gallery = images.filter(image =>
@@ -126,7 +137,13 @@ export default defineComponent ({
                     image.id !== this.trip?.locationImageId
                     )
             }
-        }        
+        },
+        showGalleryCarousel(index: number) {
+            if (this.gallery && this.gallery[index]) {
+                this.selectedImage = index
+                this.showImageCarousel = true
+            }
+        }
     }
 
 });
@@ -186,8 +203,29 @@ export default defineComponent ({
     min-height: 300px;
 }
 
+.gallery-display-box {
+    display: flex;
+    flex-wrap: wrap;
+    justify-content: space-between;
+    row-gap: 20px;
+}
+
 .image {
-    max-width: 25%;
+    cursor: pointer;
+    flex-shrink: 1;
+    transition-duration: 0.2s;
+    border-radius: 10px;
+}
+
+.image:hover {
+    box-shadow: 6px 6px 2px 1px rgba(0, 0, 0, .5);
+}
+
+.image img {
+    border-radius: 10px;
+    border: 1px solid black;
+    width: auto;
+    max-height: 200px;
 }
 
 .description {
