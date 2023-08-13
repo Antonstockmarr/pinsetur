@@ -10,6 +10,7 @@
             >
                 <b-carousel-slide
                     v-for="image in images" :img-src="image.uri + '?' + token"
+                    v-bind:key="image.id"
                 >
                     <template v-slot:img>
                         <img
