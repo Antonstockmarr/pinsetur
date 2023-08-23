@@ -98,7 +98,7 @@ namespace stockmarrdk_api.Services
             ImageData newImageData = new()
             { Id = id, Content = bytes, ContentType = image.File.ContentType };
 
-            Image newImage = new() { Id = id, Extension = extension, Year = image.Year };
+            Image newImage = new() { Id = id, Extension = extension, Year = image.Year, Description = image.Description };
 
             await _imageDataRepository.UploadImageData(newImageData, newImage);
             _imageRepository.UploadImage(newImage);

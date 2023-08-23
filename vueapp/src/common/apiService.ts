@@ -50,9 +50,10 @@ class BaseApiService {
         })
     }
 
-    async upload(image: File, year: number) : Promise<Image | null> {
+    async upload(image: File, year: number, description: string) : Promise<Image | null> {
       const form = new FormData()
       form.append('year', year.toString())
+      form.append('description', description)
       form.append('file', image)
       return fetch(super.getUrl(), {
         method: 'POST',

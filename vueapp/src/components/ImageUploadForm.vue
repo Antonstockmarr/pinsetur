@@ -15,6 +15,18 @@
                     <div>Billede:</div> 
                     <b-img class="upload-preview" :src="getPreview()" />
                 </div>
+
+                <b-form-group
+                    v-if="imageFile"
+                    label="Beskrivelse (valgfri):"
+                    class="image-description"
+                >
+                    <b-form-textarea
+                        v-model="description"
+                        placeholder="Hvad er der på billedet?"
+                    />                    
+                </b-form-group>
+
                 <p v-if="error" class="text-danger">{{ error }}</p>
                 <b-button class="submit-upload-button" size="lg" type="submit" variant="success" :disabled="!imageFile">Upload</b-button>
             </b-form>
@@ -55,6 +67,7 @@ export default defineComponent ({
     data() {
         return {
             imageFile: null as File | null,
+            description: "" as string,
             loading: false as Boolean,
             error: "" as String
         }
@@ -72,7 +85,7 @@ export default defineComponent ({
             this.error = ""
             if (this.imageFile) {
                 this.loading = true
-                const image = await $api.images.upload(this.imageFile, this.year)
+                const image = await $api.images.upload(this.imageFile, this.year, this.description)
                 this.loading = false
                 if (image) {
                     this.show = false
@@ -101,5 +114,9 @@ export default defineComponent ({
     bottom: 30px;
     right: 30px;
     left: 30px;
+}
+
+.image-description {
+    margin-top: 20px;
 }
 </style>

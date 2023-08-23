@@ -10,6 +10,7 @@ namespace stockmarrdk_api.TableEntities
         public int Id { get; set; }
         public int Year { get; set; }
         public string Extension { get; set; } = "";
+        public string? Description { get; set; }
 
         // ITableEntity Properties
         public virtual string PartitionKey { get; set; } = "Image";
@@ -25,11 +26,12 @@ namespace stockmarrdk_api.TableEntities
             Year = image.Year;
             Extension = image.Extension;
             RowKey = Id.ToString();
+            Description = image.Description;
         }
 
         public Image ToImage(string containerUri)
         {   
-            return new Image { Id = Id, Year = Year, Extension = Extension, ContainerUri = containerUri};
+            return new Image { Id = Id, Year = Year, Extension = Extension, ContainerUri = containerUri, Description = Description};
         }
     }
 }

@@ -19,7 +19,8 @@
                         alt="image">
                     </template>
                 </b-carousel-slide>
-            </b-carousel>            
+            </b-carousel>
+            <p v-if="images[selectedIndex]?.description">{{ images[selectedIndex].description }}</p>
         </div>
     </b-modal>
 

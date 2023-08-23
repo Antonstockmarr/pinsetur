@@ -1,5 +1,6 @@
 export interface Image {
     id: number,
     year: number,
-    uri: string
+    uri: string,
+    description: string
 }
