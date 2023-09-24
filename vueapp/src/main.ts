@@ -1,6 +1,7 @@
 import { createApp } from 'vue'
 import App from './App.vue'
 import router from './router'
+import { store, key } from './store'
 import { BootstrapVueNext } from 'bootstrap-vue-next'
 import VueGoogleMaps from '@fawmi/vue-google-maps'
 
@@ -17,4 +18,5 @@ createApp(App)
             key: process.env.VUE_APP_GOOGLE_API_KEY
         }
     })
+    .use(store, key)
     .mount('#app')

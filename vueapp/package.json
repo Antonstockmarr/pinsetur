@@ -16,7 +16,8 @@
     "jest": "^29.5.0",
     "jest-editor-support": "^31.1.0",
     "vue": "^3.2.13",
-    "vue-router": "^4.2.2"
+    "vue-router": "^4.2.2",
+    "vuex": "^4.0.2"
   },
   "devDependencies": {
     "@babel/core": "^7.12.16",
