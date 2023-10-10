@@ -1,12 +1,11 @@
 // store.ts
 import { InjectionKey } from 'vue'
 import { createStore, Store } from 'vuex'
-import auth from './modules/auth'
-import { User } from '@/Models/User'
+import { store as auth, State as authState} from './modules/auth'
 
 // define your typings for the store state
 export interface State {
-  user: User | null
+  auth: authState
 }
 
 // define injection key

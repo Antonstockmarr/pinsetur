@@ -1,6 +1,8 @@
 import { Image } from "@/Models/Image";
 import { Trip } from "@/Models/Trip";
+import { User } from "@/Models/User";
 import axios from 'axios'
+import { store } from "@/store"
 
 class BaseApiService {
     baseUrl = "api";
@@ -12,12 +14,20 @@ class BaseApiService {
     }
   
     getUrl(id: string | number = "") {
+      console.log(store.state.auth.user?.jwt);
+      
       return `${this.baseUrl}/${this.resource}/${id}`;
     }
   
     handleErrors(err: string) {
       // Note: here you may want to add your errors handling
       console.log({ message: "Error in API call: ", err });
+    }
+
+    getAuthorizatioHeaders() {
+      return  {
+        Authorization: "bearer " + store.state.auth.user?.jwt
+      }
     }
   }
 
@@ -33,7 +43,7 @@ class BaseApiService {
         params.year = year;
       }
 
-      return axios.get<Image[]>(super.getUrl(), {params: params})
+      return axios.get<Image[]>(super.getUrl(), {params: params, headers: this.getAuthorizatioHeaders()})
         .then(response => response.data)
         .catch(err => {
           this.handleErrors(err);
@@ -111,8 +121,33 @@ class BaseApiService {
     }
   }
 
+  class AuthService extends BaseApiService {
+    constructor() {
+        super("login");
+    }
+
+    async login() : Promise<User | null> {
+      return axios.post<User>(super.getUrl())
+        .then(response => response.data)
+        .catch(err => {
+          this.handleErrors(err);
+          return null;
+        })
+    }
+
+    async logout() : Promise<User | null> {
+      return axios.delete<User>(super.getUrl())
+        .then(response => response.data)
+        .catch(err => {
+          this.handleErrors(err);
+          return null;
+        })
+    }
+  }
+
   export const $api = {
     images: new ImagesApiService(),
     trips: new TripsApiService(),
-    token: new TokenService()
+    token: new TokenService(),
+    auth: new AuthService()
   }

@@ -1,13 +1,16 @@
 import { User } from '@/Models/User';
-import { State } from '..'
 
-const state = {
-    user: null,
+export type State = {
+    user: User | null
+    token: string | null
+}
+const state: State = {
+    user: { jwt: "", username: ""},
     token: null
 };
 const getters = {
-    isAuthenticated: (state: State) => !!state.user?.token,    
-    StateUser: (state: State) => state.user,
+    isAuthenticated: (state: State) => !!state.user?.jwt,    
+    getUser: (state: State) => state.user,
 };
 const actions = {
 };
@@ -19,7 +22,7 @@ const mutations = {
         state.user = null
     },
 };
-export default {
+export const store = {
   state,
   getters,
   actions,

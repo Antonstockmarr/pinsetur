@@ -8,6 +8,7 @@ import { store } from '@/store'
 const routes = [
     {
       path: '/',
+      name: 'home',
       component: HomePage,
       meta: {
         title: "Pinsetur"
@@ -23,6 +24,7 @@ const routes = [
     },
     {
       path: '/login',
+      name: 'login',
       component: LoginPage,
       meta: {
         title: "Pinsetur"
@@ -32,7 +34,7 @@ const routes = [
 
 const router = createRouter({
     history: createWebHashHistory(),
-    routes, // short for `routes: routes`
+    routes
 });
 
 router.beforeEach(async (to) => {
@@ -41,7 +43,7 @@ router.beforeEach(async (to) => {
   const authRequired = !publicPages.includes(to.path);
 
   if (authRequired && !store.getters.isAuthenticated) {
-      return '/login';
+      return { name: 'login'}
   }
 })
 
