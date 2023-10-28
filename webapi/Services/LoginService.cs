@@ -13,19 +13,25 @@ namespace stockmarrdk_api.Services
         private readonly IUserRepository _userRepository;
         private readonly IConfiguration _configuration;
         private readonly string _jwtKey;
+        private readonly string _jwtIssuer;
+        private readonly string _jwtAudience;
 
         public LoginService(IUserRepository userRepository, IConfiguration configuration)
         {
             _userRepository = userRepository;
             _configuration = configuration;
             string? jwtKey = _configuration.GetValue<string>("JwtKey");
-            if (jwtKey is null)
+            string? jwtIssuer = _configuration.GetValue<string>("JwtSettings:Issuer");
+            string? jwtAudience = _configuration.GetValue<string>("JwtSettings:Audience");
+            if (jwtKey is null || jwtAudience is null || jwtIssuer is null)
             {
                 throw new Exception("jwtKey could not be read");
             }
             else
             {
                 _jwtKey = jwtKey;
+                _jwtIssuer = jwtIssuer;
+                _jwtAudience = jwtAudience;
             }
         }
 
@@ -61,10 +67,12 @@ namespace stockmarrdk_api.Services
             var key = new SymmetricSecurityKey(System.Text.Encoding.UTF8.GetBytes(_jwtKey));
             var cred = new SigningCredentials(key, SecurityAlgorithms.HmacSha512Signature);
             var token = new JwtSecurityToken(
-                                   claims: claims,
-                                   expires: DateTime.UtcNow.AddDays(1),
-                                   signingCredentials: cred
-   );
+                issuer: _jwtIssuer,
+                audience: _jwtAudience,
+                claims: claims,
+                expires: DateTime.UtcNow.AddDays(1),
+                signingCredentials: cred
+            );
             var jwt = new JwtSecurityTokenHandler().WriteToken(token);
             return jwt;
         }

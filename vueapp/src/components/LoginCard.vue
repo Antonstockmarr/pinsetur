@@ -41,12 +41,7 @@ export default defineComponent ({
             }
 
             this.$store.commit('setSession', session)
-            if (session?.user.resetPassword) {
-                this.$emit('resetPassword')
-            }
-            else {
-                this.$router.push('/')
-            }
+            this.$emit('loggedIn')
         },
         validateLogin() {
             if (this.username === "" || this.password === "") {

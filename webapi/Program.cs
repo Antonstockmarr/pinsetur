@@ -5,6 +5,11 @@ using System.Reflection;
 using stockmarrdk_api.Common;
 using stockmarrdk_api.Services;
 using System.Text.Json.Serialization;
+using Microsoft.AspNetCore.Authentication.JwtBearer;
+using Microsoft.IdentityModel.Tokens;
+using System.Text;
+using System.Security.Claims;
+using Microsoft.AspNetCore.Authorization;
 
 StaticLogger.EnsureInitialized();
 Log.Information("Azure Storage API Booting Up...");
@@ -19,7 +24,41 @@ try
         config.WriteTo.Console()
         .ReadFrom.Configuration(builder.Configuration);
     });
-    // Add services to the container.
+    
+    builder.Services.AddAuthentication(options =>
+    {
+        options.DefaultAuthenticateScheme = JwtBearerDefaults.AuthenticationScheme;
+        options.DefaultChallengeScheme = JwtBearerDefaults.AuthenticationScheme;
+        options.DefaultScheme = JwtBearerDefaults.AuthenticationScheme;
+    }).AddJwtBearer(o =>
+    {
+        string? jwtKey = builder.Configuration.GetValue<string>("JwtKey") ?? throw new Exception("jwtKey could not be read");
+        o.TokenValidationParameters = new TokenValidationParameters
+        {
+            ValidIssuer = builder.Configuration["JwtSettings:Issuer"],
+            ValidAudience = builder.Configuration["JwtSettings:Audience"],
+            IssuerSigningKey = new SymmetricSecurityKey(Encoding.UTF8.GetBytes(jwtKey)),
+            ValidateIssuer = true,
+            ValidateAudience = true,
+            ValidateLifetime = true,
+            ValidateIssuerSigningKey = true
+        };
+    });
+
+    builder.Services.AddAuthorization(options =>
+    {
+        var adminPolicy = new AuthorizationPolicyBuilder()
+            .RequireClaim(ClaimTypes.Role, UserRole.Admin.ToString())
+            .Build();
+
+        options.FallbackPolicy = adminPolicy;
+        options.AddPolicy("Admins", adminPolicy);
+
+        options.AddPolicy("Users", policy =>
+        {
+            policy.RequireAuthenticatedUser();
+        });
+    });
 
     builder.Services.AddControllers()
         .AddJsonOptions(options => {
@@ -79,6 +118,7 @@ try
 
     app.UseHttpsRedirection();
 
+    app.UseAuthentication();
     app.UseAuthorization();
 
     app.MapControllers();

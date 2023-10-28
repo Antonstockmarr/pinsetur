@@ -1,7 +1,6 @@
-﻿using Azure.Identity;
+﻿using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
 using stockmarrdk_api.Dto;
-using stockmarrdk_api.Models;
 using stockmarrdk_api.Services;
 
 namespace stockmarrdk_api.Controllers
@@ -18,6 +17,7 @@ namespace stockmarrdk_api.Controllers
         }
 
         [HttpPost()]
+        [AllowAnonymous]
         [ProducesResponseType(StatusCodes.Status200OK, Type = typeof(SessionDto))]
         [ProducesResponseType(StatusCodes.Status400BadRequest)]
         public ActionResult Login([FromForm] LoginDto login)

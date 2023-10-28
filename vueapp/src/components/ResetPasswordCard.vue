@@ -4,7 +4,7 @@
         <form class="form-group" @submit="resetPassword">
             <input class="form-control" v-model="password1" type="password" placeholder="Kodeord" required>
             <input class="form-control" v-model="password2" type="password" placeholder="Gentag kodeord" required>
-            <button class="btn btn-primary" type="submit">Log ind</button>
+            <button class="btn btn-primary" type="submit">Bekræft kodeord</button>
             <p class="error-message" v-if="errorMessage"> {{ errorMessage }}</p>
             <p>Glemt koden? Kontakt en administrater af siden.</p>
         </form>
@@ -37,6 +37,7 @@ export default defineComponent ({
             }
             let user = await $api.user.resetPassword(this.password1)
             store.commit('updateUser', user)
+            this.$emit('continue')
         },
         validatePassword() {
             if (this.password1 === "" || this.password2 === "") {

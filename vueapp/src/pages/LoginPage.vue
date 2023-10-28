@@ -4,8 +4,8 @@
         <div class="container">
             <div class="row">
                 <div class="col-lg-4 col-md-6 col-sm-8 mx-auto">
-                    <LoginCard v-if="loginState === 'login'" v-on:resetPassword="showResetPassword"/>
-                    <ResetPasswordCard v-else />
+                    <LoginCard v-if="loginState === 'login'" v-on:loggedIn="showResetPassword" />
+                    <ResetPasswordCard v-else v-on:continue="goToMain" />
                 </div>
             </div>
         </div>
@@ -31,6 +31,18 @@ export default defineComponent ({
         }
     },
     methods: {
+        afterLogin() {
+            const user = this.$store.getters.getSession.user
+            if (user.resetPassword) {
+                this.showResetPassword()
+            }
+            else {
+                this.goToMain()
+            }
+        },
+        goToMain() {
+            this.$router.push('/')
+        },
         showResetPassword() {
             this.loginState = "resetPassword"
         }

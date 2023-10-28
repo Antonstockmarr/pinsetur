@@ -1,4 +1,5 @@
-﻿using Microsoft.AspNetCore.Mvc;
+﻿using Microsoft.AspNetCore.Authorization;
+using Microsoft.AspNetCore.Mvc;
 using stockmarrdk_api.Dto;
 using stockmarrdk_api.Services;
 
@@ -16,6 +17,7 @@ namespace stockmarrdk_api.Controllers
         }
 
         [HttpGet()]
+        [Authorize("Users")]
         [ProducesResponseType(StatusCodes.Status200OK, Type = typeof(string))]
         public ActionResult GetToken()
         {

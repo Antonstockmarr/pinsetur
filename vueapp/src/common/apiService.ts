@@ -51,7 +51,7 @@ class BaseApiService {
     }
 
     async get(id : number ) : Promise<Image | null> {
-      return axios.get<Image>(super.getUrl(id))
+      return axios.get<Image>(super.getUrl(id), {headers: this.getAuthorizatioHeaders()})
         .then(response => response.data)
         .catch(err => {
           this.handleErrors(err);
@@ -87,7 +87,7 @@ class BaseApiService {
     }
     
     async fetch() : Promise<Trip[] | null> {
-      return axios.get<Trip[]>(super.getUrl())
+      return axios.get<Trip[]>(super.getUrl(), {headers: this.getAuthorizatioHeaders()})
         .then(response => response.data)
         .catch(err => {
           this.handleErrors(err);
@@ -96,7 +96,7 @@ class BaseApiService {
     }
 
     async get(year : number ) : Promise<Trip | null> {
-      return axios.get<Trip>(super.getUrl(year))
+      return axios.get<Trip>(super.getUrl(year), {headers: this.getAuthorizatioHeaders()})
         .then(response => response.data)
         .catch(err => {
           this.handleErrors(err);
@@ -111,7 +111,7 @@ class BaseApiService {
     }
 
     async get() : Promise<string | null> {
-      return axios.get<string>(super.getUrl())
+      return axios.get<string>(super.getUrl(), {headers: this.getAuthorizatioHeaders()})
         .then(response => response.data)
         .catch(err => {
           this.handleErrors(err);
@@ -140,13 +140,13 @@ class BaseApiService {
   
   class UserService extends BaseApiService {
     constructor() {
-      super("user");
+      super("users");
     }
     
     async resetPassword(newPassword: string): Promise<User | null> {
       const form = new FormData()
-      form.append('password', newPassword)
-      return axios.patch<User>(super.getUrl(), form)
+      form.append('newPassword', newPassword)
+      return axios.patch<User>(super.getUrl()+"me", form, {headers: this.getAuthorizatioHeaders()})
         .then(response => response.data)
         .catch(err => {
           this.handleErrors(err);

@@ -1,6 +1,6 @@
-﻿using Microsoft.AspNetCore.Mvc;
+﻿using Microsoft.AspNetCore.Authorization;
+using Microsoft.AspNetCore.Mvc;
 using stockmarrdk_api.Common;
-using stockmarrdk_api.Dto;
 using stockmarrdk_api.Models;
 using stockmarrdk_api.Services;
 
@@ -18,6 +18,7 @@ namespace stockmarrdk_api.Controllers
         }
 
         [HttpGet()]
+        [Authorize("Users")]
         [ProducesResponseType(StatusCodes.Status200OK, Type = typeof(List<Trip>))]
         public IActionResult GetTrips()
         {
@@ -27,6 +28,7 @@ namespace stockmarrdk_api.Controllers
         }
 
         [HttpGet("{year}")]
+        [Authorize("Users")]
         [ProducesResponseType(StatusCodes.Status200OK, Type = typeof(Trip))]
         [ProducesResponseType(StatusCodes.Status404NotFound)]
         public IActionResult GetTrip(int year)
@@ -44,6 +46,7 @@ namespace stockmarrdk_api.Controllers
         }
 
         [HttpPost]
+        [Authorize("Admins")]
         [ProducesResponseType(StatusCodes.Status200OK, Type = typeof(Trip))]
         [ProducesResponseType(StatusCodes.Status409Conflict, Type = typeof(string))]
         [ProducesResponseType(StatusCodes.Status500InternalServerError, Type = typeof(string))]
@@ -66,6 +69,7 @@ namespace stockmarrdk_api.Controllers
         }
 
         [HttpPatch]
+        [Authorize("Admins")]
         [ProducesResponseType(StatusCodes.Status200OK, Type = typeof(Trip))]
         [ProducesResponseType(StatusCodes.Status404NotFound)]
         [ProducesResponseType(StatusCodes.Status500InternalServerError, Type = typeof(string))]
@@ -90,6 +94,7 @@ namespace stockmarrdk_api.Controllers
         }
 
         [HttpDelete("{year}")]
+        [Authorize("Admins")]
         [ProducesResponseType(StatusCodes.Status200OK, Type = typeof(Trip))]
         [ProducesResponseType(StatusCodes.Status204NoContent)]
         [ProducesResponseType(StatusCodes.Status500InternalServerError, Type = typeof(string))]

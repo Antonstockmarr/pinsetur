@@ -1,4 +1,5 @@
-﻿using Microsoft.AspNetCore.Mvc;
+﻿using Microsoft.AspNetCore.Authorization;
+using Microsoft.AspNetCore.Mvc;
 using stockmarrdk_api.Common;
 using stockmarrdk_api.Dto;
 using stockmarrdk_api.Models;
@@ -19,6 +20,7 @@ namespace stockmarrdk_api.Controllers
         }
 
         [HttpGet()]
+        [Authorize("Users")]
         [ProducesResponseType(StatusCodes.Status200OK, Type = typeof(List<ImageDto>))]
         public ActionResult GetImages([FromQuery] int? year)
         {
@@ -37,6 +39,7 @@ namespace stockmarrdk_api.Controllers
         }
 
         [HttpGet("{id}")]
+        [Authorize("Users")]
         [ProducesResponseType(StatusCodes.Status200OK, Type = typeof(ImageDto))]
         [ProducesResponseType(StatusCodes.Status404NotFound)]
         public IActionResult Get(int id)
@@ -54,9 +57,9 @@ namespace stockmarrdk_api.Controllers
         }
 
         [HttpGet("{id}/download")]
+        [Authorize("Users")]
         [ProducesResponseType(StatusCodes.Status404NotFound, Type = typeof(string))]
         [ProducesResponseType(StatusCodes.Status200OK)]
-
         public async Task<IActionResult> Download(int id)
         {
             ImageData? imageData = await _imageService.GetImageDataFromId(id);
@@ -74,6 +77,7 @@ namespace stockmarrdk_api.Controllers
         }
 
         [HttpPost]
+        [Authorize("Users")]
         [ProducesResponseType(StatusCodes.Status200OK, Type = typeof(ImageDto))]
         [ProducesResponseType(StatusCodes.Status409Conflict, Type = typeof(string))]
         [ProducesResponseType(StatusCodes.Status500InternalServerError, Type = typeof(string))]
@@ -95,6 +99,7 @@ namespace stockmarrdk_api.Controllers
         }
 
         [HttpDelete("{id}")]
+        [Authorize("Admins")]
         [ProducesResponseType(StatusCodes.Status200OK, Type = typeof(ImageDto))]
         [ProducesResponseType(StatusCodes.Status204NoContent)]
         [ProducesResponseType(StatusCodes.Status500InternalServerError, Type = typeof(string))]
