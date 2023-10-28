@@ -1,8 +1,9 @@
 import { Image } from "@/Models/Image";
 import { Trip } from "@/Models/Trip";
-import { User } from "@/Models/User";
 import axios from 'axios'
 import { store } from "@/store"
+import { Session } from "@/Models/Session";
+import { User } from "@/Models/User";
 
 class BaseApiService {
     baseUrl = "api";
@@ -14,8 +15,6 @@ class BaseApiService {
     }
   
     getUrl(id: string | number = "") {
-      console.log(store.state.auth.user?.jwt);
-      
       return `${this.baseUrl}/${this.resource}/${id}`;
     }
   
@@ -26,7 +25,7 @@ class BaseApiService {
 
     getAuthorizatioHeaders() {
       return  {
-        Authorization: "bearer " + store.state.auth.user?.jwt
+        Authorization: "bearer " + store.state.auth.session?.jwt
       }
     }
   }
@@ -126,17 +125,11 @@ class BaseApiService {
         super("login");
     }
 
-    async login() : Promise<User | null> {
-      return axios.post<User>(super.getUrl())
-        .then(response => response.data)
-        .catch(err => {
-          this.handleErrors(err);
-          return null;
-        })
-    }
-
-    async logout() : Promise<User | null> {
-      return axios.delete<User>(super.getUrl())
+    async login(userName: string, password: string) : Promise<Session | null> {
+      const form = new FormData()
+      form.append('userName', userName)
+      form.append('password', password)
+      return axios.post<Session>(super.getUrl(), form)
         .then(response => response.data)
         .catch(err => {
           this.handleErrors(err);
@@ -144,10 +137,28 @@ class BaseApiService {
         })
     }
   }
-
+  
+  class UserService extends BaseApiService {
+    constructor() {
+      super("user");
+    }
+    
+    async resetPassword(newPassword: string): Promise<User | null> {
+      const form = new FormData()
+      form.append('password', newPassword)
+      return axios.patch<User>(super.getUrl(), form)
+        .then(response => response.data)
+        .catch(err => {
+          this.handleErrors(err);
+          return null;
+        })
+    }
+  }
+    
   export const $api = {
     images: new ImagesApiService(),
     trips: new TripsApiService(),
     token: new TokenService(),
-    auth: new AuthService()
+    auth: new AuthService(),
+    user: new UserService()
   }

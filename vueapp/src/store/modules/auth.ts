@@ -1,26 +1,42 @@
+import { Session } from '@/Models/Session';
 import { User } from '@/Models/User';
 
 export type State = {
-    user: User | null
+    session: Session | null
     token: string | null
 }
 const state: State = {
-    user: { jwt: "", username: ""},
+    session: {
+        jwt: "",
+        user: {
+            userName: "",
+            name: "",
+            role: "",
+            resetPassword: true
+        }},
     token: null
 };
 const getters = {
-    isAuthenticated: (state: State) => !!state.user?.jwt,    
-    getUser: (state: State) => state.user,
+    isAuthenticated: (state: State) => !!state.session?.jwt,    
+    getSession: (state: State) => state.session,
 };
 const actions = {
 };
 const mutations = {
-    setUser(state: State, user: User){
-        state.user = user
+    setSession(state: State, session: Session){
+        state.session = session
     },
     LogOut(state: State){
-        state.user = null
+        state.session = null
     },
+    updateUser(state: State, user: User) {
+        if (!state.session) {
+            state.session = { jwt: "", user: user}
+        }
+        else {
+            state.session.user = user
+        }
+    }
 };
 export const store = {
   state,

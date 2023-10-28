@@ -3,7 +3,7 @@
     <div class="blank"></div>
     <div class="bar">
       <div class="title">Pinsetur</div>
-      <div class="logout" @click="logOut">Log ud</div>
+      <div class="logout" v-if="loggedIn" @click="logOut">Log ud</div>
     </div>
   </div>
 </template>
@@ -21,6 +21,11 @@ export default defineComponent({
   methods: {
     logOut() {
       location.href = `${this.baseUrl}/.auth/logout`;
+    }
+  },
+  computed: {
+    loggedIn() {
+      return this.$store.getters.isAuthenticated
     }
   }
 });

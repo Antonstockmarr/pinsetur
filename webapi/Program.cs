@@ -4,6 +4,7 @@ using stockmarrdk_api.Repository;
 using System.Reflection;
 using stockmarrdk_api.Common;
 using stockmarrdk_api.Services;
+using System.Text.Json.Serialization;
 
 StaticLogger.EnsureInitialized();
 Log.Information("Azure Storage API Booting Up...");
@@ -20,7 +21,10 @@ try
     });
     // Add services to the container.
 
-    builder.Services.AddControllers();
+    builder.Services.AddControllers()
+        .AddJsonOptions(options => {
+            options.JsonSerializerOptions.Converters.Add(new JsonStringEnumConverter());
+        });
     builder.Services.AddEndpointsApiExplorer();
     builder.Services.AddSwaggerGen();
 
@@ -50,6 +54,9 @@ try
     builder.Services.AddTransient<ITripRepository, TripRepository>();
     builder.Services.AddTransient<ITokenService, TokenService>();
     builder.Services.AddTransient<ITokenRepository, TokenRepository>();
+    builder.Services.AddTransient<ILoginService, LoginService>();
+    builder.Services.AddTransient<IUserService, UserService>();
+    builder.Services.AddTransient<IUserRepository, UserRepository>();
     Log.Information("Services has been successfully added...");
 
     var app = builder.Build();

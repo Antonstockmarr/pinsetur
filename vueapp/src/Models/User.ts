@@ -1,4 +1,6 @@
 export interface User {
-    username: string
-    jwt: string
+    userName: string
+    name: string
+    role: string
+    resetPassword: boolean
 }
