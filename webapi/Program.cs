@@ -10,6 +10,9 @@ using Microsoft.IdentityModel.Tokens;
 using System.Text;
 using System.Security.Claims;
 using Microsoft.AspNetCore.Authorization;
+using Microsoft.Extensions.Options;
+using stockmarrdk_api;
+using Swashbuckle.AspNetCore.SwaggerGen;
 
 StaticLogger.EnsureInitialized();
 Log.Information("Azure Storage API Booting Up...");
@@ -25,6 +28,7 @@ try
         .ReadFrom.Configuration(builder.Configuration);
     });
     
+    // Configure Authentication
     builder.Services.AddAuthentication(options =>
     {
         options.DefaultAuthenticateScheme = JwtBearerDefaults.AuthenticationScheme;
@@ -45,6 +49,7 @@ try
         };
     });
 
+    // Configure Authorization
     builder.Services.AddAuthorization(options =>
     {
         var adminPolicy = new AuthorizationPolicyBuilder()
@@ -61,12 +66,17 @@ try
     });
 
     builder.Services.AddControllers()
+        // Map enums to names in Swagger
         .AddJsonOptions(options => {
             options.JsonSerializerOptions.Converters.Add(new JsonStringEnumConverter());
         });
+
+    // Setup Swagger
     builder.Services.AddEndpointsApiExplorer();
     builder.Services.AddSwaggerGen();
+    builder.Services.AddTransient<IConfigureOptions<SwaggerGenOptions>, ConfigureSwaggerOptions>();
 
+    // Get secrets
     builder.Configuration.AddEnvironmentVariables()
         .AddUserSecrets(Assembly.GetExecutingAssembly(), true);
 
@@ -100,7 +110,7 @@ try
 
     var app = builder.Build();
 
-    // Temporarily enable swagger for production
+    // Enable swagger for production
     app.UseSwagger();
     app.UseSwaggerUI();
 
