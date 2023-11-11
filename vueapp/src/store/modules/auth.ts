@@ -26,8 +26,17 @@ const mutations = {
     setSession(state: State, session: Session){
         state.session = session
     },
-    LogOut(state: State){
-        state.session = null
+    logOut(state: State){
+        state.session = {
+            jwt: "",
+            user: {
+                userName: "",
+                name: "",
+                role: "",
+                resetPassword: true
+            }},
+        state.token = null
+    
     },
     updateUser(state: State, user: User) {
         if (!state.session) {

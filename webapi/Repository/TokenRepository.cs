@@ -33,7 +33,7 @@ namespace stockmarrdk_api.Repository
             {
                 Services = AccountSasServices.Blobs,
                 ResourceTypes = AccountSasResourceTypes.Object,
-                StartsOn = DateTimeOffset.UtcNow,
+                StartsOn = DateTimeOffset.UtcNow.AddHours(-1),
                 ExpiresOn = DateTimeOffset.UtcNow.AddDays(1),
                 Protocol = SasProtocol.Https
             };

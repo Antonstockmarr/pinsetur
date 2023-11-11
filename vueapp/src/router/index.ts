@@ -45,6 +45,11 @@ router.beforeEach(async (to) => {
   if (authRequired && !store.getters.isAuthenticated) {
       return { name: 'login'}
   }
+
+  // Redirect to main if already logged in
+  if (store.getters.isAuthenticated && to.path === '/login') {
+    return { name: 'home'}
+  }
 })
 
 export default router

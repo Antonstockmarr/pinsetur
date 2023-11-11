@@ -13,14 +13,10 @@ import { defineComponent } from 'vue'
 
 export default defineComponent({
   name: 'HeaderNavigation',
-  data() {
-    return {
-      baseUrl: window.location.origin
-    }
-  },
   methods: {
     logOut() {
-      location.href = `${this.baseUrl}/.auth/logout`;
+      this.$store.commit('logOut')
+      location.reload()
     }
   },
   computed: {

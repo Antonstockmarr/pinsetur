@@ -13,6 +13,7 @@ using Microsoft.AspNetCore.Authorization;
 using Microsoft.Extensions.Options;
 using stockmarrdk_api;
 using Swashbuckle.AspNetCore.SwaggerGen;
+using Microsoft.ApplicationInsights.Extensibility;
 
 StaticLogger.EnsureInitialized();
 Log.Information("Azure Storage API Booting Up...");
@@ -20,13 +21,6 @@ Log.Information("Azure Storage API Booting Up...");
 try
 {
     var builder = WebApplication.CreateBuilder(args);
-
-    // Add Serilog
-    builder.Host.UseSerilog((_, config) =>
-    {
-        config.WriteTo.Console()
-        .ReadFrom.Configuration(builder.Configuration);
-    });
     
     // Configure Authentication
     builder.Services.AddAuthentication(options =>
@@ -79,6 +73,20 @@ try
     // Get secrets
     builder.Configuration.AddEnvironmentVariables()
         .AddUserSecrets(Assembly.GetExecutingAssembly(), true);
+
+    // Add Serilog
+    builder.Host.UseSerilog((_, config) =>
+    {
+        if (builder.Configuration.GetConnectionString("AppInsights") is not null)
+        {
+            config.WriteTo.ApplicationInsights(new TelemetryConfiguration { ConnectionString = builder.Configuration.GetConnectionString("AppInsights") }, TelemetryConverter.Events);
+        }
+        else
+        {
+            config.WriteTo.Console();
+        }
+        config.ReadFrom.Configuration(builder.Configuration);
+    });
 
     // Add blob service
     builder.Services.AddAzureClients(clientBuilder =>
