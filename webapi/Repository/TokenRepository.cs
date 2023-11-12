@@ -26,7 +26,6 @@ namespace stockmarrdk_api.Repository
             }
         }
 
-
         public string GetToken()
         {
             AccountSasBuilder sasBuilder = new AccountSasBuilder()

@@ -1,7 +1,7 @@
 <template>
     <div class="card login" :class="{ error: errorMessage }">
         <h1>Sæt nyt kodeord</h1>
-        <form class="form-group" @submit="resetPassword">
+        <form class="form-group" @submit="changePassword">
             <input class="form-control" v-model="password1" type="password" placeholder="Kodeord" required>
             <input class="form-control" v-model="password2" type="password" placeholder="Gentag kodeord" required>
             <button class="btn btn-primary" type="submit">Bekræft kodeord</button>
@@ -17,7 +17,7 @@ import { $api } from '../common/apiService';
 import { store } from '@/store';
 
 export default defineComponent ({
-    name: "ResetPasswordCard",
+    name: "ChangePasswordCard",
     components: {
     },
     data () {
@@ -29,13 +29,13 @@ export default defineComponent ({
         }
     },
     methods: {
-        async resetPassword() {
+        async changePassword() {
             this.errorMessage = ""
             this.emptyFields = false
             if (!this.validatePassword()) {
                 return
             }
-            let user = await $api.user.resetPassword(this.password1)
+            let user = await $api.user.changePassword(this.password1)
             store.commit('updateUser', user)
             this.$emit('continue')
         },

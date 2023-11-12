@@ -4,8 +4,8 @@
         <div class="container">
             <div class="row">
                 <div class="col-lg-4 col-md-6 col-sm-8 mx-auto">
-                    <LoginCard v-if="loginState === 'login'" v-on:loggedIn="showResetPassword" />
-                    <ResetPasswordCard v-else v-on:continue="goToMain" />
+                    <LoginCard v-if="loginState === 'login'" v-on:loggedIn="afterLogin" />
+                    <ChangePasswordCard v-else v-on:continue="goToMain" />
                 </div>
             </div>
         </div>
@@ -16,25 +16,25 @@
 <script lang="ts">
 import { defineComponent } from 'vue';
 import LoginCard from '@/components/LoginCard.vue'
-import ResetPasswordCard from '@/components/ResetPasswordCard.vue'
+import ChangePasswordCard from '@/components/ChangePasswordCard.vue'
 
 
 export default defineComponent ({
     name: "LoginPage",
     components: {
         LoginCard,
-        ResetPasswordCard
+        ChangePasswordCard
     },
     data () {
         return {
-            loginState: "login" as "login" | "resetPassword"
+            loginState: "login" as "login" | "changePassword"
         }
     },
     methods: {
         afterLogin() {
             const user = this.$store.getters.getSession.user
-            if (user.resetPassword) {
-                this.showResetPassword()
+            if (user.resetPassword === true) {
+                this.showChangePassword()
             }
             else {
                 this.goToMain()
@@ -43,8 +43,8 @@ export default defineComponent ({
         goToMain() {
             this.$router.push('/')
         },
-        showResetPassword() {
-            this.loginState = "resetPassword"
+        showChangePassword() {
+            this.loginState = "changePassword"
         }
     }
 });

@@ -14,9 +14,11 @@ import { defineComponent } from 'vue'
 export default defineComponent({
   name: 'HeaderNavigation',
   methods: {
-    logOut() {
-      this.$store.commit('logOut')
-      location.reload()
+    async logOut() {
+      await this.$store.dispatch('logOut')
+        .then(() => {
+          location.reload()
+        })
     }
   },
   computed: {

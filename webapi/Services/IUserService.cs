@@ -7,5 +7,6 @@ namespace stockmarrdk_api.Services
         string? CreateUser(NewUserDto newUser);
 
         UserDto? UpdatePassword(string userName, string newPassword);
+        UserDto? UpdateUser(UserDto user);
     }
 }

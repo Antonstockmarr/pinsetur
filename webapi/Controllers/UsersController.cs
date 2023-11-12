@@ -43,6 +43,23 @@ namespace stockmarrdk_api.Controllers
             }
         }
 
+        [HttpPatch()]
+        [Authorize("Admins")]
+        [ProducesResponseType(StatusCodes.Status200OK, Type = typeof(string))]
+        [ProducesResponseType(StatusCodes.Status400BadRequest)]
+        public ActionResult UpdateUser([FromForm] UserDto user)
+        {
+            UserDto? newUser = _userService.UpdateUser(user);
+            if (newUser is not null)
+            {
+                return StatusCode(StatusCodes.Status200OK, newUser);
+            }
+            else
+            {
+                return StatusCode(StatusCodes.Status400BadRequest);
+            }
+        }
+
         [HttpPatch("me")]
         [Authorize("Users")]
         [ProducesResponseType(StatusCodes.Status200OK, Type = typeof(UserDto))]

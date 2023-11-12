@@ -143,7 +143,7 @@ class BaseApiService {
       super("users");
     }
     
-    async resetPassword(newPassword: string): Promise<User | null> {
+    async changePassword(newPassword: string): Promise<User | null> {
       const form = new FormData()
       form.append('newPassword', newPassword)
       return axios.patch<User>(super.getUrl()+"me", form, {headers: this.getAuthorizatioHeaders()})

@@ -40,8 +40,10 @@ export default defineComponent ({
                 return
             }
 
-            this.$store.commit('setSession', session)
-            this.$emit('loggedIn')
+            await this.$store.dispatch('setSession', session)
+                .then(() => {
+                    this.$emit('loggedIn')
+                })
         },
         validateLogin() {
             if (this.username === "" || this.password === "") {

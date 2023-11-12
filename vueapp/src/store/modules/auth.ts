@@ -21,6 +21,12 @@ const getters = {
     getSession: (state: State) => state.session,
 };
 const actions = {
+    logOut({ commit }: {commit: Function}) {
+        commit('logOut')
+    },
+    setSession({ commit }: {commit: Function}, session: Session) {
+        commit('setSession', session)
+    }
 };
 const mutations = {
     setSession(state: State, session: Session){
