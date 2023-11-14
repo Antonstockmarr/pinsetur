@@ -2,6 +2,7 @@ import { createRouter, createWebHashHistory} from "vue-router";
 import HomePage from "@/pages/HomePage.vue"
 import TripPage from "@/pages/TripPage.vue"
 import LoginPage from "@/pages/LoginPage.vue"
+import AdminPage from "@/pages/AdminPage.vue"
 
 import { store } from '@/store'
 
@@ -26,6 +27,14 @@ const routes = [
       path: '/login',
       name: 'login',
       component: LoginPage,
+      meta: {
+        title: "Pinsetur"
+      }
+    },
+    {
+      path: '/admin',
+      name: 'admin',
+      component: AdminPage,
       meta: {
         title: "Pinsetur"
       }

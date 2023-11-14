@@ -15,7 +15,12 @@ namespace stockmarrdk_api.Services
         public UserService(IUserRepository userRepository)
         {
             _userRepository = userRepository;
-    }
+        }
+
+        public List<UserDto> ListUsers()
+        {
+            return _userRepository.GetAllUsers().Select(user => user.ToUserDto()).ToList();
+        }
 
         public string CreateUser(NewUserDto newUserDto)
         {
@@ -36,6 +41,7 @@ namespace stockmarrdk_api.Services
             _userRepository.CreateUser(newUser);
             return initialPassword;
         }
+
         public UserDto? UpdateUser(UserDto userDto)
         {
             User? user = _userRepository.GetUserFromUserName(userDto.UserName);
@@ -43,9 +49,25 @@ namespace stockmarrdk_api.Services
             {
                 user.Name = userDto.Name;
                 user.Role = userDto.Role;
-                user.ResetPassword = userDto.ResetPassword;
                 _userRepository.UpdateUser(user);
                 return user.ToUserDto();
+            }
+            else
+            {
+                return null;
+            }
+        }
+
+        public string? ResetPassword(string userName)
+        {
+            User? user = _userRepository.GetUserFromUserName(userName);
+            if (user is not null)
+            {
+                user.ResetPassword = true;
+                var temporaryPassword = RandomString(6);
+                user = SetHashes(user, temporaryPassword);
+                _userRepository.UpdateUser(user);
+                return temporaryPassword;
             }
             else
             {
@@ -84,6 +106,5 @@ namespace stockmarrdk_api.Services
             return new string(Enumerable.Repeat(chars, length)
                 .Select(s => s[random.Next(s.Length)]).ToArray());
         }
-
     }
 }

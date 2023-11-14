@@ -2,8 +2,9 @@
   <div class="header">
     <div class="blank"></div>
     <div class="bar">
-      <div class="title">Pinsetur</div>
-      <div class="logout" v-if="loggedIn" @click="logOut">Log ud</div>
+      <div class="navigation-button title" @click="goToMainPage">Pinsetur</div>
+      <div class="navigation-button admin" v-if="adminAccess" @click="goToAdminPage">Admin</div>
+      <div class="navigation-button logout" v-if="loggedIn" @click="logOut">Log ud</div>
     </div>
   </div>
 </template>
@@ -16,14 +17,20 @@ export default defineComponent({
   methods: {
     async logOut() {
       await this.$store.dispatch('logOut')
-        .then(() => {
-          location.reload()
-        })
+    },
+    goToMainPage() {
+      this.$router.push("/")
+    },
+    goToAdminPage() {
+      this.$router.push("/admin")
     }
   },
   computed: {
     loggedIn() {
       return this.$store.getters.isAuthenticated
+    },
+    adminAccess() {
+      return this.$store.getters.isAdmin
     }
   }
 });
@@ -46,17 +53,7 @@ export default defineComponent({
   z-index: 10;
 }
 
-.title {
-  float: left;
-  padding: 0 20px;
-  font-size: 32px;
-  text-transform: uppercase;
-  line-height: 100px;
-  color: var(--col2);
-}
-
-.logout {
-  float: right;
+.navigation-button {
   padding: 0 20px;
   font-size: 20px;
   text-transform: uppercase;
@@ -64,10 +61,22 @@ export default defineComponent({
   color: var(--col2);
 }
 
-.logout:hover {
+.navigation-button:hover {
   cursor: pointer;
   color: var(--col5);
 }
 
+.title {
+  float: left;
+  font-size: 32px;
+}
+
+.logout {
+  float: right;
+}
+
+.admin {
+  float: left;
+}
 </style>
   

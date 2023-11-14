@@ -35,7 +35,7 @@ export default defineComponent ({
             if (!this.validatePassword()) {
                 return
             }
-            let user = await $api.user.changePassword(this.password1)
+            let user = await $api.users.changePassword(this.password1)
             store.commit('updateUser', user)
             this.$emit('continue')
         },

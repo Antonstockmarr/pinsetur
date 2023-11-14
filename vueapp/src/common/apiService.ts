@@ -142,7 +142,27 @@ class BaseApiService {
     constructor() {
       super("users");
     }
-    
+
+    async fetch() : Promise<User[] | null> {
+      return axios.get<User[]>(super.getUrl(), {headers: this.getAuthorizatioHeaders()})
+        .then(response => response.data)
+        .catch(err => {
+          this.handleErrors(err);
+          return null;
+        })
+    }
+
+    async resetPassword(userName: string): Promise<string | null> {
+      const form = new FormData()
+      form.append('userName', userName)
+      return axios.post<string>(super.getUrl()+"reset-password", form, {headers: this.getAuthorizatioHeaders()})
+        .then(response => response.data)
+        .catch(err => {
+          this.handleErrors(err);
+          return null;
+        })
+    }
+
     async changePassword(newPassword: string): Promise<User | null> {
       const form = new FormData()
       form.append('newPassword', newPassword)
@@ -160,5 +180,5 @@ class BaseApiService {
     trips: new TripsApiService(),
     token: new TokenService(),
     auth: new AuthService(),
-    user: new UserService()
+    users: new UserService()
   }

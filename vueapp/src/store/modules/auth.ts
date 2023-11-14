@@ -17,7 +17,8 @@ const state: State = {
     token: null
 };
 const getters = {
-    isAuthenticated: (state: State) => !!state.session?.jwt,    
+    isAuthenticated: (state: State) => !!state.session?.jwt,
+    isAdmin: (state: State) => state.session?.user.role === "Admin",    
     getSession: (state: State) => state.session,
 };
 const actions = {

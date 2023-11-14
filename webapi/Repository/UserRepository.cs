@@ -14,6 +14,11 @@ namespace stockmarrdk_api.Repository
             _userTableClient = tableServiceClient.GetTableClient(storageTableName);
         }
 
+        public List<User> GetAllUsers()
+        {
+            return _userTableClient.Query<UserEntity>().Select(userEntity => userEntity.ToUser()).OrderByDescending(user => user.UserName).ToList();
+        }
+
         public User? GetUserFromUserName(string userName)
         {
             UserEntity? userEntity = _userTableClient.Query<UserEntity>(userEntity => userEntity.PartitionKey == "User" && userEntity.RowKey == userName).SingleOrDefault();

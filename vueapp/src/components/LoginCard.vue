@@ -1,7 +1,7 @@
 <template>
     <div class="card login" :class="{ error: errorMessage }">
         <h1>Log ind</h1>
-        <form class="form-group" @submit="logIn">
+        <form class="form-group" @submit.prevent="logIn">
             <input class="form-control" v-model="username" type="text" placeholder="Brugernavn" required>
             <input class="form-control" v-model="password" type="password" placeholder="Kodeord" required>
             <button class="btn btn-primary" type="submit">Log ind</button>
@@ -39,11 +39,8 @@ export default defineComponent ({
                 this.errorMessage = "Log ind fejlede. Prøv igen."
                 return
             }
-
             await this.$store.dispatch('setSession', session)
-                .then(() => {
-                    this.$emit('loggedIn')
-                })
+            this.$emit('loggedIn')
         },
         validateLogin() {
             if (this.username === "" || this.password === "") {

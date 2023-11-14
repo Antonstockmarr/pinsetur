@@ -18,6 +18,15 @@ namespace stockmarrdk_api.Controllers
             _userService = userService;
         }
 
+        [HttpGet]
+        [Authorize("Admins")]
+        [ProducesResponseType(StatusCodes.Status200OK, Type = typeof(List<UserDto>))]
+        public ActionResult ListUsers()
+        {
+            return StatusCode(StatusCodes.Status200OK, _userService.ListUsers());
+        }
+
+
         [HttpPost()]
         [Authorize("Admins")]
         [ProducesResponseType(StatusCodes.Status200OK, Type = typeof(string))]
@@ -45,7 +54,7 @@ namespace stockmarrdk_api.Controllers
 
         [HttpPatch()]
         [Authorize("Admins")]
-        [ProducesResponseType(StatusCodes.Status200OK, Type = typeof(string))]
+        [ProducesResponseType(StatusCodes.Status200OK, Type = typeof(UserDto))]
         [ProducesResponseType(StatusCodes.Status400BadRequest)]
         public ActionResult UpdateUser([FromForm] UserDto user)
         {
@@ -53,6 +62,23 @@ namespace stockmarrdk_api.Controllers
             if (newUser is not null)
             {
                 return StatusCode(StatusCodes.Status200OK, newUser);
+            }
+            else
+            {
+                return StatusCode(StatusCodes.Status400BadRequest);
+            }
+        }
+
+        [HttpPost("reset-password")]
+        [Authorize("Admins")]
+        [ProducesResponseType(StatusCodes.Status200OK, Type = typeof(string))]
+        [ProducesResponseType(StatusCodes.Status400BadRequest)]
+        public ActionResult ResetPassword([FromForm] string userName)
+        {
+            string? temporaryPassword = _userService.ResetPassword(userName);
+            if (temporaryPassword is not null)
+            {
+                return StatusCode(StatusCodes.Status200OK, temporaryPassword);
             }
             else
             {
