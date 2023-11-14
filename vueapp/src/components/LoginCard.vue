@@ -55,6 +55,12 @@ export default defineComponent ({
 </script>
 
 <style scoped>
+
+h1 {
+    font-size: 36px;
+    margin-bottom: 0.5rem;
+}
+
 p {
     margin-top: 10px;
     line-height: 1rem;

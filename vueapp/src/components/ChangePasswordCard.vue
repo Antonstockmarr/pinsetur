@@ -6,7 +6,6 @@
             <input class="form-control" v-model="password2" type="password" placeholder="Gentag kodeord" required>
             <button class="btn btn-primary" type="submit">Bekræft kodeord</button>
             <p class="error-message" v-if="errorMessage"> {{ errorMessage }}</p>
-            <p>Glemt koden? Kontakt en administrater af siden.</p>
         </form>
     </div>
 </template>
@@ -36,7 +35,7 @@ export default defineComponent ({
                 return
             }
             let user = await $api.users.changePassword(this.password1)
-            store.commit('updateUser', user)
+            await store.dispatch('updateUser', user)
             this.$emit('continue')
         },
         validatePassword() {
@@ -52,6 +51,11 @@ export default defineComponent ({
 </script>
 
 <style scoped>
+h1 {
+    font-size: 36px;
+    margin-bottom: 0.5rem;
+}
+
 p {
     margin-top: 10px;
     line-height: 1rem;

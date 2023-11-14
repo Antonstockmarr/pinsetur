@@ -27,9 +27,7 @@ export default defineComponent({
 });
 </script>
 
-<style>
-@import "reset.css";
-
+<style scoped>
 .wrapper {
   max-width: 1500px;
   margin: 0 auto;

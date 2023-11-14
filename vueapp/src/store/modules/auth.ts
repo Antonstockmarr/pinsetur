@@ -27,6 +27,9 @@ const actions = {
     },
     setSession({ commit }: {commit: Function}, session: Session) {
         commit('setSession', session)
+    },
+    updateUser({ commit }: {commit: Function}, user: User) {
+        commit('updateUser', user)
     }
 };
 const mutations = {

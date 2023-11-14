@@ -51,7 +51,7 @@ export default defineComponent ({
 
 </script>
 
-<style>
+<style scoped>
 .login-page {
    align-items: center;
    display: flex;
@@ -73,10 +73,6 @@ export default defineComponent ({
    .fade-enter,
    .fade-leave-to {
       opacity: 0;
-   }
-
-   h1 {
-      margin-bottom: 1.5rem;
    }
 }
 </style>
