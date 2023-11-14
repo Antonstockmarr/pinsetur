@@ -17,6 +17,7 @@ export default defineComponent({
   methods: {
     async logOut() {
       await this.$store.dispatch('logOut')
+      location.reload()
     },
     goToMainPage() {
       this.$router.push("/")
