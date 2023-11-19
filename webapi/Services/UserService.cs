@@ -19,7 +19,7 @@ namespace stockmarrdk_api.Services
 
         public List<UserDto> ListUsers()
         {
-            return _userRepository.GetAllUsers().Select(user => user.ToUserDto()).ToList();
+            return _userRepository.GetAllUsers().Select(user => user.ToUserDto()).OrderBy(user => user.UserName).ToList();
         }
 
         public string CreateUser(NewUserDto newUserDto)

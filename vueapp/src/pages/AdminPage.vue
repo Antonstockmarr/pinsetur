@@ -11,15 +11,7 @@
         <b-card no-body>
             <b-tabs card>
                 <b-tab title="Brugere">
-                    <div class="tab-content">
-                        <b-table striped hover :items="users" :fields="userFields">
-                            <template #cell(actions)="row">
-                                <b-button size="sm" @click="resetPassword(row)" class="mr-2">
-                                    Nulstil kodeord
-                                </b-button>
-                            </template>
-                        </b-table>
-                    </div>
+                    <user-table :users="users" v-model:loading-users="loadingUsers" v-on:refresh="fetchUsers" />
                 </b-tab>
                 <b-tab title="Ture"></b-tab>
             </b-tabs>
@@ -32,62 +24,27 @@
 import { User } from '@/Models/User';
 import { defineComponent } from 'vue';
 import { $api } from '@/common/apiService'
-import { TableItem } from 'bootstrap-vue-next';
-import { TableFieldObject } from 'bootstrap-vue-next/dist/src/types';
-
-type RowType = {
-    value: unknown;
-    index: number;
-    item: TableItem;
-    field: TableFieldObject<Record<string, unknown>>;
-    items: TableItem[];
-    toggleDetails: () => void;
-    detailsShowing: boolean | undefined;
-}
+import UserTable from '@/components/Admin/UserTable.vue';
 
 export default defineComponent ({
     name: "AdminPage",
     components: {
-    },
+    UserTable
+},
     data() {
         return {
             users: [] as User[],
-            userFields: [
-                {
-                    key: 'userName',
-                    label: 'Brugernavn'
-                },
-                {
-                    key: 'name',
-                    label: 'Navn'
-                },
-                {
-                    key: 'role',
-                    label: 'Rolle'
-                },
-                {
-                    key: 'resetPassword',
-                    label: 'Anmod om nyt kodeord'
-                },
-                {
-                    key: 'actions',
-                    label: 'Handlinger'
-                }
-            ]
+            loadingUsers: false
         }
     },
     methods: {
-        async resetPassword(row: RowType) {
-            let user = row.item as unknown as User
-            const newPassword = await $api.users.resetPassword(user.userName)
-            console.log(newPassword)
-            await this.fetchUsers()
-        },
         async fetchUsers() {
+            this.loadingUsers = true
             const users = await $api.users.fetch()
             if (users) {
                 this.users = users
             }
+            this.loadingUsers = false
         }
     },
     async mounted() {
@@ -97,7 +54,7 @@ export default defineComponent ({
 
 </script>
 
-<style>
+<style scoped>
 .back-button {
     float: left;
     height: 65px;

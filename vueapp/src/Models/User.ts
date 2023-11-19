@@ -1,6 +1,6 @@
 export interface User {
     userName: string
     name: string
-    role: string
+    role: "Admin" | "User"
     resetPassword: boolean
 }

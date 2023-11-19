@@ -173,6 +173,20 @@ class BaseApiService {
           return null;
         })
     }
+
+    async updateUser(user: User): Promise<User | null> {
+      const form = new FormData()
+      Object.entries(user).forEach(([key, value]) => {
+        form.append(key, value);
+      });
+      
+      return axios.patch<User>(super.getUrl(), form, {headers: this.getAuthorizatioHeaders()})
+        .then(response => response.data)
+        .catch(err => {
+          this.handleErrors(err);
+          return null;
+        })
+    }
   }
     
   export const $api = {

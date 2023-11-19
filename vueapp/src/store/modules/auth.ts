@@ -1,5 +1,6 @@
 import { Session } from '@/Models/Session';
 import { User } from '@/Models/User';
+import { emptyUser } from '@/common/utils';
 
 export type State = {
     session: Session | null
@@ -8,12 +9,7 @@ export type State = {
 const state: State = {
     session: {
         jwt: "",
-        user: {
-            userName: "",
-            name: "",
-            role: "",
-            resetPassword: true
-        }},
+        user: emptyUser()},
     token: null
 };
 const getters = {
@@ -39,12 +35,7 @@ const mutations = {
     logOut(state: State){
         state.session = {
             jwt: "",
-            user: {
-                userName: "",
-                name: "",
-                role: "",
-                resetPassword: true
-            }},
+            user: emptyUser()},
         state.token = null
     
     },
