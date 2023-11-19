@@ -50,7 +50,7 @@
 import { User } from '@/Models/User';
 import { PropType, defineComponent } from 'vue';
 import { $api } from '@/common/apiService'
-import type { RowType } from '@/common/types.ts'
+import type { RowType } from '@/common/types'
 import { TableItem } from 'bootstrap-vue-next';
 import EditUserForm from './EditUserForm.vue';
 import { emptyUser } from '@/common/utils';
@@ -133,12 +133,10 @@ export default defineComponent ({
         },
         async deleteUser(row: RowType) {
             this.error = "Denne funktion virker ikke endnu"
+            console.log(row)
         },
         async createUser() {
             this.error = "Denne funktion virker ikke endnu"
-        },
-        refresh() {
-
         }
     },
 });
