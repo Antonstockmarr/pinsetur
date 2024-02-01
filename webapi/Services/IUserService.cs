@@ -9,5 +9,6 @@ namespace stockmarrdk_api.Services
         string? ResetPassword(string userName);
         UserDto? UpdatePassword(string userName, string newPassword);
         UserDto? UpdateUser(UserDto user);
+        UserDto? DeleteUser(UserDto user);
     }
 }

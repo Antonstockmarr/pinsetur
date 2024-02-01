@@ -58,6 +58,16 @@ namespace stockmarrdk_api.Services
             }
         }
 
+        public UserDto? DeleteUser(UserDto user)
+        {
+            User? deletedUser = _userRepository.DeleteUser(user.UserName);
+            if (deletedUser is not null)
+            {
+                return deletedUser.ToUserDto();
+            }
+            else return null;
+        }
+
         public string? ResetPassword(string userName)
         {
             User? user = _userRepository.GetUserFromUserName(userName);
@@ -106,5 +116,6 @@ namespace stockmarrdk_api.Services
             return new string(Enumerable.Repeat(chars, length)
                 .Select(s => s[random.Next(s.Length)]).ToArray());
         }
+
     }
 }

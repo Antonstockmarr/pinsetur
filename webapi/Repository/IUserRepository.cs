@@ -1,4 +1,5 @@
-﻿using stockmarrdk_api.Models;
+﻿using stockmarrdk_api.Dto;
+using stockmarrdk_api.Models;
 
 namespace stockmarrdk_api.Repository
 {
@@ -13,5 +14,7 @@ namespace stockmarrdk_api.Repository
         bool UserNameExists(string userName);
 
         void UpdateUser(User user);
+
+        User? DeleteUser(string userName);
     }
 }

@@ -69,6 +69,23 @@ namespace stockmarrdk_api.Controllers
             }
         }
 
+        [HttpDelete()]
+        [Authorize("Admins")]
+        [ProducesResponseType(StatusCodes.Status200OK, Type = typeof(UserDto))]
+        [ProducesResponseType(StatusCodes.Status404NotFound)]
+        public ActionResult DeleteUser([FromForm] UserDto user)
+        {
+            UserDto? deletedUser = _userService.DeleteUser(user);
+            if (deletedUser is not null)
+            {
+                return StatusCode(StatusCodes.Status200OK, deletedUser);
+            }
+            else
+            {
+                return StatusCode(StatusCodes.Status404NotFound);
+            }
+        }
+
         [HttpPost("reset-password")]
         [Authorize("Admins")]
         [ProducesResponseType(StatusCodes.Status200OK, Type = typeof(string))]

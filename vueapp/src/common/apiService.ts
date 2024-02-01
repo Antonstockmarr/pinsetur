@@ -187,6 +187,34 @@ class BaseApiService {
           return null;
         })
     }
+
+    async createUser(user: User): Promise<string | null> {
+      const form = new FormData()
+      Object.entries(user).forEach(([key, value]) => {
+        form.append(key, value);
+      });
+      
+      return axios.post<string>(super.getUrl(), form, {headers: this.getAuthorizatioHeaders()})
+        .then(response => response.data)
+        .catch(err => {
+          this.handleErrors(err);
+          return null;
+        })
+    }
+
+    async deleteUser(user: User): Promise<User | null> {
+      const form = new FormData()
+      Object.entries(user).forEach(([key, value]) => {
+        form.append(key, value);
+      });
+      
+      return axios.delete<User>(super.getUrl(), {headers: this.getAuthorizatioHeaders(), data: form})
+        .then(response => response.data)
+        .catch(err => {
+          this.handleErrors(err);
+          return null;
+        })
+    }
   }
     
   export const $api = {

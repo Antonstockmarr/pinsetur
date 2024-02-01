@@ -44,5 +44,12 @@ namespace stockmarrdk_api.Repository
         {
             _userTableClient.UpdateEntity(entity: new UserEntity(user), ifMatch: Azure.ETag.All, mode: TableUpdateMode.Replace);
         }
+
+        public User? DeleteUser(string userName)
+        {
+            User? user = GetUserFromUserName(userName);
+            _userTableClient.DeleteEntity(partitionKey: "User", rowKey: userName);
+            return user;
+        }
     }
 }

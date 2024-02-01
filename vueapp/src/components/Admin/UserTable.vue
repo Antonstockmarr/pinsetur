@@ -21,7 +21,7 @@
                 <b-button size="sm" @click="resetPassword(row)" class="m-2">
                     Nulstil kodeord
                 </b-button>
-                <b-button variant="danger" size="sm" @click="deleteUser(row)" class="m-2">
+                <b-button variant="danger" size="sm" @click="confirmDeleteUser(row)" class="m-2">
                     X
                 </b-button>
             </template>
@@ -41,6 +41,16 @@
             :user="changedUser"
             v-on:submitted="$emit('refresh')"
         />
+        <create-user-form
+            v-model:show-form="showCreateUserForm"
+            v-on:submitted="$emit('refresh')"
+        />
+        <confirm-modal
+            v-model:show-modal="showConfirmDeleteModal"
+            :title="'Slet bruger' + userToBeDeleted.name"
+            :description="`Er du sikker på at du vil slette ${userToBeDeleted.name}`"
+            v-on:confirmed="deleteUser"
+        />
         <p class="error-text" v-if="error"> {{ error }}</p>
     </div>
 </template>
@@ -53,13 +63,17 @@ import { $api } from '@/common/apiService'
 import type { RowType } from '@/common/types'
 import { TableItem } from 'bootstrap-vue-next';
 import EditUserForm from './EditUserForm.vue';
+import CreateUserForm from './CreateUserForm.vue';
 import { emptyUser } from '@/common/utils';
+import ConfirmModal from '../ConfirmModal.vue';
 
 export default defineComponent ({
     name: "UserTable",
     components: {
-    EditUserForm
-},
+        EditUserForm,
+        CreateUserForm,
+        ConfirmModal
+    },
     props: {
         users: {
             type: Object as PropType<TableItem[]>,
@@ -86,7 +100,10 @@ export default defineComponent ({
             showNewPasswordModal: false,
             newPassword: "",
             showEditUserForm: false,
+            showCreateUserForm: false,
+            showConfirmDeleteModal: false,
             changedUser: emptyUser() as User,
+            userToBeDeleted: emptyUser() as User,
             userFields: [
                 {
                     key: 'userName',
@@ -119,24 +136,38 @@ export default defineComponent ({
             const response = await $api.users.resetPassword(this.changedUser.userName)
             if (response === null) {
                 this.error = "Der skete en fejl på serveren. Prøv igen."
+                this.loading = false
             }
             else {
                 this.newPassword = response
                 this.$emit('refresh')
                 this.showNewPasswordModal = true
             }
-            this.loading = false
         },
         editUser(row: RowType) {
+            this.error = ""
             this.changedUser = row.item as unknown as User
             this.showEditUserForm = true
         },
-        async deleteUser(row: RowType) {
-            this.error = "Denne funktion virker ikke endnu"
-            console.log(row)
+        confirmDeleteUser(row: RowType) {
+            this.userToBeDeleted = row.item as unknown as User
+            this.showConfirmDeleteModal = true
         },
-        async createUser() {
-            this.error = "Denne funktion virker ikke endnu"
+        async deleteUser() {
+            this.error = ""
+            this.loading = true
+            const response = await $api.users.deleteUser(this.userToBeDeleted)
+            if (response === null) {
+                this.error = "Der skete en fejl på serveren. Prøv igen."
+                this.loading = false
+            }
+            else {
+                this.$emit('refresh')
+            }
+        },
+        createUser() {
+            this.error = ""
+            this.showCreateUserForm = true
         }
     },
 });
