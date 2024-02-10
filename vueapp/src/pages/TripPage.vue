@@ -56,11 +56,10 @@
     />
 
     <ImageCarousel
-        v-if="gallery && token"
+        v-if="gallery"
         v-model:show="showImageCarousel"
         v-model:selectedIndex="selectedImage"
         :images="gallery"
-        :token="token"
     />
     
 </template>
@@ -110,7 +109,7 @@ export default defineComponent ({
         this.loading = true
         this.coverUri = require('@/assets/Loading_icon.gif')
         this.locationImageUri = require('@/assets/Loading_icon.gif')
-        this.token = await $api.token.get();
+        this.token = this.$store.getters.getSasToken
         this.trip = await $api.trips.get(Number.parseInt(this.id));
 
         if (this.trip?.coverImageId) {

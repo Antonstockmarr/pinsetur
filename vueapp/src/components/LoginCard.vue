@@ -40,6 +40,10 @@ export default defineComponent ({
                 return
             }
             await this.$store.dispatch('setSession', session)
+            const token = await $api.token.get()
+            if (token) {
+                await this.$store.dispatch('setSasToken', token)
+            }
             this.$emit('loggedIn')
         },
         validateLogin() {

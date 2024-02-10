@@ -32,18 +32,16 @@ export default defineComponent({
     cardStyle: {
       type: String,
       required: false
-    },
-    token: {
-      type: String,
-      required: true
     }
   },
   data() {
     return {
-        image: undefined as string | undefined
+        image: undefined as string | undefined,
+        token: ""
     }
   },
-  async mounted() { 
+  async mounted() {
+    this.token = this.$store.getters.getSasToken
     this.image = require('@/assets/Loading_icon.gif')
     if (this.trip.coverImageId != null) {
       const coverImage = await $api.images.get(this.trip.coverImageId)

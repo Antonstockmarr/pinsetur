@@ -46,10 +46,6 @@ export default defineComponent ({
         show: {
             type: Boolean,
             required: true
-        },
-        token: {
-            type: String,
-            required: true
         }
     },
     emits: ['update:show', 'update:selectedImage'],
@@ -73,8 +69,11 @@ export default defineComponent ({
     },
     data() {
         return {
-            
+            token: ""
         }
+    },
+    mounted() {
+        this.token = this.$store.getters.getSasToken
     },
     methods: {
     }

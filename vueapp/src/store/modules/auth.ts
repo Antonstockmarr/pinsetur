@@ -4,18 +4,19 @@ import { emptyUser } from '@/common/utils';
 
 export type State = {
     session: Session | null
-    token: string | null
+    sasToken: string | null
 }
 const state: State = {
     session: {
         jwt: "",
         user: emptyUser()},
-    token: null
+    sasToken: null
 };
 const getters = {
     isAuthenticated: (state: State) => !!state.session?.jwt,
     isAdmin: (state: State) => state.session?.user.role === "Admin",    
     getSession: (state: State) => state.session,
+    getSasToken: (state: State) => state.sasToken
 };
 const actions = {
     logOut({ commit }: {commit: Function}) {
@@ -23,6 +24,9 @@ const actions = {
     },
     setSession({ commit }: {commit: Function}, session: Session) {
         commit('setSession', session)
+    },
+    setSasToken({ commit }: {commit: Function}, sasToken: string) {
+        commit('setSasToken', sasToken)
     },
     updateUser({ commit }: {commit: Function}, user: User) {
         commit('updateUser', user)
@@ -32,11 +36,14 @@ const mutations = {
     setSession(state: State, session: Session){
         state.session = session
     },
+    setSasToken(state: State, sasToken: string) {
+        state.sasToken = sasToken
+    },
     logOut(state: State){
         state.session = {
             jwt: "",
             user: emptyUser()},
-        state.token = null
+        state.sasToken = null
     
     },
     updateUser(state: State, user: User) {

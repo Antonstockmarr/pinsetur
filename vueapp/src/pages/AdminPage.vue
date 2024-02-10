@@ -13,7 +13,12 @@
                 <b-tab title="Brugere">
                     <user-table :users="users" v-model:loading-users="loadingUsers" v-on:refresh="fetchUsers" />
                 </b-tab>
-                <b-tab title="Ture"></b-tab>
+                <b-tab title="Ture">
+                    <trip-table :trips="trips" v-model:loading-trips="loadingTrips" v-on:refresh="fetchTrips" />
+                </b-tab>
+                <b-tab title="Billeder">
+                    <image-table :images="images" v-model:loading-images="loadingImages" v-on:refresh="fetchImages" />
+                </b-tab>
             </b-tabs>
         </b-card>
     </div>
@@ -25,16 +30,26 @@ import { User } from '@/Models/User';
 import { defineComponent } from 'vue';
 import { $api } from '@/common/apiService'
 import UserTable from '@/components/Admin/UserTable.vue';
+import TripTable from '@/components/Admin/TripTable.vue';
+import { Trip } from '@/Models/Trip';
+import ImageTable from '@/components/Admin/ImageTable.vue';
+import { Image } from '@/Models/Image';
 
 export default defineComponent ({
     name: "AdminPage",
     components: {
-    UserTable
+    UserTable,
+    TripTable,
+    ImageTable
 },
     data() {
         return {
             users: [] as User[],
-            loadingUsers: false
+            loadingUsers: false,
+            trips: [] as Trip[],
+            loadingTrips: false,
+            images: [] as Image[],
+            loadingImages: false
         }
     },
     methods: {
@@ -45,10 +60,28 @@ export default defineComponent ({
                 this.users = users
             }
             this.loadingUsers = false
+        },
+        async fetchTrips() {
+            this.loadingTrips = true
+            const trips = await $api.trips.fetch()
+            if (trips) {
+                this.trips = trips
+            }
+            this.loadingTrips = false
+        },
+        async fetchImages() {
+            this.loadingImages = true
+            const images = await $api.images.fetch()
+            if (images) {
+                this.images = images
+            }
+            this.loadingImages = false
         }
     },
     async mounted() {
-        await this.fetchUsers();
+        await this.fetchUsers()
+        await this.fetchTrips()
+        await this.fetchImages()
     }
 });
 

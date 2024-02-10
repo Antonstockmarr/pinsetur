@@ -4,6 +4,20 @@ import axios from 'axios'
 import { store } from "@/store"
 import { Session } from "@/Models/Session";
 import { User } from "@/Models/User";
+import { NewTrip } from "@/Models/NewTrip";
+
+function formFromObject(object: Object) {
+  const form = new FormData()
+  Object.entries(object).forEach(([key, value]) => {
+    if (value != null && value != undefined) {
+      form.append(key, value)
+    }
+    else {
+      form.append(key, "")
+    }
+  })
+  return form
+}
 
 class BaseApiService {
     baseUrl = "api";
@@ -59,6 +73,26 @@ class BaseApiService {
         })
     }
 
+    async update(image: Image): Promise<Image | null> {
+      const form = formFromObject(image)
+      
+      return axios.patch<Image>(super.getUrl(image.id), form, {headers: this.getAuthorizatioHeaders()})
+        .then(response => response.data)
+        .catch(err => {
+          this.handleErrors(err);
+          return null;
+        })
+    }
+
+    async delete(image: Image): Promise<Image | null> {
+      return axios.delete<Image>(super.getUrl(image.id), {headers: this.getAuthorizatioHeaders()})
+        .then(response => response.data)
+        .catch(err => {
+          this.handleErrors(err);
+          return null;
+        })
+    }
+
     async upload(image: File, year: number, description: string) : Promise<Image | null> {
       const form = new FormData()
       form.append('year', year.toString())
@@ -66,6 +100,7 @@ class BaseApiService {
       form.append('file', image)
       return fetch(super.getUrl(), {
         method: 'POST',
+        headers: this.getAuthorizatioHeaders(),
         body: form
         }
       )
@@ -97,6 +132,40 @@ class BaseApiService {
 
     async get(year : number ) : Promise<Trip | null> {
       return axios.get<Trip>(super.getUrl(year), {headers: this.getAuthorizatioHeaders()})
+        .then(response => response.data)
+        .catch(err => {
+          this.handleErrors(err);
+          return null;
+        })
+    }
+
+    async update(trip: Trip): Promise<Trip | null> {
+      const form = formFromObject(trip)
+      
+      return axios.patch<Trip>(super.getUrl(), form, {headers: this.getAuthorizatioHeaders()})
+        .then(response => response.data)
+        .catch(err => {
+          this.handleErrors(err);
+          return null;
+        })
+    }
+
+    async delete(trip: Trip): Promise<Trip | null> {
+      return axios.delete<Trip>(super.getUrl(trip.year), {headers: this.getAuthorizatioHeaders()})
+        .then(response => response.data)
+        .catch(err => {
+          this.handleErrors(err);
+          return null;
+        })
+    }
+
+    async create(newTrip: NewTrip): Promise<Trip | null> {
+      const form = new FormData()
+      Object.entries(newTrip).forEach(([key, value]) => {
+        form.append(key, value);
+      });
+      
+      return axios.post<Trip>(super.getUrl(), form, {headers: this.getAuthorizatioHeaders()})
         .then(response => response.data)
         .catch(err => {
           this.handleErrors(err);
@@ -174,7 +243,7 @@ class BaseApiService {
         })
     }
 
-    async updateUser(user: User): Promise<User | null> {
+    async update(user: User): Promise<User | null> {
       const form = new FormData()
       Object.entries(user).forEach(([key, value]) => {
         form.append(key, value);
@@ -188,7 +257,7 @@ class BaseApiService {
         })
     }
 
-    async createUser(user: User): Promise<string | null> {
+    async create(user: User): Promise<string | null> {
       const form = new FormData()
       Object.entries(user).forEach(([key, value]) => {
         form.append(key, value);
@@ -202,7 +271,7 @@ class BaseApiService {
         })
     }
 
-    async deleteUser(user: User): Promise<User | null> {
+    async delete(user: User): Promise<User | null> {
       const form = new FormData()
       Object.entries(user).forEach(([key, value]) => {
         form.append(key, value);

@@ -1,33 +1,16 @@
 <template>
-    <b-offcanvas v-model="show" :title="`Ret brugeroplysninger`">
+    <b-offcanvas v-model="show" :title="`Ret billedeoplysninger`">
         <template v-if="loading">
             <b-spinner />
         </template>
         <template v-else>
-            <b-form @submit="updateUser">
-                <b-form-group
-                    label="Brugernavn"
-                >
-                    <b-form-input
-                        v-model="editableUser.userName"
-                        type="text"
-                        disabled
+            <b-img class="image-preview" :src="imageUri" />
+            <b-form @submit="updateImage">
+                <b-form-group label="Beskrivelse">
+                    <b-form-textarea
+                        v-model="editableImage.description"
                     >
-                    </b-form-input>
-                </b-form-group>
-
-                <b-form-group
-                    label="Navn"
-                    >
-                    <b-form-input
-                        v-model="editableUser.name"
-                        text="text"
-                    >
-                    </b-form-input>
-                </b-form-group>
-
-                <b-form-group label="Rolle">
-                    <b-form-select v-model="editableUser.role" :options="roleOptions"></b-form-select>
+                    </b-form-textarea>
                 </b-form-group>
 
                 <p v-if="error" class="text-danger">{{ error }}</p>
@@ -39,13 +22,13 @@
 
 <script lang="ts">
 import { PropType, defineComponent } from 'vue';
-import { $api } from '@/common/apiService'
-import { User } from '@/Models/User';
-import { emptyUser } from '@/common/utils';
+import { Image } from '@/Models/Image';
+import { emptyImage } from '@/common/utils';
+import { $api } from '@/common/apiService';
 
 
 export default defineComponent ({
-    name: "EditUserForm",
+    name: "EditImageForm",
     components: {
     },
     props: {
@@ -53,8 +36,8 @@ export default defineComponent ({
             type: Boolean,
             required: true
         },
-        user: {
-            type: Object as PropType<User>,
+        image: {
+            type: Object as PropType<Image>,
             required: true
         }
     },
@@ -67,32 +50,36 @@ export default defineComponent ({
             set(value: boolean) {
                 this.$emit('update:showForm', value)
             }
+        },
+        imageUri() {
+            return this.editableImage.uri + '?' + this.token
         }
     },
     data() {
         return {
-            editableUser: emptyUser() as User,
-            roleOptions: ["Admin", "User"],
+            editableImage: emptyImage() as Image,
             loading: false as Boolean,
-            error: "" as String
+            error: "" as String,
+            token: ""
         }
     },
     watch: {
         showForm: function() {
             this.error = ""
-            this.editableUser = JSON.parse(JSON.stringify(this.user))    
+            this.editableImage = JSON.parse(JSON.stringify(this.image))    
         }
     },
     mounted() {
-        this.editableUser = JSON.parse(JSON.stringify(this.user))
+        this.token = this.$store.getters.getSasToken
+        this.editableImage = JSON.parse(JSON.stringify(this.image))
     },
     methods: {
-        async updateUser() {
+        async updateImage() {
             this.error = ""
             this.loading = true
-            const newUser = await $api.users.update(this.editableUser)
+            const newImage = await $api.images.update(this.editableImage)
             this.loading = false
-            if (newUser) {
+            if (newImage) {
                 this.show = false
                 this.$emit('submitted')
             }
@@ -110,6 +97,10 @@ export default defineComponent ({
     bottom: 30px;
     right: 30px;
     left: 30px;
+}
+
+.image-preview {
+    max-width: 100%;
 }
 
 </style>

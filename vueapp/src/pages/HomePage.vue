@@ -1,7 +1,7 @@
 <template>
     <div class="home-page">
         <div class="grid">
-            <TripTile v-if="nextTrip" :trip="nextTrip" :token="token ?? ''" :style="'min-width: 50vw;'"></TripTile>
+            <TripTile v-if="nextTrip" :trip="nextTrip" :style="'min-width: 50vw;'"></TripTile>
             <BImg v-else :src="require('@/assets/Loading_icon.gif')"></BImg>
             <ContentCard>
                 <BCardText>{{description}}</BCardText>
@@ -9,7 +9,7 @@
         </div>
         <h1 class="sub-title">Tidligere Ture</h1>
         <BCardGroup deck v-if="previousTrips">
-            <TripTile v-for="trip in previousTrips" :key="trip.year" :trip="trip" :token="token ?? ''"></TripTile>
+            <TripTile v-for="trip in previousTrips" :key="trip.year" :trip="trip"></TripTile>
         </BCardGroup>
     </div>
 </template>
@@ -35,11 +35,9 @@ export default defineComponent ({
             description: json.description,
             nextTrip: null as Trip | null,
             previousTrips: null as Trip[] | null,
-            token: null as string | null
         }
     },
     async mounted() {
-        this.token = await $api.token.get();
         const trips = await $api.trips.fetch();
         if (trips && trips.length > 0) {
             this.nextTrip = trips.shift() ?? null;

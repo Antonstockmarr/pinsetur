@@ -48,5 +48,10 @@ namespace stockmarrdk_api.Repository
             _imageTableClient.DeleteEntity(partitionKey: "Image", rowKey: id.ToString());
             return image;
         }
+
+        public void UpdateImage(Image image)
+        {
+            _imageTableClient.UpdateEntity(entity: new ImageEntity(image), ifMatch: Azure.ETag.All, mode: TableUpdateMode.Replace);
+        }
     }
 }

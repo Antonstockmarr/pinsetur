@@ -156,7 +156,7 @@ export default defineComponent ({
         async deleteUser() {
             this.error = ""
             this.loading = true
-            const response = await $api.users.deleteUser(this.userToBeDeleted)
+            const response = await $api.users.delete(this.userToBeDeleted)
             if (response === null) {
                 this.error = "Der skete en fejl på serveren. Prøv igen."
                 this.loading = false

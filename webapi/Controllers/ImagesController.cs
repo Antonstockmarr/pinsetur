@@ -98,6 +98,31 @@ namespace stockmarrdk_api.Controllers
             }
         }
 
+        [HttpPatch("{id}")]
+        [Authorize("Admins")]
+        [ProducesResponseType(StatusCodes.Status200OK, Type = typeof(ImageDto))]
+        [ProducesResponseType(StatusCodes.Status404NotFound)]
+        [ProducesResponseType(StatusCodes.Status500InternalServerError, Type = typeof(string))]
+        public IActionResult PatchImage([FromForm] ImageDto image)
+        {
+            try
+            {
+                Image? updatedImage = _imageService.PatchImage(image);
+                if (updatedImage == null)
+                {
+                    return StatusCode(StatusCodes.Status404NotFound);
+                }
+                else
+                {
+                    return StatusCode(StatusCodes.Status200OK, updatedImage);
+                }
+            }
+            catch (Exception ex)
+            {
+                return StatusCode(StatusCodes.Status500InternalServerError, ex.Message);
+            }
+        }
+
         [HttpDelete("{id}")]
         [Authorize("Admins")]
         [ProducesResponseType(StatusCodes.Status200OK, Type = typeof(ImageDto))]

@@ -1,6 +1,8 @@
 ﻿using stockmarrdk_api.Common;
+using stockmarrdk_api.Dto;
 using stockmarrdk_api.Models;
 using stockmarrdk_api.Repository;
+using System.ComponentModel.DataAnnotations;
 
 namespace stockmarrdk_api.Services
 {
@@ -28,7 +30,7 @@ namespace stockmarrdk_api.Services
             return _tripRepository.GetTripFromYear(year);
         }
 
-        public Trip? PatchTrip(Trip trip)
+        public Trip? PatchTrip(EditTripDto trip)
         {
             Trip? oldTrip = _tripRepository.GetTripFromYear(trip.Year);
             if (oldTrip == null)
@@ -59,15 +61,23 @@ namespace stockmarrdk_api.Services
             return oldTrip;
         }
 
-        public void PostTrip(Trip trip)
+        public Trip PostTrip(NewTripDto newTrip)
         {
-            if (GetTrip(trip.Year) != null)
+            if (GetTrip(newTrip.Year) != null)
             {
-                throw new AlreadyExistsException($"Trip for year {trip.Year} already exists");
+                throw new AlreadyExistsException($"Trip for year {newTrip.Year} already exists");
             }
             else
             {
+                var trip = new Trip
+                {
+                    Year = newTrip.Year,
+                    Location = newTrip.Location,
+                    Address = newTrip.Address,
+                    Description = newTrip.Description
+                };
                 _tripRepository.CreateTrip(trip);
+                return trip;
             }
         }
     }

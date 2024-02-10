@@ -1,6 +1,7 @@
 ﻿using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
 using stockmarrdk_api.Common;
+using stockmarrdk_api.Dto;
 using stockmarrdk_api.Models;
 using stockmarrdk_api.Services;
 
@@ -50,11 +51,12 @@ namespace stockmarrdk_api.Controllers
         [ProducesResponseType(StatusCodes.Status200OK, Type = typeof(Trip))]
         [ProducesResponseType(StatusCodes.Status409Conflict, Type = typeof(string))]
         [ProducesResponseType(StatusCodes.Status500InternalServerError, Type = typeof(string))]
-        public IActionResult PostTrip([FromForm] Trip trip)
+        public IActionResult PostTrip([FromForm] NewTripDto newTrip)
         {
             try
             {
-                _tripService.PostTrip(trip);
+                Trip trip = _tripService.PostTrip(newTrip);
+                return StatusCode(StatusCodes.Status200OK, trip);
             }
             catch (AlreadyExistsException ex)
             {
@@ -65,7 +67,6 @@ namespace stockmarrdk_api.Controllers
                 return StatusCode(StatusCodes.Status500InternalServerError, ex.Message);
             }
 
-            return StatusCode(StatusCodes.Status200OK, trip);
         }
 
         [HttpPatch]
@@ -73,7 +74,7 @@ namespace stockmarrdk_api.Controllers
         [ProducesResponseType(StatusCodes.Status200OK, Type = typeof(Trip))]
         [ProducesResponseType(StatusCodes.Status404NotFound)]
         [ProducesResponseType(StatusCodes.Status500InternalServerError, Type = typeof(string))]
-        public IActionResult PatchTrip([FromForm] Trip trip)
+        public IActionResult PatchTrip([FromForm] EditTripDto trip)
         {
             try
             {

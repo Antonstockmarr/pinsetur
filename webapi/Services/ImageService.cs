@@ -74,6 +74,23 @@ namespace stockmarrdk_api.Services
             return _imageRepository.GetImageById(id);
         }
 
+        public Image? PatchImage(ImageDto image)
+        {
+            Image? oldImage = _imageRepository.GetImageById(image.Id);
+            if (oldImage == null)
+            {
+                return null;
+            }
+
+            oldImage.Year = image.Year;
+            if (image.Description != null)
+            {
+                oldImage.Description = image.Description;
+            }
+            _imageRepository.UpdateImage(oldImage);
+            return oldImage;
+        }
+
         public async Task<Image> UploadImage(ImageUploadDto image)
         {
             int id = Math.Abs(Guid.NewGuid().GetHashCode());

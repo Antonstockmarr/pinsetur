@@ -8,5 +8,6 @@ namespace stockmarrdk_api.Repository
         Image? GetImageById(int id);
         void UploadImage(Image image);
         Image? DeleteImageById(int id);
+        void UpdateImage(Image image);
     }
 }

@@ -84,6 +84,7 @@ export default defineComponent ({
     },
     watch: {
         showForm: function() {
+            this.error = ""
             this.newUser = emptyUser()
             this.userCreated = false
         }
@@ -95,7 +96,7 @@ export default defineComponent ({
         async createUser() {
             this.error = ""
             this.loading = true
-            this.initialPassword = await $api.users.createUser(this.newUser)
+            this.initialPassword = await $api.users.create(this.newUser)
             this.loading = false
             if (this.initialPassword) {
                 this.userCreated = true
