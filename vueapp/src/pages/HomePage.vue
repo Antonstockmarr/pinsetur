@@ -49,15 +49,24 @@ export default defineComponent ({
 </script>
 
 <style scoped>
-
 .home-page {
-    padding: 30px;
+    padding: 10px;
 }
 
 .grid {
     display: grid;
-    grid-template-columns: 2fr 1fr;
-    gap: 30px;
+    gap: 15px
+}
+
+@media only screen and (min-width: 1000px) {
+    .home-page {
+        padding: 30px;
+    }
+
+    .grid {
+        grid-template-columns: 2fr 1fr;
+        gap: 30px;
+    }
 }
 
 .sub-title {

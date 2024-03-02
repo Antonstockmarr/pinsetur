@@ -14,6 +14,7 @@
 import { defineComponent } from 'vue';
 import HeaderNavigation from './components/HeaderNavigation.vue'
 
+
 export default defineComponent({
   name: 'App',
   components: {
@@ -23,13 +24,22 @@ export default defineComponent({
     usePageWrapper(): boolean {
       return this.$route.name !== 'login'
     }
+  },
+  mounted() {
+    let mediaQuery = window.matchMedia('(max-width: 999px)');
+    this.$store.commit('setWindowWidthLessThan1000px', mediaQuery.matches)
+    window.addEventListener('resize', () => {
+      this.$store.commit('setWindowWidthLessThan1000px', mediaQuery.matches)
+    });
   }
 });
 </script>
 
 <style scoped>
-.wrapper {
-  max-width: 1500px;
-  margin: 0 auto;
+@media only screen and (min-width: 1000px) {
+  .wrapper {
+    max-width: 1500px;
+    margin: 0 auto;
+  }
 }
 </style>

@@ -3,7 +3,7 @@
         :title="trip?.year.toString()"
         :subtitle="trip?.location"
         :img-src="image"
-        :style="'border: 2px black solid; box-shadow: 6px 6px 2px 1px rgba(0, 0, 0, .5); min-width: 25vw;' + cardStyle"
+        :style="injectedCardStyle"
         img-alt="Image"
         img-top
     >
@@ -54,12 +54,26 @@ export default defineComponent({
     else {
       this.image = require("@/assets/NO_IMAGE.jpg");
     }
+  },
+  computed: {
+    injectedCardStyle() {
+      if (!this.$store.getters.windowWidthLessThan1000px) {
+        return `
+          border: 2px black solid;
+          box-shadow: 6px 6px 2px 1px rgba(0, 0, 0, .5);
+          min-width: 25vw;
+        `
+        + this.cardStyle;
+      }
+      else return `
+        min-width: 50vw;
+        margin-bottom: 10px;
+      ` + this.cardStyle
+    }
   }
 })
 
 
 </script>
-
-
 <style scoped>
 </style>

@@ -13,7 +13,6 @@
 <script lang="ts">
 import { defineComponent } from 'vue';
 import { $api } from '../common/apiService';
-import { store } from '@/store';
 
 export default defineComponent ({
     name: "ChangePasswordCard",
@@ -35,7 +34,7 @@ export default defineComponent ({
                 return
             }
             let user = await $api.users.changePassword(this.password1)
-            await store.dispatch('updateUser', user)
+            await this.$store.dispatch('updateUser', user)
             this.$emit('continue')
         },
         validatePassword() {

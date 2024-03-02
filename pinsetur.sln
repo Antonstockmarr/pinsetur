@@ -5,7 +5,7 @@ VisualStudioVersion = 17.6.33815.320
 MinimumVisualStudioVersion = 10.0.40219.1
 Project("{54A90642-561A-4BB1-A94E-469ADEE60C69}") = "vueapp", "vueapp\vueapp.esproj", "{BABDF668-8181-4323-AE72-2873D799482B}"
 EndProject
-Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "stockmarrdk_api", "webapi\stockmarrdk_api.csproj", "{88C47D37-B2E8-4A70-AF67-651FB6EF4F17}"
+Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "webapi", "webapi\webapi.csproj", "{228DF22D-A675-4587-988F-C9576ACAD1F2}"
 EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution
@@ -19,10 +19,10 @@ Global
 		{BABDF668-8181-4323-AE72-2873D799482B}.Release|Any CPU.ActiveCfg = Release|Any CPU
 		{BABDF668-8181-4323-AE72-2873D799482B}.Release|Any CPU.Build.0 = Release|Any CPU
 		{BABDF668-8181-4323-AE72-2873D799482B}.Release|Any CPU.Deploy.0 = Release|Any CPU
-		{88C47D37-B2E8-4A70-AF67-651FB6EF4F17}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
-		{88C47D37-B2E8-4A70-AF67-651FB6EF4F17}.Debug|Any CPU.Build.0 = Debug|Any CPU
-		{88C47D37-B2E8-4A70-AF67-651FB6EF4F17}.Release|Any CPU.ActiveCfg = Release|Any CPU
-		{88C47D37-B2E8-4A70-AF67-651FB6EF4F17}.Release|Any CPU.Build.0 = Release|Any CPU
+		{228DF22D-A675-4587-988F-C9576ACAD1F2}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{228DF22D-A675-4587-988F-C9576ACAD1F2}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{228DF22D-A675-4587-988F-C9576ACAD1F2}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{228DF22D-A675-4587-988F-C9576ACAD1F2}.Release|Any CPU.Build.0 = Release|Any CPU
 	EndGlobalSection
 	GlobalSection(SolutionProperties) = preSolution
 		HideSolutionNode = FALSE

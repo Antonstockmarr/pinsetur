@@ -1,6 +1,6 @@
 <template>
     <b-card
-        :style="'border: 2px black solid; box-shadow: 6px 6px 2px 1px rgba(0, 0, 0, .5);'"
+        :style="style"
     >
         <slot></slot>
     </b-card>    
@@ -12,6 +12,18 @@ import { defineComponent } from 'vue';
 
 
 export default defineComponent ({
-    name: "ContentCard"
+    name: "ContentCard",
+    computed: {
+        style() {
+            if (this.$store.getters.windowWidthLessThan1000px) {
+                return `
+                `
+            }
+            else return `
+                border: 2px black solid;
+                box-shadow: 6px 6px 2px 1px rgba(0, 0, 0, .5);
+            `
+        }
+    }
     });
 </script>
