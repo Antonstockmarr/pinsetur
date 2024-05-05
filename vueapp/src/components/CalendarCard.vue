@@ -68,6 +68,12 @@ export default defineComponent({
 
 <style scoped>
 
+.dates {
+  min-width: 100px;
+  overflow: hidden;
+  width: fit-content;
+}
+
 .date {
   font-size: 14px;
   border-radius: 10px;
@@ -78,7 +84,6 @@ export default defineComponent({
   overflow: hidden;
   background-color: var(--col2);
   border: 1px solid black;
-  box-shadow: 0 0 10px, rgba(0,0,0,0.1);
   float: right;
 
   & p {
@@ -98,6 +103,7 @@ export default defineComponent({
   font-size: 11px;
   font-weight: 700;
   padding: 4px 0;
+  line-height: 11px;
 }
 
 .right-arrow {
@@ -110,4 +116,9 @@ export default defineComponent({
   -webkit-transform: rotate(-45deg);
 }
 
+@media only screen and (max-width: 600px) {
+  .right-arrow {
+    margin: 20px 10px;
+  }
+}
 </style>

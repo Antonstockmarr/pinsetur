@@ -1,18 +1,23 @@
 <template>
     <div class="trip-header">
         <div class="back-button">
-            <b-button size="lg" @click="$router.back()">
+            <b-button style="height: 65px;" @click="$router.back()">
                 Tilbage
             </b-button>
         </div>
-        <h1>{{ trip?.year }} - {{ trip?.location }}</h1>
-        <div v-if="trip" class="calender-cards">
+        <div v-if="trip" class="calendar-cards">
+            <h2 v-if="!$store.getters.windowWidthLessThan600px">{{ trip.year }}</h2>
             <CalendarCard :start-date="trip?.startDate" :end-date="trip?.endDate"/>
         </div>
     </div>
     <div class="grid">
         <ContentCard class="banner-image" v-if="trip?.coverImageId">
             <img :src="coverUri">
+        </ContentCard>
+        <ContentCard class="description">
+            <h1>{{ trip?.location + ($store.getters.windowWidthLessThan600px ? ` (${trip?.year})` : "") }}</h1>
+            <p>{{ trip?.address }}</p>
+            <p>{{ trip?.description }}</p>
         </ContentCard>
         <ContentCard class="location-image">
             <img v-if="trip?.locationImageId || loading" :src="loading ? require('@/assets/Loading_icon.gif') : locationImageUri">
@@ -22,10 +27,6 @@
             <GoogleMap :address="trip?.address" v-if="trip?.address"></GoogleMap>
             <img v-else-if="loading" :src="require('@/assets/Loading_icon.gif')">
             <p v-else>Addresse mangler</p>
-        </ContentCard>
-        <ContentCard class="description">
-            <p>{{ trip?.address }}</p>
-            <p>{{ trip?.description }}</p>
         </ContentCard>
     </div>
 
@@ -159,24 +160,26 @@ export default defineComponent ({
 }
 
 .trip-header {
-    display: grid;
-    grid-template-columns: 20% 1fr 20%;
-    position: relative;
     padding: 30px 30px 0 30px;
-    
-    & h1 {
-        text-align: center;
-        margin: 0;
-        font-size: 44px;
-        line-height: 65px;
-    }
+    overflow: hidden;
+    position: relative;
 }
 
 .back-button {
-    float: left;
     height: 65px;
+    float: left;
 }
 
+.calendar-cards {
+    float: right;
+    display: flex;
+}
+
+.calendar-cards h2 {
+    font-size: 28px;
+    line-height: 65px;
+    margin-right: 15px;
+}
 
 .banner-image {
     grid-column: 1 / span 2;
@@ -199,7 +202,45 @@ export default defineComponent ({
 }
 
 .map {
-    min-height: 300px;
+    min-height: 500px;
+    grid-column: 1 / span 2;
+}
+
+.description {
+    line-height: 2em;
+    font-size: 1em;
+    align-content: center;
+
+    h1 {
+        margin: 0;
+        font-size: 44px;
+    }
+}
+
+@media only screen and (max-width: 1000px) {
+
+    .grid {
+        grid-template-columns: 1fr;
+    }    
+
+    .banner-image {
+        grid-column: 1;
+    }
+
+    .map {
+        grid-column: 1;
+    }
+}
+
+@media only screen and (max-width: 600px) {
+    .grid {
+        padding: 30px 0;
+    }
+
+    .description {
+        padding: 30px;
+    }
+    
 }
 
 .gallery-display-box {
@@ -225,14 +266,7 @@ export default defineComponent ({
     border: 1px solid black;
     width: auto;
     max-height: 200px;
-}
-
-.description {
-    grid-column: 1 / span 2;
-    padding: 3em;
-    line-height: 2em;
-    font-size: 1em;
-    align-content: center;
+    max-width: 100%;
 }
 
 .image-gallery {

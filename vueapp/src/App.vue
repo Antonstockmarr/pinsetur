@@ -26,11 +26,18 @@ export default defineComponent({
     }
   },
   mounted() {
-    let mediaQuery = window.matchMedia('(max-width: 999px)');
-    this.$store.commit('setWindowWidthLessThan1000px', mediaQuery.matches)
+    let mediaQuery1 = window.matchMedia('(max-width: 999px)');
+    this.$store.commit('setWindowWidthLessThan1000px', mediaQuery1.matches)
     window.addEventListener('resize', () => {
-      this.$store.commit('setWindowWidthLessThan1000px', mediaQuery.matches)
+      this.$store.commit('setWindowWidthLessThan1000px', mediaQuery1.matches)
     });
+
+    let mediaQuery2 = window.matchMedia('(max-width: 599px)');
+    this.$store.commit('setWindowWidthLessThan600px', mediaQuery2.matches)
+    window.addEventListener('resize', () => {
+      this.$store.commit('setWindowWidthLessThan600px', mediaQuery2.matches)
+    });
+
   }
 });
 </script>
