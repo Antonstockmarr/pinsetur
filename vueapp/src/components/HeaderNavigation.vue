@@ -3,7 +3,7 @@
     <div class="blank"></div>
     <div class="bar">
       <div class="navigation-button title" @click="goToMainPage">Pinsetur</div>
-      <div class="navigation-button admin" v-if="adminAccess" @click="goToAdminPage">Admin</div>
+      <div class="navigation-button item" v-if="adminAccess" @click="goToAdminPage">Admin</div>
       <div class="navigation-button logout" v-if="loggedIn" @click="logOut">Log ud</div>
     </div>
   </div>
@@ -62,21 +62,33 @@ export default defineComponent({
   color: var(--col2);
 }
 
-.navigation-button:hover {
-  cursor: pointer;
-  color: var(--col5);
-}
-
 .title {
   float: left;
   font-size: 32px;
+}
+
+@media only screen and (max-width: 400px) {
+  .title {
+    font-size: 20px;
+  }
+
+  .item, .logout {
+    padding: 0 10px;
+    font-size: 14px;
+  }
+}
+
+
+.navigation-button:hover {
+  cursor: pointer;
+  color: var(--col5);
 }
 
 .logout {
   float: right;
 }
 
-.admin {
+.item {
   float: left;
 }
 </style>

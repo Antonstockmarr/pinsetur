@@ -6,7 +6,7 @@
             <input class="form-control" v-model="password" type="password" placeholder="Kodeord" required>
             <button class="btn btn-primary" type="submit">Log ind</button>
             <p class="error-message" v-if="errorMessage"> {{ errorMessage }}</p>
-            <p>Glemt koden? Kontakt en administrater af siden.</p>
+            <p v-if="errorMessage !== ''">{{texts.Login.Hint}}</p>
         </form>
     </div>
 </template>
@@ -14,6 +14,7 @@
 <script lang="ts">
 import { defineComponent } from 'vue';
 import { $api } from '../common/apiService';
+import texts from '../assets/Text.json'
 
 export default defineComponent ({
     name: "LoginCard",
@@ -24,7 +25,8 @@ export default defineComponent ({
             username: "",
             password: "",
             errorMessage: "",
-            emptyFields: false
+            emptyFields: false,
+            texts: texts
         }
     },
     methods: {
@@ -36,7 +38,7 @@ export default defineComponent ({
             }
             const session = await $api.auth.login(this.username, this.password)
             if (session === null || session?.jwt === null) {
-                this.errorMessage = "Log ind fejlede. Prøv igen."
+                this.errorMessage = texts.Login.LoginFailed
                 return
             }
             await this.$store.dispatch('setSession', session)

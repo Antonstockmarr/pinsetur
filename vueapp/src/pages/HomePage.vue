@@ -1,11 +1,15 @@
 <template>
     <div class="home-page">
         <div class="grid">
+            <ContentCard class="">
+                <BCardTitle tag="h1">{{ texts.Homepage.Title }}</BCardTitle>
+                <BCardSubtitle tag="h3">{{ texts.Homepage.Subtitle }}</BCardSubtitle>
+                <div class="Homepage-items">
+                    <BCardText v-for="item, index in texts.Homepage.Items" :key="index">{{item}}</BCardText>
+                </div>
+            </ContentCard>
             <TripTile v-if="nextTrip" :trip="nextTrip" :style="'min-width: 50vw;'"></TripTile>
             <BImg v-else :src="require('@/assets/Loading_icon.gif')"></BImg>
-            <ContentCard>
-                <BCardText>{{description}}</BCardText>
-            </ContentCard>
         </div>
         <h1 class="sub-title">Tidligere Ture</h1>
         <BCardGroup deck v-if="previousTrips">
@@ -17,7 +21,7 @@
 
 <script lang="ts">
 import { defineComponent } from 'vue';
-import json from '../assets/Text.json'
+import texts from '../assets/Text.json'
 import { $api } from '../common/apiService'
 import TripTile from '@/components/TripTile.vue'
 import ContentCard from '@/components/ContentCard.vue';
@@ -32,7 +36,7 @@ export default defineComponent ({
     },
     data () {
         return {
-            description: json.description,
+            texts: texts,
             nextTrip: null as Trip | null,
             previousTrips: null as Trip[] | null,
         }
@@ -56,6 +60,34 @@ export default defineComponent ({
 .grid {
     display: grid;
     gap: 15px
+}
+
+h1 {
+    font-size: 40px;
+    margin-bottom: 15px;
+}
+
+h3 {
+    font-size: 32px;
+}
+
+.Homepage-items p {
+    font-size: 28px;
+    line-height: 40px;
+}
+
+@media only screen and (max-width: 600px) {
+    h1 {
+        font-size: 28px;
+    }
+
+    h3 {
+        font-size: 24px;
+    }
+
+    .Homepage-items p {
+        font-size: 18px;
+    }
 }
 
 @media only screen and (min-width: 1000px) {

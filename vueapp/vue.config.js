@@ -23,6 +23,7 @@ module.exports = {
             key: fs.readFileSync(keyFilePath),
             cert: fs.readFileSync(certFilePath),
         },
+        host: 'localhost',
         proxy: 'https://localhost:7026/',
         port: 5002
     }

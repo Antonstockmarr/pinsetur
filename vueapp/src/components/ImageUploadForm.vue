@@ -4,32 +4,36 @@
             <b-spinner />
         </template>
         <template v-else>
-            <b-form @submit="submitImage">
-                <b-form-file
-                    v-model="imageFile"
-                    :accept="['.png', '.jpeg', '.jpg']"
-                    required
-                >
-                </b-form-file>
-                <div class="mt-3" v-if="imageFile">
-                    <div>Billede:</div> 
-                    <b-img class="upload-preview" :src="getPreview()" />
-                </div>
+            <div class="form-content">
+                <b-form @submit="submitImage">
+                    <b-button onclick="document.getElementById('photo-upload').click()">Vælg billede</b-button>
+                    <input type="file"
+                        accept=".png,.jpg,.jpeg"
+                        id="photo-upload"
+                        @change="setUploadedImage"
+                        style="display: none;"
+                        tabindex="-1"
+                    >
 
-                <b-form-group
-                    v-if="imageFile"
-                    label="Beskrivelse (valgfri):"
-                    class="image-description"
-                >
-                    <b-form-textarea
-                        v-model="description"
-                        placeholder="Hvad er der på billedet?"
-                    />                    
-                </b-form-group>
+                    <div class="mt-3" v-if="imageFile">
+                        <b-img class="upload-preview" :src="getPreview()" />
+                    </div>
 
-                <p v-if="error" class="text-danger">{{ error }}</p>
-                <b-button class="submit-upload-button" size="lg" type="submit" variant="success" :disabled="!imageFile">Upload</b-button>
-            </b-form>
+                    <b-form-group
+                        v-if="imageFile"
+                        label="Beskrivelse (valgfri):"
+                        class="image-description"
+                    >
+                        <b-form-textarea
+                            v-model="description"
+                            placeholder="Hvad er der på billedet?"
+                        />                    
+                    </b-form-group>
+
+                    <p v-if="error" class="text-danger">{{ error }}</p>
+                    <b-button class="submit-upload-button" size="lg" type="submit" variant="success" :disabled="!imageFile">Upload</b-button>
+                </b-form>
+            </div>
         </template>
     </b-offcanvas>
 </template>
@@ -61,6 +65,11 @@ export default defineComponent ({
             },
             set(value: boolean) {
                 this.$emit('update:showForm', value)
+                if (value === false) {
+                    this.imageFile = null
+                    this.description = ""
+                    this.error = ""
+                }
             }
         }
     },
@@ -69,10 +78,15 @@ export default defineComponent ({
             imageFile: null as File | null,
             description: "" as string,
             loading: false as Boolean,
-            error: "" as String
+            error: "" as string,
+            fileInputKey: 0 as number
         }
     },
     methods: {
+        setUploadedImage(payload: Event) {
+            let input = payload.target as HTMLInputElement
+            this.imageFile = input.files?.item(0) as File
+        },
         getPreview() {
             if (this.imageFile) {
                 return URL.createObjectURL(this.imageFile)
@@ -105,6 +119,10 @@ export default defineComponent ({
 </script>
 
 <style scoped>
+.form-content { 
+    padding-bottom: 92px;
+}
+
 .upload-preview {
     max-width: 100%;
 }
@@ -119,4 +137,5 @@ export default defineComponent ({
 .image-description {
     margin-top: 20px;
 }
+
 </style>

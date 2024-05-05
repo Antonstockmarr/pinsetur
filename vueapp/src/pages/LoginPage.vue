@@ -58,7 +58,7 @@ export default defineComponent ({
    height: calc(100vh - 100px);
 
    .wallpaper-login {
-      background: url('~@/assets/Frontpage.JPG')
+      background: url('~@/assets/Loginpage.JPG')
          no-repeat center center;
       background-size: cover;
       height: calc(100% - 100px);
