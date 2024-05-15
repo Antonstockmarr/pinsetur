@@ -15,7 +15,7 @@
             <img :src="coverUri">
         </ContentCard>
         <ContentCard class="description">
-            <h1>{{ trip?.location + ($store.getters.windowWidthLessThan600px ? ` (${trip?.year})` : "") }}</h1>
+            <h1 v-if="trip">{{ trip?.location + ($store.getters.windowWidthLessThan600px ? ` (${trip?.year})` : "") }}</h1>
             <p>{{ trip?.address }}</p>
             <p>{{ trip?.description }}</p>
         </ContentCard>
