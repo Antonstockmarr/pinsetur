@@ -4,6 +4,7 @@ using stockmarrdk_api.Common;
 using stockmarrdk_api.Dto;
 using stockmarrdk_api.Models;
 using stockmarrdk_api.Services;
+using System.Security.Claims;
 
 namespace stockmarrdk_api.Controllers
 {
@@ -83,9 +84,14 @@ namespace stockmarrdk_api.Controllers
         [ProducesResponseType(StatusCodes.Status500InternalServerError, Type = typeof(string))]
         public async Task<IActionResult> UploadAsync([FromForm] ImageUploadDto image)
         {
+            Claim? nameIdentifier = User.FindFirst(ClaimTypes.NameIdentifier);
+            if (nameIdentifier is null)
+            {
+                return StatusCode(StatusCodes.Status401Unauthorized);
+            }
             try
             {
-                Image newImage = await _imageService.UploadImage(image);
+                Image newImage = await _imageService.UploadImage(image, nameIdentifier.Value);
                 return StatusCode(StatusCodes.Status200OK, newImage.ToImageDto());
             }
             catch (BadRequestException ex)
