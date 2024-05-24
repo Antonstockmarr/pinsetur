@@ -4,65 +4,67 @@
             <b-spinner />
         </template>
         <template v-else>
-            <b-form @submit="updateTrip">
-                <b-form-group label="År">
-                    <b-form-input v-model="editableTrip.year" disabled></b-form-input>
-                </b-form-group>
-
-                <b-form-group label="Lokation">
-                    <b-form-input
-                        v-model="editableTrip.location"
-                        text="text"
-                    >
-                    </b-form-input>
-                </b-form-group>
-
-                <b-form-group label="Adresse">
-                    <b-form-input
-                        v-model="editableTrip.address"
-                        text="text"
-                    >
-                    </b-form-input>
-
-                </b-form-group>
-                <b-form-group label="Beskrivelse">
-                    <b-form-textarea
-                        v-model="editableTrip.description"
-                    >
-                    </b-form-textarea>
-                </b-form-group>
-
-                <b-form-group>
-                    <b-button @click="changeCoverImage">Skift Coverbillede</b-button>
-                    <select-image-modal
-                        v-model:show-modal="showChangeCoverImageModal"
-                        :title="'Vælg coverbillede'"
-                        :images="images"
-                        v-on:selected="setCoverImage"
-                    />
-                    <div class="mt-3" v-if="editableTrip.coverImageId">
-                        <b-img class="image-preview" :src="coverImageUri + '?' + token" />
-                    </div>
-                </b-form-group>
-
-                <b-form-group>
-                    <b-button @click="changeLocationImage">Skift billede af stedet</b-button>
-                    <select-image-modal
-                        v-model:show-modal="showChangeLocationImageModal"
-                        :title="'Vælg billede af stedet'"
-                        :images="images"
-                        v-on:selected="setLocationImage"
-                    />
+            <div class="form-content">
+                <b-form @submit="updateTrip">
+                    <b-form-group label="År">
+                        <b-form-input v-model="editableTrip.year" disabled></b-form-input>
+                    </b-form-group>
     
-                    <div class="mt-3" v-if="editableTrip.locationImageId">
-                        <div>Billede af stedet:</div> 
-                        <b-img class="image-preview" :src="locationImageUri + '?' + token" />
-                    </div>
-                </b-form-group>
-                
-                <p v-if="error" class="text-danger">{{ error }}</p>
-                <b-button class="submit-button" size="lg" type="submit" variant="success">Opdatér</b-button>
-            </b-form>
+                    <b-form-group label="Lokation">
+                        <b-form-input
+                            v-model="editableTrip.location"
+                            text="text"
+                        >
+                        </b-form-input>
+                    </b-form-group>
+    
+                    <b-form-group label="Adresse">
+                        <b-form-input
+                            v-model="editableTrip.address"
+                            text="text"
+                        >
+                        </b-form-input>
+    
+                    </b-form-group>
+                    <b-form-group label="Beskrivelse">
+                        <b-form-textarea
+                            v-model="editableTrip.description"
+                        >
+                        </b-form-textarea>
+                    </b-form-group>
+    
+                    <b-form-group>
+                        <b-button @click="changeCoverImage">Skift Coverbillede</b-button>
+                        <select-image-modal
+                            v-model:show-modal="showChangeCoverImageModal"
+                            :title="'Vælg coverbillede'"
+                            :images="images"
+                            v-on:selected="setCoverImage"
+                        />
+                        <div class="mt-3" v-if="editableTrip.coverImageId">
+                            <b-img class="image-preview" :src="coverImageUri + '?' + token" />
+                        </div>
+                    </b-form-group>
+    
+                    <b-form-group>
+                        <b-button @click="changeLocationImage">Skift billede af stedet</b-button>
+                        <select-image-modal
+                            v-model:show-modal="showChangeLocationImageModal"
+                            :title="'Vælg billede af stedet'"
+                            :images="images"
+                            v-on:selected="setLocationImage"
+                        />
+        
+                        <div class="mt-3" v-if="editableTrip.locationImageId">
+                            <div>Billede af stedet:</div> 
+                            <b-img class="image-preview" :src="locationImageUri + '?' + token" />
+                        </div>
+                    </b-form-group>
+                    
+                    <p v-if="error" class="text-danger">{{ error }}</p>
+                    <b-button class="submit-button" size="lg" type="submit" variant="success">Opdatér</b-button>
+                </b-form>
+            </div>
         </template>
     </b-offcanvas>
 </template>
@@ -199,4 +201,7 @@ p {
     max-width: 100%;
 }
 
+.form-content {
+    padding-bottom: 92px;
+}
 </style>

@@ -4,35 +4,37 @@
             <b-spinner />
         </template>
         <template v-else>
-            <b-form @submit="updateUser">
-                <b-form-group
-                    label="Brugernavn"
-                >
-                    <b-form-input
-                        v-model="editableUser.userName"
-                        type="text"
-                        disabled
+            <div class="form-content">
+                <b-form @submit="updateUser">
+                    <b-form-group
+                        label="Brugernavn"
                     >
-                    </b-form-input>
-                </b-form-group>
-
-                <b-form-group
-                    label="Navn"
-                    >
-                    <b-form-input
-                        v-model="editableUser.name"
-                        text="text"
-                    >
-                    </b-form-input>
-                </b-form-group>
-
-                <b-form-group label="Rolle">
-                    <b-form-select v-model="editableUser.role" :options="roleOptions"></b-form-select>
-                </b-form-group>
-
-                <p v-if="error" class="text-danger">{{ error }}</p>
-                <b-button class="submit-button" size="lg" type="submit" variant="success">Opdatér</b-button>
-            </b-form>
+                        <b-form-input
+                            v-model="editableUser.userName"
+                            type="text"
+                            disabled
+                        >
+                        </b-form-input>
+                    </b-form-group>
+    
+                    <b-form-group
+                        label="Navn"
+                        >
+                        <b-form-input
+                            v-model="editableUser.name"
+                            text="text"
+                        >
+                        </b-form-input>
+                    </b-form-group>
+    
+                    <b-form-group label="Rolle">
+                        <b-form-select v-model="editableUser.role" :options="roleOptions"></b-form-select>
+                    </b-form-group>
+    
+                    <p v-if="error" class="text-danger">{{ error }}</p>
+                    <b-button class="submit-button" size="lg" type="submit" variant="success">Opdatér</b-button>
+                </b-form>
+            </div>
         </template>
     </b-offcanvas>
 </template>
@@ -112,4 +114,7 @@ export default defineComponent ({
     left: 30px;
 }
 
+.form-content {
+    padding-bottom: 92px;
+}
 </style>

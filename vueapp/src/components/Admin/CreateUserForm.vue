@@ -4,34 +4,36 @@
             <b-spinner />
         </template>
         <template v-else-if="!userCreated">
-            <b-form @submit="createUser">
-                <b-form-group
-                    label="Brugernavn"
-                >
-                    <b-form-input
-                        v-model="newUser.userName"
-                        type="text"
+            <div class="form-content">
+                <b-form @submit="createUser">
+                    <b-form-group
+                        label="Brugernavn"
                     >
-                    </b-form-input>
-                </b-form-group>
+                        <b-form-input
+                            v-model="newUser.userName"
+                            type="text"
+                        >
+                        </b-form-input>
+                    </b-form-group>
 
-                <b-form-group
-                    label="Navn"
-                    >
-                    <b-form-input
-                        v-model="newUser.name"
-                        text="text"
-                    >
-                    </b-form-input>
-                </b-form-group>
+                    <b-form-group
+                        label="Navn"
+                        >
+                        <b-form-input
+                            v-model="newUser.name"
+                            text="text"
+                        >
+                        </b-form-input>
+                    </b-form-group>
 
-                <b-form-group label="Rolle">
-                    <b-form-select v-model="newUser.role" :options="roleOptions"></b-form-select>
-                </b-form-group>
+                    <b-form-group label="Rolle">
+                        <b-form-select v-model="newUser.role" :options="roleOptions"></b-form-select>
+                    </b-form-group>
 
-                <p v-if="error" class="text-danger">{{ error }}</p>
-                <b-button class="submit-button" size="lg" type="submit" variant="success">Opret</b-button>
-            </b-form>
+                    <p v-if="error" class="text-danger">{{ error }}</p>
+                    <b-button class="submit-button" size="lg" type="submit" variant="success">Opret</b-button>
+                </b-form>
+            </div>
         </template>
         <template v-else>
             <p>Brugeren <strong>{{ newUser?.userName }}</strong> er nu oprettet. ved første login skal brugeren benytte dette password:</p>
@@ -125,4 +127,7 @@ p {
     line-height: 20px;
 }
 
+.form-content {
+    padding-bottom: 92px;
+}
 </style>

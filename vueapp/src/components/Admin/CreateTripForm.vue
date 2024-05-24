@@ -4,37 +4,39 @@
             <b-spinner />
         </template>
         <template v-else>
-            <b-form @submit="createTrip">
-                <b-form-group label="År">
-                    <b-form-select v-model="newTrip.year"  :options="yearOptions"></b-form-select>
-                </b-form-group>
-
-                <b-form-group label="Lokation">
-                    <b-form-input
-                        v-model="newTrip.location"
-                        text="text"
-                    >
-                    </b-form-input>
-                </b-form-group>
-
-                <b-form-group label="Adresse">
-                    <b-form-input
-                        v-model="newTrip.address"
-                        text="text"
-                    >
-                    </b-form-input>
-
-                </b-form-group>
-                <b-form-group label="Beskrivelse">
-                    <b-form-textarea
-                        v-model="newTrip.description"
-                    >
-                    </b-form-textarea>
-                </b-form-group>
-
-                <p v-if="error" class="text-danger">{{ error }}</p>
-                <b-button class="submit-button" size="lg" type="submit" variant="success">Opret</b-button>
-            </b-form>
+            <div class="form-content">
+                <b-form @submit="createTrip">
+                    <b-form-group label="År">
+                        <b-form-select v-model="newTrip.year"  :options="yearOptions"></b-form-select>
+                    </b-form-group>
+    
+                    <b-form-group label="Lokation">
+                        <b-form-input
+                            v-model="newTrip.location"
+                            text="text"
+                        >
+                        </b-form-input>
+                    </b-form-group>
+    
+                    <b-form-group label="Adresse">
+                        <b-form-input
+                            v-model="newTrip.address"
+                            text="text"
+                        >
+                        </b-form-input>
+    
+                    </b-form-group>
+                    <b-form-group label="Beskrivelse">
+                        <b-form-textarea
+                            v-model="newTrip.description"
+                        >
+                        </b-form-textarea>
+                    </b-form-group>
+    
+                    <p v-if="error" class="text-danger">{{ error }}</p>
+                    <b-button class="submit-button" size="lg" type="submit" variant="success">Opret</b-button>
+                </b-form>
+            </div>
         </template>
     </b-offcanvas>
 </template>
@@ -114,6 +116,10 @@ export default defineComponent ({
 
 p {
     line-height: 20px;
+}
+
+.form-content { 
+    padding-bottom: 92px;
 }
 
 </style>
