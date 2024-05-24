@@ -24,6 +24,7 @@
         <edit-image-form
             v-model:show-form="showEditImageModal"
             :image="changedImage"
+            :users="users"
             v-on:submitted="$emit('refresh')"
         />
 
@@ -45,6 +46,7 @@ import ConfirmModal from '../ConfirmModal.vue';
 import { emptyImage } from '@/common/utils';
 import { Image } from '@/Models/Image';
 import { $api } from '@/common/apiService'
+import { User } from '@/Models/User';
 
 export default defineComponent ({
     name: "ImageTable",
@@ -59,6 +61,10 @@ export default defineComponent ({
         },
         loadingImages: {
             type: Boolean,
+            required: true
+        },
+        users: {
+            type: Object as PropType<User[]>,
             required: true
         }
     },

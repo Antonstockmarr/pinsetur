@@ -17,7 +17,7 @@
                     <trip-table :trips="trips" v-model:loading-trips="loadingTrips" v-on:refresh="fetchTrips" />
                 </b-tab>
                 <b-tab title="Billeder">
-                    <image-table :images="images" v-model:loading-images="loadingImages" v-on:refresh="fetchImages" />
+                    <image-table :images="images" :users="users" v-model:loading-images="loadingImages" v-on:refresh="fetchImages" />
                 </b-tab>
             </b-tabs>
         </b-card>

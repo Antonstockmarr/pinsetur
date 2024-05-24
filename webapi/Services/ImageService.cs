@@ -10,14 +10,17 @@ namespace stockmarrdk_api.Services
         private readonly IImageRepository _imageRepository;
         private readonly IImageDataRepository _imageDataRepository;
         private readonly ITripRepository _tripRepository;
+        private readonly IUserRepository _userRepository;
 
         private readonly string[] permittedExtensions = { ".png", ".jpg", ".jpeg" };
 
-        public ImageService(IImageRepository imageRepository, IImageDataRepository imageDataRepository, ITripRepository tripRepository)
+        public ImageService(IImageRepository imageRepository, IImageDataRepository imageDataRepository, ITripRepository tripRepository, IUserRepository userRepository)
         {
             _imageRepository = imageRepository;
             _imageDataRepository = imageDataRepository;
             _tripRepository = tripRepository;
+            _userRepository = userRepository;
+
         }
 
         public async Task<Image?> DeleteImageFromId(int id)
@@ -81,12 +84,21 @@ namespace stockmarrdk_api.Services
             {
                 return null;
             }
+            if (image.UploadedBy != null && !_userRepository.UserNameExists(image.UploadedBy))
+            {
+                return null;
+            }
 
             oldImage.Year = image.Year;
             if (image.Description != null)
             {
                 oldImage.Description = image.Description;
             }
+            if (image.UploadedBy != null)
+            {
+                oldImage.UploadedBy = image.UploadedBy;
+            }
+
             _imageRepository.UpdateImage(oldImage);
             return oldImage;
         }

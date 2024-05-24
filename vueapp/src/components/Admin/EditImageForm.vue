@@ -13,6 +13,14 @@
                     </b-form-textarea>
                 </b-form-group>
 
+                <b-form-group label="Uploadet af">
+                    <b-form-select v-model="editableImage.uploadedBy">
+                        <b-form-select-option v-for="user in users" :key="user.userName" :value="user.userName">
+                            {{ user.userName }}
+                        </b-form-select-option>
+                    </b-form-select>
+                </b-form-group>
+
                 <p v-if="error" class="text-danger">{{ error }}</p>
                 <b-button class="submit-button" size="lg" type="submit" variant="success">Opdatér</b-button>
             </b-form>
@@ -25,6 +33,7 @@ import { PropType, defineComponent } from 'vue';
 import { Image } from '@/Models/Image';
 import { emptyImage } from '@/common/utils';
 import { $api } from '@/common/apiService';
+import { User } from '@/Models/User';
 
 
 export default defineComponent ({
@@ -39,6 +48,9 @@ export default defineComponent ({
         image: {
             type: Object as PropType<Image>,
             required: true
+        },
+        users: {
+            type: Object as PropType<User[]>
         }
     },
     emits: ['update:showForm', 'submitted'],

@@ -17,7 +17,8 @@ export function emptyImage() {
         id: -1,
         year: 0,
         uri: "",
-        description: ""
+        description: "",
+        uploadedBy: ""
     } as Image
 }
 
