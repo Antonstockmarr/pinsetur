@@ -2,4 +2,9 @@
 bin
 obj
 .env
+
+# Ignore system specific settings
+webapi.csproj.user
+
+# Include project launch settings0
 !/vueapp/.vscode/launch.json
