@@ -11,10 +11,11 @@ namespace stockmarrdk_api.Models
         public string Name => Year + "/" + Id + Extension;
         public string Uri => ContainerUri + "/" + Name;
         public string? Description { get; set; } 
+        public string? UploadedBy { get; set; }
 
         public ImageDto ToImageDto()
         {
-            return new ImageDto { Id = Id, Year = Year, Uri = Uri, Description = Description};
+            return new ImageDto { Id = Id, Year = Year, Uri = Uri, Description = Description, UploadedBy = UploadedBy };
         }
 
 

@@ -9,7 +9,7 @@ namespace stockmarrdk_api.Services
         List<Image> GetAllImagesFromYear(int year);
         Image? GetImageFromId(int id);
         Task<ImageData?> GetImageDataFromId(int id);
-        Task<Image> UploadImage(ImageUploadDto image);
+        Task<Image> UploadImage(ImageUploadDto image, string username);
         Task<Image?> DeleteImageFromId(int id);
         Image? PatchImage(ImageDto image);
     }

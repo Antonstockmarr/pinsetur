@@ -91,7 +91,7 @@ namespace stockmarrdk_api.Services
             return oldImage;
         }
 
-        public async Task<Image> UploadImage(ImageUploadDto image)
+        public async Task<Image> UploadImage(ImageUploadDto image, string uploadedByUsername)
         {
             int id = Math.Abs(Guid.NewGuid().GetHashCode());
             string extension = Path.GetExtension(image.File.FileName);
@@ -115,7 +115,7 @@ namespace stockmarrdk_api.Services
             ImageData newImageData = new()
             { Id = id, Content = bytes, ContentType = image.File.ContentType };
 
-            Image newImage = new() { Id = id, Extension = extension, Year = image.Year, Description = image.Description };
+            Image newImage = new() { Id = id, Extension = extension, Year = image.Year, Description = image.Description, UploadedBy = uploadedByUsername };
 
             await _imageDataRepository.UploadImageData(newImageData, newImage);
             _imageRepository.UploadImage(newImage);

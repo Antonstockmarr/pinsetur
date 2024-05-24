@@ -1,7 +1,6 @@
 ﻿using Azure;
 using Azure.Data.Tables;
 using stockmarrdk_api.Models;
-using System.Numerics;
 
 namespace stockmarrdk_api.TableEntities
 {
@@ -11,6 +10,7 @@ namespace stockmarrdk_api.TableEntities
         public int Year { get; set; }
         public string Extension { get; set; } = "";
         public string? Description { get; set; }
+        public string? UploadedBy { get; set; }
 
         // ITableEntity Properties
         public virtual string PartitionKey { get; set; } = "Image";
@@ -27,11 +27,12 @@ namespace stockmarrdk_api.TableEntities
             Extension = image.Extension;
             RowKey = Id.ToString();
             Description = image.Description;
+            UploadedBy = image.UploadedBy;
         }
 
         public Image ToImage(string containerUri)
         {   
-            return new Image { Id = Id, Year = Year, Extension = Extension, ContainerUri = containerUri, Description = Description};
+            return new Image { Id = Id, Year = Year, Extension = Extension, ContainerUri = containerUri, Description = Description, UploadedBy = UploadedBy };
         }
     }
 }
