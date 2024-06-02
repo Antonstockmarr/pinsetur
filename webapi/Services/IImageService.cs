@@ -12,5 +12,6 @@ namespace stockmarrdk_api.Services
         Task<Image> UploadImage(ImageUploadDto image, string username);
         Task<Image?> DeleteImageFromId(int id);
         Image? PatchImage(ImageDto image);
+        Task GenerateThumbnails();
     }
 }

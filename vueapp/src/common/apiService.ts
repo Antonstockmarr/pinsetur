@@ -37,7 +37,7 @@ class BaseApiService {
       console.log({ message: "Error in API call: ", err });
     }
 
-    getAuthorizatioHeaders() {
+    getAuthorizationHeaders() {
       return  {
         Authorization: "bearer " + store.state.auth.session?.jwt
       }
@@ -56,7 +56,7 @@ class BaseApiService {
         params.year = year;
       }
 
-      return axios.get<Image[]>(super.getUrl(), {params: params, headers: this.getAuthorizatioHeaders()})
+      return axios.get<Image[]>(super.getUrl(), {params: params, headers: this.getAuthorizationHeaders()})
         .then(response => response.data)
         .catch(err => {
           this.handleErrors(err);
@@ -65,7 +65,7 @@ class BaseApiService {
     }
 
     async get(id : number ) : Promise<Image | null> {
-      return axios.get<Image>(super.getUrl(id), {headers: this.getAuthorizatioHeaders()})
+      return axios.get<Image>(super.getUrl(id), {headers: this.getAuthorizationHeaders()})
         .then(response => response.data)
         .catch(err => {
           this.handleErrors(err);
@@ -76,7 +76,7 @@ class BaseApiService {
     async update(image: Image): Promise<Image | null> {
       const form = formFromObject(image)
       
-      return axios.patch<Image>(super.getUrl(image.id), form, {headers: this.getAuthorizatioHeaders()})
+      return axios.patch<Image>(super.getUrl(image.id), form, {headers: this.getAuthorizationHeaders()})
         .then(response => response.data)
         .catch(err => {
           this.handleErrors(err);
@@ -85,7 +85,7 @@ class BaseApiService {
     }
 
     async delete(image: Image): Promise<Image | null> {
-      return axios.delete<Image>(super.getUrl(image.id), {headers: this.getAuthorizatioHeaders()})
+      return axios.delete<Image>(super.getUrl(image.id), {headers: this.getAuthorizationHeaders()})
         .then(response => response.data)
         .catch(err => {
           this.handleErrors(err);
@@ -100,7 +100,7 @@ class BaseApiService {
       form.append('file', image)
       return fetch(super.getUrl(), {
         method: 'POST',
-        headers: this.getAuthorizatioHeaders(),
+        headers: this.getAuthorizationHeaders(),
         body: form
         }
       )
@@ -114,6 +114,15 @@ class BaseApiService {
         }
       })
     }
+
+    async generateThumbnails(): Promise<string> {
+      return axios.post(super.getUrl()+"thumbnails", {headers: this.getAuthorizationHeaders()})
+        .then(_ => "Ok")
+        .catch(err => {
+          this.handleErrors(err);
+          return err;
+        })
+    }
   }
 
   class TripsApiService extends BaseApiService {
@@ -122,7 +131,7 @@ class BaseApiService {
     }
     
     async fetch() : Promise<Trip[] | null> {
-      return axios.get<Trip[]>(super.getUrl(), {headers: this.getAuthorizatioHeaders()})
+      return axios.get<Trip[]>(super.getUrl(), {headers: this.getAuthorizationHeaders()})
         .then(response => response.data)
         .catch(err => {
           this.handleErrors(err);
@@ -131,7 +140,7 @@ class BaseApiService {
     }
 
     async get(year : number ) : Promise<Trip | null> {
-      return axios.get<Trip>(super.getUrl(year), {headers: this.getAuthorizatioHeaders()})
+      return axios.get<Trip>(super.getUrl(year), {headers: this.getAuthorizationHeaders()})
         .then(response => response.data)
         .catch(err => {
           this.handleErrors(err);
@@ -142,7 +151,7 @@ class BaseApiService {
     async update(trip: Trip): Promise<Trip | null> {
       const form = formFromObject(trip)
       
-      return axios.patch<Trip>(super.getUrl(), form, {headers: this.getAuthorizatioHeaders()})
+      return axios.patch<Trip>(super.getUrl(), form, {headers: this.getAuthorizationHeaders()})
         .then(response => response.data)
         .catch(err => {
           this.handleErrors(err);
@@ -151,7 +160,7 @@ class BaseApiService {
     }
 
     async delete(trip: Trip): Promise<Trip | null> {
-      return axios.delete<Trip>(super.getUrl(trip.year), {headers: this.getAuthorizatioHeaders()})
+      return axios.delete<Trip>(super.getUrl(trip.year), {headers: this.getAuthorizationHeaders()})
         .then(response => response.data)
         .catch(err => {
           this.handleErrors(err);
@@ -165,7 +174,7 @@ class BaseApiService {
         form.append(key, value);
       });
       
-      return axios.post<Trip>(super.getUrl(), form, {headers: this.getAuthorizatioHeaders()})
+      return axios.post<Trip>(super.getUrl(), form, {headers: this.getAuthorizationHeaders()})
         .then(response => response.data)
         .catch(err => {
           this.handleErrors(err);
@@ -180,7 +189,7 @@ class BaseApiService {
     }
 
     async get() : Promise<string | null> {
-      return axios.get<string>(super.getUrl(), {headers: this.getAuthorizatioHeaders()})
+      return axios.get<string>(super.getUrl(), {headers: this.getAuthorizationHeaders()})
         .then(response => response.data)
         .catch(err => {
           this.handleErrors(err);
@@ -213,7 +222,7 @@ class BaseApiService {
     }
 
     async fetch() : Promise<User[] | null> {
-      return axios.get<User[]>(super.getUrl(), {headers: this.getAuthorizatioHeaders()})
+      return axios.get<User[]>(super.getUrl(), {headers: this.getAuthorizationHeaders()})
         .then(response => response.data)
         .catch(err => {
           this.handleErrors(err);
@@ -224,7 +233,7 @@ class BaseApiService {
     async resetPassword(userName: string): Promise<string | null> {
       const form = new FormData()
       form.append('userName', userName)
-      return axios.post<string>(super.getUrl()+"reset-password", form, {headers: this.getAuthorizatioHeaders()})
+      return axios.post<string>(super.getUrl()+"reset-password", form, {headers: this.getAuthorizationHeaders()})
         .then(response => response.data)
         .catch(err => {
           this.handleErrors(err);
@@ -235,7 +244,7 @@ class BaseApiService {
     async changePassword(newPassword: string): Promise<User | null> {
       const form = new FormData()
       form.append('newPassword', newPassword)
-      return axios.patch<User>(super.getUrl()+"me", form, {headers: this.getAuthorizatioHeaders()})
+      return axios.patch<User>(super.getUrl()+"me", form, {headers: this.getAuthorizationHeaders()})
         .then(response => response.data)
         .catch(err => {
           this.handleErrors(err);
@@ -249,7 +258,7 @@ class BaseApiService {
         form.append(key, value);
       });
       
-      return axios.patch<User>(super.getUrl(), form, {headers: this.getAuthorizatioHeaders()})
+      return axios.patch<User>(super.getUrl(), form, {headers: this.getAuthorizationHeaders()})
         .then(response => response.data)
         .catch(err => {
           this.handleErrors(err);
@@ -263,7 +272,7 @@ class BaseApiService {
         form.append(key, value);
       });
       
-      return axios.post<string>(super.getUrl(), form, {headers: this.getAuthorizatioHeaders()})
+      return axios.post<string>(super.getUrl(), form, {headers: this.getAuthorizationHeaders()})
         .then(response => response.data)
         .catch(err => {
           this.handleErrors(err);
@@ -277,7 +286,7 @@ class BaseApiService {
         form.append(key, value);
       });
       
-      return axios.delete<User>(super.getUrl(), {headers: this.getAuthorizatioHeaders(), data: form})
+      return axios.delete<User>(super.getUrl(), {headers: this.getAuthorizationHeaders(), data: form})
         .then(response => response.data)
         .catch(err => {
           this.handleErrors(err);

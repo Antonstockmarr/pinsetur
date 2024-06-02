@@ -142,6 +142,23 @@ namespace stockmarrdk_api.Services
             return newImage;
         }
 
+        public async Task GenerateThumbnails()
+        {
+            var images = _imageRepository.GetAllImages();
+            foreach (var image in images)
+            {
+                var imageData = await _imageDataRepository.GetImageDataFromImage(image);
+
+                if (imageData != null)
+                {
+                    await _imageDataRepository.DeleteImageDataByImage(image.ThumbName);
+
+                    byte[] thumbnailBytes = GenerateThumbnail(imageData.Content);
+                    await _imageDataRepository.UploadImageData(thumbnailBytes, image.ThumbName);
+                }
+            }
+        }
+
         private static byte[] GenerateThumbnail(byte[] bytes)
         {
             using _Drawing.Image image = _Drawing.Image.FromStream(new MemoryStream(bytes));
@@ -159,8 +176,10 @@ namespace stockmarrdk_api.Services
                 var fullRectangle = new _Drawing.Rectangle(0, 0, thumbnailWidth, thumbnailHeight);
                 // Crop image to make it 1:1
                 var croppedRectangle = ratio > 1 ?
-                    new _Drawing.Rectangle(0, (int)Math.Round(height / (2 * ratio)), width, height - (int)Math.Round(height / (ratio)))
-                    : new _Drawing.Rectangle((int)Math.Round(width * ratio / 2), 0, width - (int)Math.Round(width * ratio), height);
+                    // x = 0, y = (h - h/2)/r, w = w, h = h/r
+                    new _Drawing.Rectangle(0, (int)Math.Round((height - height / 2) / ratio), width, (int)Math.Round(height / (ratio)))
+                    // x = w - w*r, y = 0, w = w*r, h = h
+                    : new _Drawing.Rectangle((int)Math.Round((width - width * ratio) / 2), 0, (int)Math.Round(width * ratio), height);
                 gr.DrawImage(image, fullRectangle, croppedRectangle, _Drawing.GraphicsUnit.Pixel);
             }
 

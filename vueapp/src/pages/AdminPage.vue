@@ -19,6 +19,9 @@
                 <b-tab title="Billeder">
                     <image-table :images="images" :users="users" v-model:loading-images="loadingImages" v-on:refresh="fetchImages" />
                 </b-tab>
+                <b-tab title="Funktioner">
+                    <AdminUtilities />
+                </b-tab>
             </b-tabs>
         </b-card>
     </div>
@@ -34,13 +37,15 @@ import TripTable from '@/components/Admin/TripTable.vue';
 import { Trip } from '@/Models/Trip';
 import ImageTable from '@/components/Admin/ImageTable.vue';
 import { Image } from '@/Models/Image';
+import AdminUtilities from '@/components/Admin/AdminUtilities.vue';
 
 export default defineComponent ({
     name: "AdminPage",
     components: {
     UserTable,
     TripTable,
-    ImageTable
+    ImageTable,
+    AdminUtilities
 },
     data() {
         return {
