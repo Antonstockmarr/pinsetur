@@ -4,8 +4,8 @@ namespace stockmarrdk_api.Repository
 {
     public interface IImageDataRepository
     {
-        Task DeleteImageDataByImage(Image image);
+        Task DeleteImageDataByImage(string path);
         Task<ImageData?> GetImageDataFromImage(Image image);
-        Task UploadImageData(ImageData imageData, Image image);
+        Task UploadImageData(byte[] data, string path);
     }
 }

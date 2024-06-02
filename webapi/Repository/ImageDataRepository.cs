@@ -15,16 +15,15 @@ namespace stockmarrdk_api.Repository
             _imageContainerClient = blobServiceClient.GetBlobContainerClient(storageContainerName);
         }
 
-        public async Task DeleteImageDataByImage(Image image)
+        public async Task DeleteImageDataByImage(string path)
         {
-            BlobClient imageBlob = _imageContainerClient.GetBlobClient(image.Name);
+            BlobClient imageBlob = _imageContainerClient.GetBlobClient(path);
 
-            if (!imageBlob.Exists())
+            if (imageBlob.Exists())
             {
-                throw new Exception($"Blob {image.Name} does not exists");
+                await imageBlob.DeleteAsync();
             }
 
-            await imageBlob.DeleteAsync();
         }
 
         public async Task<ImageData?> GetImageDataFromImage(Image image)
@@ -46,16 +45,16 @@ namespace stockmarrdk_api.Repository
             };
         }
 
-        public async Task UploadImageData(ImageData imageData, Image image)
+        public async Task UploadImageData(byte[] data, string path)
         {
-            BlobClient imageBlob = _imageContainerClient.GetBlobClient(image.Name);
+            BlobClient imageBlob = _imageContainerClient.GetBlobClient(path);
 
             if (imageBlob.Exists())
             {
                 throw new Exception("Blob already exists");
             }
 
-            await imageBlob.UploadAsync(BinaryData.FromBytes(imageData.Content));
+            await imageBlob.UploadAsync(BinaryData.FromBytes(data));
         }
     }
 }

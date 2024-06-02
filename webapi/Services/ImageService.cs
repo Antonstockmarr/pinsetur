@@ -2,9 +2,13 @@
 using stockmarrdk_api.Dto;
 using stockmarrdk_api.Models;
 using stockmarrdk_api.Repository;
+using System.Drawing.Drawing2D;
+using System.Drawing.Imaging;
+using _Drawing = System.Drawing;
 
 namespace stockmarrdk_api.Services
 {
+    [System.Runtime.Versioning.SupportedOSPlatform("windows")]
     public class ImageService : IImageService
     {
         private readonly IImageRepository _imageRepository;
@@ -13,6 +17,8 @@ namespace stockmarrdk_api.Services
         private readonly IUserRepository _userRepository;
 
         private readonly string[] permittedExtensions = { ".png", ".jpg", ".jpeg" };
+        private const int thumbnailWidth = 400;
+        private const int thumbnailHeight = 400;
 
         public ImageService(IImageRepository imageRepository, IImageDataRepository imageDataRepository, ITripRepository tripRepository, IUserRepository userRepository)
         {
@@ -28,7 +34,8 @@ namespace stockmarrdk_api.Services
             Image? image = _imageRepository.DeleteImageById(id);
             if (image != null)
             {
-                await _imageDataRepository.DeleteImageDataByImage(image);
+                await _imageDataRepository.DeleteImageDataByImage(image.Name);
+                await _imageDataRepository.DeleteImageDataByImage(image.ThumbName);
 
                 // Update references
                 List<Trip> trips = _tripRepository.GetAllTrips();
@@ -79,7 +86,7 @@ namespace stockmarrdk_api.Services
 
         public Image? PatchImage(ImageDto image)
         {
-            Image? oldImage = _imageRepository.GetImageById(image.Id);
+                Image? oldImage = _imageRepository.GetImageById(image.Id);
             if (oldImage == null)
             {
                 return null;
@@ -124,15 +131,42 @@ namespace stockmarrdk_api.Services
             byte[] bytes = new byte[image.File.Length];
             fileStream.Read(bytes, 0, (int)image.File.Length);
 
-            ImageData newImageData = new()
-            { Id = id, Content = bytes, ContentType = image.File.ContentType };
-
+            byte[] thumbnailBytes = GenerateThumbnail(bytes);
             Image newImage = new() { Id = id, Extension = extension, Year = image.Year, Description = image.Description, UploadedBy = uploadedByUsername };
+            
+            await _imageDataRepository.UploadImageData(bytes, newImage.Name);
+            await _imageDataRepository.UploadImageData(thumbnailBytes, newImage.ThumbName);
 
-            await _imageDataRepository.UploadImageData(newImageData, newImage);
             _imageRepository.UploadImage(newImage);
 
             return newImage;
+        }
+
+        private static byte[] GenerateThumbnail(byte[] bytes)
+        {
+            using _Drawing.Image image = _Drawing.Image.FromStream(new MemoryStream(bytes));
+            var height = image.Height;
+            var width = image.Width;
+
+            var ratio = (double)height / width;
+            _Drawing.Bitmap newImage = new(thumbnailWidth, thumbnailHeight);
+            using (_Drawing.Graphics gr = _Drawing.Graphics.FromImage(newImage))
+            {
+                gr.SmoothingMode = SmoothingMode.HighQuality;
+                gr.InterpolationMode = InterpolationMode.HighQualityBicubic;
+                gr.PixelOffsetMode = PixelOffsetMode.HighQuality;
+
+                var fullRectangle = new _Drawing.Rectangle(0, 0, thumbnailWidth, thumbnailHeight);
+                // Crop image to make it 1:1
+                var croppedRectangle = ratio > 1 ?
+                    new _Drawing.Rectangle(0, (int)Math.Round(height / (2 * ratio)), width, height - (int)Math.Round(height / (ratio)))
+                    : new _Drawing.Rectangle((int)Math.Round(width * ratio / 2), 0, width - (int)Math.Round(width * ratio), height);
+                gr.DrawImage(image, fullRectangle, croppedRectangle, _Drawing.GraphicsUnit.Pixel);
+            }
+
+            using MemoryStream ms = new();
+            newImage.Save(ms, ImageFormat.Jpeg);
+            return ms.ToArray();
         }
     }
 }

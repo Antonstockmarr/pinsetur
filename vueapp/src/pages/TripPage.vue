@@ -42,7 +42,7 @@
             <div class="gallery-display-box">
                 <div v-for="image, index in gallery" :key="image.id" class="image" @click="showGalleryCarousel(index)">
                     <img
-                    :src="image.uri + '?' + token ?? require('@/assets/Loading_icon.gif')"
+                    :src="(image.thumbUri ?? image.uri) + '?' + token ?? require('@/assets/Loading_icon.gif')"
                     />
                 </div>
             </div>
