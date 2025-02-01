@@ -37,6 +37,11 @@
         >
             <b-card-header class="gallery-header">
                 <h1 class="gallery-title">Billedgalleri</h1>
+                
+                <div class="filter-gallery-toggle">
+                    Mine billeder
+                    <SliderToggle v-model:toggle="galleryFilterMyImages" />
+                </div>
                 <b-button class="upload-button" size="lg" variant="primary" @click="() => showUploadImage = true">Upload</b-button>
             </b-card-header>
             <div class="gallery-display-box">
@@ -76,6 +81,7 @@ import ImageCarousel from '@/components/ImageCarousel.vue';
 import { Image } from '@/Models/Image';
 import { $api } from '@/common/apiService';
 import { defineComponent } from 'vue';
+import SliderToggle from '@/components/SliderToggle.vue';
 
 
 export default defineComponent ({
@@ -85,7 +91,8 @@ export default defineComponent ({
         CalendarCard,
         ContentCard,
         ImageUploadForm,
-        ImageCarousel
+        ImageCarousel,
+        SliderToggle
     },
     props: {
         id: {
@@ -100,6 +107,7 @@ export default defineComponent ({
             coverUri: "" as string,
             locationImageUri: "" as string,
             gallery: [] as Image[] | null,
+            galleryFilterMyImages: false as boolean,
             loading: true as boolean,
             showUploadImage: false as boolean,
             showImageCarousel: false as boolean,
@@ -130,7 +138,7 @@ export default defineComponent ({
     },
     methods: {
         async fetchGallery() {
-            const images = await $api.images.fetch(this.trip?.year);
+            const images = await $api.images.fetch(this.trip?.year, this.galleryFilterMyImages);
             if (images) {
                 this.gallery = images.filter(image =>
                     image.id !== this.trip?.coverImageId &&
@@ -143,6 +151,11 @@ export default defineComponent ({
                 this.selectedImage = index
                 this.showImageCarousel = true
             }
+        }
+    },
+    watch: {
+        galleryFilterMyImages: function() {
+            this.fetchGallery();
         }
     }
 
@@ -278,6 +291,12 @@ export default defineComponent ({
     font-size: 32px;
     line-height: 52px;
     margin: 0;
+}
+
+.gallery-filter-toggle {
+    display: block;
+    float: right;
+    height: 52px;
 }
 
 .upload-button {

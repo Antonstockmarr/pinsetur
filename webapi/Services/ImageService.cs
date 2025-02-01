@@ -66,6 +66,13 @@ namespace stockmarrdk_api.Services
             return _imageRepository.GetAllImages().FindAll(image => image.Year == year);
         }
 
+        public List<Image> GetAllImagesUploadedByUser(int year, string username)
+        {
+            return GetAllImagesFromYear(year)
+                .Where(image => image.UploadedBy != null && image.UploadedBy.Equals(username))
+                .ToList();
+        }
+
         public async Task<ImageData?> GetImageDataFromId(int id)
         {
             Image? image = _imageRepository.GetImageById(id);
@@ -161,7 +168,8 @@ namespace stockmarrdk_api.Services
 
         private static byte[] GenerateThumbnail(byte[] bytes)
         {
-            using _Drawing.Image image = _Drawing.Image.FromStream(new MemoryStream(bytes));
+            using _Drawing.Image unrotatedImage = _Drawing.Image.FromStream(new MemoryStream(bytes));
+            using _Drawing.Image image = FixImageOrientation(unrotatedImage);
             var height = image.Height;
             var width = image.Width;
 
@@ -176,8 +184,8 @@ namespace stockmarrdk_api.Services
                 var fullRectangle = new _Drawing.Rectangle(0, 0, thumbnailWidth, thumbnailHeight);
                 // Crop image to make it 1:1
                 var croppedRectangle = ratio > 1 ?
-                    // x = 0, y = (h - h/2)/r, w = w, h = h/r
-                    new _Drawing.Rectangle(0, (int)Math.Round((height - height / 2) / ratio), width, (int)Math.Round(height / (ratio)))
+                    // x = 0, y = (h - h/r)/2, w = w, h = h/r
+                    new _Drawing.Rectangle(0, (int)Math.Round((height - height / ratio) / 2), width, (int)Math.Round(height / ratio))
                     // x = w - w*r, y = 0, w = w*r, h = h
                     : new _Drawing.Rectangle((int)Math.Round((width - width * ratio) / 2), 0, (int)Math.Round(width * ratio), height);
                 gr.DrawImage(image, fullRectangle, croppedRectangle, _Drawing.GraphicsUnit.Pixel);
@@ -186,6 +194,53 @@ namespace stockmarrdk_api.Services
             using MemoryStream ms = new();
             newImage.Save(ms, ImageFormat.Jpeg);
             return ms.ToArray();
+        }
+
+        private static _Drawing.Image FixImageOrientation(_Drawing.Image image)
+        {
+            const int exifOrientationId = 0x112;
+            if (!image.PropertyIdList.Contains(exifOrientationId))
+                return image;
+            //Gets the specified property item from the image
+            var property = image.GetPropertyItem(exifOrientationId);
+            var orient = BitConverter.ToInt16(property.Value, 0);
+            //Get the rotated or flipped image 
+            image = RotateImageSrc(orient, image);
+            return image;
+        }
+
+        private static _Drawing.Image RotateImageSrc(int orient, _Drawing.Image image)
+        {
+            switch (orient)
+            {
+                case 1:
+                    image.RotateFlip(_Drawing.RotateFlipType.RotateNoneFlipNone);
+                    return image;
+                case 2:
+                    image.RotateFlip(_Drawing.RotateFlipType.RotateNoneFlipX);
+                    return image;
+                case 3:
+                    image.RotateFlip(_Drawing.RotateFlipType.Rotate180FlipNone);
+                    return image;
+                case 4:
+                    image.RotateFlip(_Drawing.RotateFlipType.Rotate180FlipX);
+                    return image;
+                case 5:
+                    image.RotateFlip(_Drawing.RotateFlipType.Rotate90FlipX);
+                    return image;
+                case 6:
+                    image.RotateFlip(_Drawing.RotateFlipType.Rotate90FlipNone);
+                    return image;
+                case 7:
+                    image.RotateFlip(_Drawing.RotateFlipType.Rotate270FlipX);
+                    return image;
+                case 8:
+                    image.RotateFlip(_Drawing.RotateFlipType.Rotate270FlipNone);
+                    return image;
+                default:
+                    image.RotateFlip(_Drawing.RotateFlipType.RotateNoneFlipNone);
+                    return image;
+            }
         }
     }
 }

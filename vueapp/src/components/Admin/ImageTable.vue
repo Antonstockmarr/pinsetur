@@ -9,7 +9,7 @@
                     <div class="gallery-display-box">
                         <div v-for="image in imagesByYear(year)" :key="image.id" class="image">
                             <img
-                                :src="image.uri + '?' + token ?? require('@/assets/Loading_icon.gif')"
+                                :src="(image.thumbUri ?? image.uri) + '?' + token ?? require('@/assets/Loading_icon.gif')"
                             />
                             <div class="image-options">
                                 <b-button @click="editImage(image)">Ret</b-button>

@@ -7,6 +7,7 @@ namespace stockmarrdk_api.Services
     {
         List<Image> GetAllImages();
         List<Image> GetAllImagesFromYear(int year);
+        List<Image> GetAllImagesUploadedByUser(int year, string username);
         Image? GetImageFromId(int id);
         Task<ImageData?> GetImageDataFromId(int id);
         Task<Image> UploadImage(ImageUploadDto image, string username);

@@ -14,6 +14,7 @@ using Microsoft.Extensions.Options;
 using stockmarrdk_api;
 using Swashbuckle.AspNetCore.SwaggerGen;
 using Microsoft.ApplicationInsights.Extensibility;
+using System.Linq;
 
 StaticLogger.EnsureInitialized();
 Log.Information("Azure Storage API Booting Up...");
@@ -44,6 +45,7 @@ try
     });
 
     // Configure Authorization
+    builder.Services.AddHttpContextAccessor();
     builder.Services.AddAuthorization(options =>
     {
         var adminPolicy = new AuthorizationPolicyBuilder()
@@ -57,6 +59,7 @@ try
         {
             policy.RequireAuthenticatedUser();
         });
+
     });
 
     builder.Services.AddControllers()

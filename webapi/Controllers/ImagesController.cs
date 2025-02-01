@@ -23,12 +23,24 @@ namespace stockmarrdk_api.Controllers
         [HttpGet()]
         [Authorize("Users")]
         [ProducesResponseType(StatusCodes.Status200OK, Type = typeof(List<ImageDto>))]
-        public ActionResult GetImages([FromQuery] int? year)
+        public ActionResult GetImages([FromQuery] int? year, [FromQuery] bool? myImages)
         {
-            List<Image>? images;
+            List<Image> images = new List<Image>();
             if (year is not null)
             {
-                images = _imageService.GetAllImagesFromYear((int)year);
+                if (myImages ?? false)
+                {
+                    Claim? nameIdentifier = User.FindFirst(ClaimTypes.NameIdentifier);
+                    if (nameIdentifier is not null)
+                    {
+                        images = _imageService.GetAllImagesUploadedByUser((int)year, nameIdentifier.Value);
+                    }
+
+                }
+                else
+                {
+                    images = _imageService.GetAllImagesFromYear((int)year);
+                }
             }
             else
             {
@@ -130,12 +142,26 @@ namespace stockmarrdk_api.Controllers
         }
 
         [HttpDelete("{id}")]
-        [Authorize("Admins")]
+        [Authorize("Users")]
         [ProducesResponseType(StatusCodes.Status200OK, Type = typeof(ImageDto))]
         [ProducesResponseType(StatusCodes.Status204NoContent)]
+        [ProducesResponseType(StatusCodes.Status401Unauthorized)]
         [ProducesResponseType(StatusCodes.Status500InternalServerError, Type = typeof(string))]
         public async Task<IActionResult> Delete(int id)
         {
+            Claim? nameIdentifier = User.FindFirst(ClaimTypes.NameIdentifier);
+            Image? image = _imageService.GetImageFromId(id);
+            if (image == null)
+            {
+                return StatusCode(StatusCodes.Status204NoContent);
+            }
+            bool isOwner = nameIdentifier != null && image.UploadedBy != null && image.UploadedBy.Equals(nameIdentifier.Value);
+            bool isAdmin = User.FindAll(ClaimTypes.Role).Any(role => role.Value.Equals(UserRole.Admin.ToString()));
+            if (!isAdmin && !isOwner)
+            {
+                return StatusCode(StatusCodes.Status401Unauthorized);
+            }
+
             try
             {
                 Image? deletedImage = await _imageService.DeleteImageFromId(id);

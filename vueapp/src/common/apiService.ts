@@ -49,9 +49,10 @@ class BaseApiService {
         super("images");
     }
 
-    async fetch(year : number | null = null) : Promise<Image[] | null> {
+    async fetch(year : number | null = null, myImages: boolean = false) : Promise<Image[] | null> {
       // Set query parameters
       const params: any = {};
+      params.myImages = myImages;
       if (year != null) {
         params.year = year;
       }
@@ -116,7 +117,10 @@ class BaseApiService {
     }
 
     async generateThumbnails(): Promise<string> {
-      return axios.post(super.getUrl()+"thumbnails", {headers: this.getAuthorizationHeaders()})
+      return fetch(super.getUrl()+"thumbnails", {
+        method: 'POST',
+        headers: this.getAuthorizationHeaders()
+        })
         .then(_ => "Ok")
         .catch(err => {
           this.handleErrors(err);
