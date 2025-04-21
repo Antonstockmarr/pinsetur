@@ -27,7 +27,19 @@
                 </b-button>
                 <img :src="image.uri + '?' + token" />
             </div>
-            <p v-if="idx === index && images[index]?.description">{{ images[index].description }}</p>
+            <p
+                v-if="idx === index && images[index]?.uploadedBy"
+                class="image-description"
+            >
+                <strong>Lagt op af:</strong> {{ images[index].uploadedBy }}
+            </p>
+    
+            <p
+                v-if="idx === index && images[index]?.description"
+                class="image-description"    
+            >
+                {{ images[index].description }}
+            </p>
         </div>
     </b-modal>
 
@@ -146,6 +158,13 @@ export default defineComponent ({
 
 .next-button {
     right: 10px;
+}
+
+.image-description   {
+    text-align: center;
+    font-size: 14px;
+    color: #666;
+    margin-top: 12px;
 }
 
 </style>

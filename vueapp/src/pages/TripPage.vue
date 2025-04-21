@@ -36,18 +36,23 @@
             :style="'border: 2px black solid; box-shadow: 6px 6px 2px 1px rgba(0, 0, 0, .5);'"
         >
             <b-card-header class="gallery-header">
-                <h1 class="gallery-title">Billedgalleri</h1>
-                
-                <div class="filter-gallery-toggle">
-                    Mine billeder
-                    <SliderToggle v-model:toggle="galleryFilterMyImages" />
+                <div class="gallery-header-content">
+                    <h1 class="gallery-title">Billedgalleri</h1>
+
+                    <div class="gallery-toggle">
+                        Mine billeder
+                        <SliderToggle v-model:toggle="galleryFilterMyImages" />
+                    </div>
+
+                    <b-button class="upload-button" size="lg" variant="primary" @click="() => showUploadImage = true">
+                        Upload
+                    </b-button>
                 </div>
-                <b-button class="upload-button" size="lg" variant="primary" @click="() => showUploadImage = true">Upload</b-button>
             </b-card-header>
             <div class="gallery-display-box">
                 <div v-for="image, index in gallery" :key="image.id" class="image" @click="showGalleryCarousel(index)">
                     <img
-                    :src="(image.thumbUri ?? image.uri) + '?' + token ?? require('@/assets/Loading_icon.gif')"
+                    :src="(image.thumbUri ?? image.uri) + '?' + token"
                     />
                 </div>
             </div>
@@ -286,16 +291,32 @@ export default defineComponent ({
     padding: 30px 30px;
 }
 
-.gallery-title {
-    float: left;
-    font-size: 32px;
-    line-height: 52px;
-    margin: 0;
+.gallery-header {
+    margin-bottom: 10px;
 }
 
-.gallery-filter-toggle {
-    display: block;
-    float: right;
+.gallery-header-content {
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    gap: 20px;
+    flex-wrap: wrap;
+}
+
+.gallery-title {
+    font-size: 32px;
+    margin: 0;
+    line-height: 52px;
+}
+
+.gallery-toggle {
+    display: flex;
+    align-items: center;
+    gap: 10px;
+    height: 52px;
+}
+
+.upload-button {
     height: 52px;
 }
 

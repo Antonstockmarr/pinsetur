@@ -93,7 +93,7 @@ namespace stockmarrdk_api.Services
 
         public Image? PatchImage(ImageDto image)
         {
-                Image? oldImage = _imageRepository.GetImageById(image.Id);
+            Image? oldImage = _imageRepository.GetImageById(image.Id);
             if (oldImage == null)
             {
                 return null;
@@ -104,14 +104,8 @@ namespace stockmarrdk_api.Services
             }
 
             oldImage.Year = image.Year;
-            if (image.Description != null)
-            {
-                oldImage.Description = image.Description;
-            }
-            if (image.UploadedBy != null)
-            {
-                oldImage.UploadedBy = image.UploadedBy;
-            }
+            oldImage.Description = image.Description;
+            oldImage.UploadedBy = image.UploadedBy;
 
             _imageRepository.UpdateImage(oldImage);
             return oldImage;

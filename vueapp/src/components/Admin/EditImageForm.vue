@@ -4,26 +4,28 @@
             <b-spinner />
         </template>
         <template v-else>
-            <b-img class="image-preview" :src="imageUri" />
-            <b-form @submit="updateImage">
-                <b-form-group label="Beskrivelse">
-                    <b-form-textarea
-                        v-model="editableImage.description"
-                    >
-                    </b-form-textarea>
-                </b-form-group>
+            <div class="form-content">
+                <b-img class="image-preview" :src="imageUri" />
+                <b-form @submit="updateImage">
+                    <b-form-group label="Beskrivelse">
+                        <b-form-textarea
+                            v-model="editableImage.description"
+                        >
+                        </b-form-textarea>
+                    </b-form-group>
 
-                <b-form-group label="Uploadet af">
-                    <b-form-select v-model="editableImage.uploadedBy">
-                        <b-form-select-option v-for="user in users" :key="user.userName" :value="user.userName">
-                            {{ user.userName }}
-                        </b-form-select-option>
-                    </b-form-select>
-                </b-form-group>
+                    <b-form-group label="Uploadet af">
+                        <b-form-select v-model="editableImage.uploadedBy">
+                            <b-form-select-option v-for="user in users" :key="user.userName" :value="user.userName">
+                                {{ user.userName }}
+                            </b-form-select-option>
+                        </b-form-select>
+                    </b-form-group>
 
-                <p v-if="error" class="text-danger">{{ error }}</p>
-                <b-button class="submit-button" size="lg" type="submit" variant="success">Opdatér</b-button>
-            </b-form>
+                    <p v-if="error" class="text-danger">{{ error }}</p>
+                    <b-button class="submit-button" size="lg" type="submit" variant="success">Opdatér</b-button>
+                </b-form>
+            </div>
         </template>
     </b-offcanvas>
 </template>
@@ -113,6 +115,10 @@ export default defineComponent ({
 
 .image-preview {
     max-width: 100%;
+}
+
+.form-content { 
+    padding-bottom: 92px;
 }
 
 </style>
