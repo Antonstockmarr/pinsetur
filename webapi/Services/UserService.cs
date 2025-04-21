@@ -1,10 +1,10 @@
-﻿using stockmarrdk_api.Common;
-using stockmarrdk_api.Dto;
-using stockmarrdk_api.Models;
-using stockmarrdk_api.Repository;
+﻿using Pinsetur.Webapi.Common;
+using Pinsetur.Webapi.Dto;
+using Pinsetur.Webapi.Models;
+using Pinsetur.Webapi.Repository;
 using System.Security.Cryptography;
 
-namespace stockmarrdk_api.Services
+namespace Pinsetur.Webapi.Services
 {
     public class UserService : IUserService
     {

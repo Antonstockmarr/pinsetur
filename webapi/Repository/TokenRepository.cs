@@ -2,7 +2,7 @@
 using Azure.Storage.Blobs;
 using Azure.Storage.Sas;
 
-namespace stockmarrdk_api.Repository
+namespace Pinsetur.Webapi.Repository
 {
     public class TokenRepository : ITokenRepository
     {

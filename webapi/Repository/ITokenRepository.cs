@@ -1,4 +1,4 @@
-﻿namespace stockmarrdk_api.Repository
+﻿namespace Pinsetur.Webapi.Repository
 {
     public interface ITokenRepository
     {

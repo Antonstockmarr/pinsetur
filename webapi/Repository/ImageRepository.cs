@@ -1,9 +1,9 @@
 ﻿using Azure.Data.Tables;
 using Azure.Storage.Blobs;
-using stockmarrdk_api.Models;
-using stockmarrdk_api.TableEntities;
+using Pinsetur.Webapi.Models;
+using Pinsetur.Webapi.TableEntities;
 
-namespace stockmarrdk_api.Repository
+namespace Pinsetur.Webapi.Repository
 {
     public class ImageRepository : IImageRepository
     {

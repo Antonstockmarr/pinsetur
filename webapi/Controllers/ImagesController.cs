@@ -1,12 +1,12 @@
 ﻿using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
-using stockmarrdk_api.Common;
-using stockmarrdk_api.Dto;
-using stockmarrdk_api.Models;
-using stockmarrdk_api.Services;
+using Pinsetur.Webapi.Common;
+using Pinsetur.Webapi.Dto;
+using Pinsetur.Webapi.Models;
+using Pinsetur.Webapi.Services;
 using System.Security.Claims;
 
-namespace stockmarrdk_api.Controllers
+namespace Pinsetur.Webapi.Controllers
 {
     [Route("api/[controller]")]
     [ApiController]
@@ -174,7 +174,7 @@ namespace stockmarrdk_api.Controllers
                     return StatusCode(StatusCodes.Status200OK, deletedImage.ToImageDto());
                 }
             }
-            catch (Exception ex)
+            catch (Exception ex)    
             {
                 return StatusCode(StatusCodes.Status500InternalServerError, ex.Message);
             }

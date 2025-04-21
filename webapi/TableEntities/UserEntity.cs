@@ -1,9 +1,9 @@
 ﻿using Azure;
 using Azure.Data.Tables;
-using stockmarrdk_api.Models;
-using stockmarrdk_api.Common;
+using Pinsetur.Webapi.Models;
+using Pinsetur.Webapi.Common;
 
-namespace stockmarrdk_api.TableEntities
+namespace Pinsetur.Webapi.TableEntities
 {
     public class UserEntity : ITableEntity
     {

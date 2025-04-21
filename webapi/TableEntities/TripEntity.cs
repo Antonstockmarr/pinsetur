@@ -1,8 +1,8 @@
 ﻿using Azure;
 using Azure.Data.Tables;
-using stockmarrdk_api.Models;
+using Pinsetur.Webapi.Models;
 
-namespace stockmarrdk_api.TableEntities
+namespace Pinsetur.Webapi.TableEntities
 {
     public class TripEntity : ITableEntity
     {

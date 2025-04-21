@@ -1,4 +1,4 @@
-﻿namespace stockmarrdk_api.Models
+﻿namespace Pinsetur.Webapi.Models
 {
     public class ImageData
     {

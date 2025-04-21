@@ -9,7 +9,7 @@
                     <div class="gallery-display-box">
                         <div v-for="image in imagesByYear(year)" :key="image.id" class="image">
                             <img
-                                :src="(image.thumbUri ?? image.uri) + '?' + token ?? require('@/assets/Loading_icon.gif')"
+                                :src="(image.thumbUri ?? image.uri) + '?' + token"
                             />
                             <div class="image-options">
                                 <b-button @click="editImage(image)">Ret</b-button>
@@ -78,7 +78,11 @@ export default defineComponent ({
             }
         },
         years() {
-            return this.images.map(image => image.year).filter((value, index, array) => array.indexOf(value) === index)
+            return this.images
+                .map(image => image.year)
+                .filter((value, index, array) => array.indexOf(value) === index)
+                .sort()
+                .reverse()
         }
     },
     data() {

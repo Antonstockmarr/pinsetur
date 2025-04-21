@@ -1,8 +1,8 @@
 ﻿using Azure;
 using Azure.Data.Tables;
-using stockmarrdk_api.Models;
+using Pinsetur.Webapi.Models;
 
-namespace stockmarrdk_api.TableEntities
+namespace Pinsetur.Webapi.TableEntities
 {
     public class ImageEntity : ITableEntity
     {
@@ -11,6 +11,8 @@ namespace stockmarrdk_api.TableEntities
         public string Extension { get; set; } = "";
         public string? Description { get; set; }
         public string? UploadedBy { get; set; }
+        public DateTime? UploadedAt { get; set; }
+        public DateTime? LastModified { get; set; }
 
         // ITableEntity Properties
         public virtual string PartitionKey { get; set; } = "Image";
@@ -28,11 +30,21 @@ namespace stockmarrdk_api.TableEntities
             RowKey = Id.ToString();
             Description = image.Description;
             UploadedBy = image.UploadedBy;
+            UploadedAt = image.UploadedAt;
         }
 
         public Image ToImage(string containerUri)
-        {   
-            return new Image { Id = Id, Year = Year, Extension = Extension, ContainerUri = containerUri, Description = Description, UploadedBy = UploadedBy };
+        {
+            return new Image {
+                Id = Id,
+                Year = Year,
+                Extension = Extension,
+                ContainerUri = containerUri,
+                Description = Description,
+                UploadedBy = UploadedBy,
+                UploadedAt = UploadedAt ?? Timestamp?.UtcDateTime,
+                LastUpdated = Timestamp?.UtcDateTime
+            };
         }
     }
 }

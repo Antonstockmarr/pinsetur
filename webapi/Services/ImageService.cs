@@ -1,12 +1,12 @@
-﻿using stockmarrdk_api.Common;
-using stockmarrdk_api.Dto;
-using stockmarrdk_api.Models;
-using stockmarrdk_api.Repository;
+﻿using Pinsetur.Webapi.Common;
+using Pinsetur.Webapi.Dto;
+using Pinsetur.Webapi.Models;
+using Pinsetur.Webapi.Repository;
 using System.Drawing.Drawing2D;
 using System.Drawing.Imaging;
 using _Drawing = System.Drawing;
 
-namespace stockmarrdk_api.Services
+namespace Pinsetur.Webapi.Services
 {
     [System.Runtime.Versioning.SupportedOSPlatform("windows")]
     public class ImageService : IImageService
@@ -58,18 +58,26 @@ namespace stockmarrdk_api.Services
 
         public List<Image> GetAllImages()
         {
-            return _imageRepository.GetAllImages();
+            return _imageRepository
+                .GetAllImages()
+                .OrderBy(image => image.UploadedAt)
+                .ToList();
         }
 
         public List<Image> GetAllImagesFromYear(int year)
         {
-            return _imageRepository.GetAllImages().FindAll(image => image.Year == year);
+            return _imageRepository
+                .GetAllImages()
+                .FindAll(image => image.Year == year)
+                .OrderBy(image => image.UploadedAt)
+                .ToList();
         }
 
         public List<Image> GetAllImagesUploadedByUser(int year, string username)
         {
             return GetAllImagesFromYear(year)
                 .Where(image => image.UploadedBy != null && image.UploadedBy.Equals(username))
+                .OrderBy(image => image.UploadedAt)
                 .ToList();
         }
 

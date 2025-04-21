@@ -1,4 +1,4 @@
-﻿namespace stockmarrdk_api.Common
+﻿namespace Pinsetur.Webapi.Common
 {
     public static class DateHelper
     {

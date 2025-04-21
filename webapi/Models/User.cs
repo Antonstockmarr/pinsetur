@@ -1,7 +1,7 @@
-﻿using stockmarrdk_api.Common;
-using stockmarrdk_api.Dto;
+﻿using Pinsetur.Webapi.Common;
+using Pinsetur.Webapi.Dto;
 
-namespace stockmarrdk_api.Models
+namespace Pinsetur.Webapi.Models
 {
     public class User
     {

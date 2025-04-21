@@ -1,9 +1,9 @@
 ﻿using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
-using stockmarrdk_api.Dto;
-using stockmarrdk_api.Services;
+using Pinsetur.Webapi.Dto;
+using Pinsetur.Webapi.Services;
 
-namespace stockmarrdk_api.Controllers
+namespace Pinsetur.Webapi.Controllers
 {
     [Route("api/[controller]")]
     [ApiController]
