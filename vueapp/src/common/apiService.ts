@@ -20,7 +20,7 @@ axios.interceptors.response.use(
   response => response,
   async error => {
     const originalRequest = error.config;
-    const isAuthEndpoint = originalRequest?.url?.includes('api/auth') || originalRequest?.url?.includes('api/login');
+    const isAuthEndpoint = originalRequest?.url?.includes('/api/auth') || originalRequest?.url?.includes('/api/login');
 
     if (error.response?.status === 401 && !originalRequest._retry && !isAuthEndpoint) {
       if (isRefreshing) {
@@ -70,7 +70,7 @@ function formFromObject(object: Object) {
 }
 
 class BaseApiService {
-    baseUrl = "api";
+    baseUrl = "/api";
     resource;
   
     constructor(resource : string) {

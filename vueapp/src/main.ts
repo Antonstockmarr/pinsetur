@@ -14,11 +14,15 @@ import '@/reset.css'
 async function initApp() {
     // Attempt silent refresh before the router evaluates any guards.
     // If a valid refresh token cookie exists the user is restored without seeing the login page.
-    const session = await $api.auth.refresh()
-    if (session) {
-        await store.dispatch('setSession', session)
-        const sasToken = await $api.token.get()
-        if (sasToken) await store.dispatch('setSasToken', sasToken)
+    try {
+        const session = await $api.auth.refresh()
+        if (session) {
+            await store.dispatch('setSession', session)
+            const sasToken = await $api.token.get()
+            if (sasToken) await store.dispatch('setSasToken', sasToken)
+        }
+    } catch {
+        // Refresh failed — router guard will redirect to /login
     }
 
     createApp(App)

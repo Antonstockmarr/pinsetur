@@ -30,4 +30,8 @@
     </ProjectReference>
   </ItemGroup>
 
+  <Target Name="BuildFrontend" BeforeTargets="BeforePublish" Condition="'$(Configuration)' == 'Release'">
+    <Exec Command="npm run build" WorkingDirectory="..\vueapp" />
+  </Target>
+
 </Project>
