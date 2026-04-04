@@ -36,13 +36,23 @@
             :style="'border: 2px black solid; box-shadow: 6px 6px 2px 1px rgba(0, 0, 0, .5);'"
         >
             <b-card-header class="gallery-header">
-                <h1 class="gallery-title">Billedgalleri</h1>
-                <b-button class="upload-button" size="lg" variant="primary" @click="() => showUploadImage = true">Upload</b-button>
+                <div class="gallery-header-content">
+                    <h1 class="gallery-title">Billedgalleri</h1>
+
+                    <div class="gallery-toggle">
+                        Mine billeder
+                        <SliderToggle v-model:toggle="galleryFilterMyImages" />
+                    </div>
+
+                    <b-button class="upload-button" size="lg" variant="primary" @click="() => showUploadImage = true">
+                        Upload
+                    </b-button>
+                </div>
             </b-card-header>
             <div class="gallery-display-box">
                 <div v-for="image, index in gallery" :key="image.id" class="image" @click="showGalleryCarousel(index)">
                     <img
-                    :src="(image.thumbUri ?? image.uri) + '?' + token ?? require('@/assets/Loading_icon.gif')"
+                    :src="(image.thumbUri ?? image.uri) + '?' + token"
                     />
                 </div>
             </div>
@@ -76,6 +86,7 @@ import ImageCarousel from '@/components/ImageCarousel.vue';
 import { Image } from '@/Models/Image';
 import { $api } from '@/common/apiService';
 import { defineComponent } from 'vue';
+import SliderToggle from '@/components/SliderToggle.vue';
 
 
 export default defineComponent ({
@@ -85,7 +96,8 @@ export default defineComponent ({
         CalendarCard,
         ContentCard,
         ImageUploadForm,
-        ImageCarousel
+        ImageCarousel,
+        SliderToggle
     },
     props: {
         id: {
@@ -100,6 +112,7 @@ export default defineComponent ({
             coverUri: "" as string,
             locationImageUri: "" as string,
             gallery: [] as Image[] | null,
+            galleryFilterMyImages: false as boolean,
             loading: true as boolean,
             showUploadImage: false as boolean,
             showImageCarousel: false as boolean,
@@ -130,7 +143,7 @@ export default defineComponent ({
     },
     methods: {
         async fetchGallery() {
-            const images = await $api.images.fetch(this.trip?.year);
+            const images = await $api.images.fetch(this.trip?.year, this.galleryFilterMyImages);
             if (images) {
                 this.gallery = images.filter(image =>
                     image.id !== this.trip?.coverImageId &&
@@ -143,6 +156,11 @@ export default defineComponent ({
                 this.selectedImage = index
                 this.showImageCarousel = true
             }
+        }
+    },
+    watch: {
+        galleryFilterMyImages: function() {
+            this.fetchGallery();
         }
     }
 
@@ -273,11 +291,33 @@ export default defineComponent ({
     padding: 30px 30px;
 }
 
+.gallery-header {
+    margin-bottom: 10px;
+}
+
+.gallery-header-content {
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    gap: 20px;
+    flex-wrap: wrap;
+}
+
 .gallery-title {
-    float: left;
     font-size: 32px;
-    line-height: 52px;
     margin: 0;
+    line-height: 52px;
+}
+
+.gallery-toggle {
+    display: flex;
+    align-items: center;
+    gap: 10px;
+    height: 52px;
+}
+
+.upload-button {
+    height: 52px;
 }
 
 .upload-button {

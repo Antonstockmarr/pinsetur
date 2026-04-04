@@ -1,12 +1,13 @@
-﻿using stockmarrdk_api.Dto;
-using stockmarrdk_api.Models;
+﻿using Pinsetur.Webapi.Dto;
+using Pinsetur.Webapi.Models;
 
-namespace stockmarrdk_api.Services
+namespace Pinsetur.Webapi.Services
 {
     public interface IImageService
     {
         List<Image> GetAllImages();
         List<Image> GetAllImagesFromYear(int year);
+        List<Image> GetAllImagesUploadedByUser(int year, string username);
         Image? GetImageFromId(int id);
         Task<ImageData?> GetImageDataFromId(int id);
         Task<Image> UploadImage(ImageUploadDto image, string username);

@@ -1,6 +1,6 @@
-﻿using stockmarrdk_api.Common;
+﻿using Pinsetur.Webapi.Common;
 
-namespace stockmarrdk_api.Dto
+namespace Pinsetur.Webapi.Dto
 {
     public class NewUserDto
     {

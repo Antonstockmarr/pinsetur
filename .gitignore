@@ -8,3 +8,5 @@ webapi.csproj.user
 
 # Include project launch settings0
 !/vueapp/.vscode/launch.json
+
+**/*.pubxml.user

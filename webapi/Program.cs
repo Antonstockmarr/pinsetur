@@ -1,9 +1,9 @@
 using Microsoft.Extensions.Azure;
 using Serilog;
-using stockmarrdk_api.Repository;
+using Pinsetur.Webapi.Repository;
 using System.Reflection;
-using stockmarrdk_api.Common;
-using stockmarrdk_api.Services;
+using Pinsetur.Webapi.Common;
+using Pinsetur.Webapi.Services;
 using System.Text.Json.Serialization;
 using Microsoft.AspNetCore.Authentication.JwtBearer;
 using Microsoft.IdentityModel.Tokens;
@@ -11,9 +11,10 @@ using System.Text;
 using System.Security.Claims;
 using Microsoft.AspNetCore.Authorization;
 using Microsoft.Extensions.Options;
-using stockmarrdk_api;
+using Pinsetur.Webapi;
 using Swashbuckle.AspNetCore.SwaggerGen;
 using Microsoft.ApplicationInsights.Extensibility;
+using System.Linq;
 
 StaticLogger.EnsureInitialized();
 Log.Information("Azure Storage API Booting Up...");
@@ -44,6 +45,7 @@ try
     });
 
     // Configure Authorization
+    builder.Services.AddHttpContextAccessor();
     builder.Services.AddAuthorization(options =>
     {
         var adminPolicy = new AuthorizationPolicyBuilder()
@@ -57,6 +59,7 @@ try
         {
             policy.RequireAuthenticatedUser();
         });
+
     });
 
     builder.Services.AddControllers()
@@ -111,6 +114,8 @@ try
     builder.Services.AddTransient<ITripRepository, TripRepository>();
     builder.Services.AddTransient<ITokenService, TokenService>();
     builder.Services.AddTransient<ITokenRepository, TokenRepository>();
+    builder.Services.AddTransient<IRefreshTokenRepository, RefreshTokenRepository>();
+    builder.Services.AddTransient<IRefreshTokenService, RefreshTokenService>();
     builder.Services.AddTransient<ILoginService, LoginService>();
     builder.Services.AddTransient<IUserService, UserService>();
     builder.Services.AddTransient<IUserRepository, UserRepository>();
@@ -138,6 +143,7 @@ try
     app.UseAuthorization();
 
     app.MapControllers();
+    app.MapFallbackToFile("index.html");
 
     app.Run();
 

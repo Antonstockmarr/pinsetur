@@ -1,12 +1,12 @@
-﻿using stockmarrdk_api.Dto;
-using stockmarrdk_api.Models;
-using stockmarrdk_api.Repository;
+﻿using Pinsetur.Webapi.Dto;
+using Pinsetur.Webapi.Models;
+using Pinsetur.Webapi.Repository;
 using System.IdentityModel.Tokens.Jwt;
 using System.Security.Claims;
 using System.Security.Cryptography;
 using Microsoft.IdentityModel.Tokens;
 
-namespace stockmarrdk_api.Services
+namespace Pinsetur.Webapi.Services
 {
     public class LoginService : ILoginService
     {
@@ -70,7 +70,7 @@ namespace stockmarrdk_api.Services
                 issuer: _jwtIssuer,
                 audience: _jwtAudience,
                 claims: claims,
-                expires: DateTime.UtcNow.AddDays(1),
+                expires: DateTime.UtcNow.AddMinutes(30),
                 signingCredentials: cred
             );
             var jwt = new JwtSecurityTokenHandler().WriteToken(token);

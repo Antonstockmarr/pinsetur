@@ -1,6 +1,6 @@
-﻿using stockmarrdk_api.Models;
+﻿using Pinsetur.Webapi.Models;
 
-namespace stockmarrdk_api.Repository
+namespace Pinsetur.Webapi.Repository
 {
     public interface IImageDataRepository
     {

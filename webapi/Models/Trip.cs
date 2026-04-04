@@ -1,7 +1,7 @@
-﻿using stockmarrdk_api.Common;
+﻿using Pinsetur.Webapi.Common;
 using System.ComponentModel.DataAnnotations;
 
-namespace stockmarrdk_api.Models
+namespace Pinsetur.Webapi.Models
 {
     public class Trip
     {

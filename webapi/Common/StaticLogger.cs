@@ -1,6 +1,6 @@
 ﻿using Serilog;
 
-namespace stockmarrdk_api.Common
+namespace Pinsetur.Webapi.Common
 {
     public class StaticLogger
     {

@@ -1,6 +1,6 @@
-﻿using stockmarrdk_api.Repository;
+﻿using Pinsetur.Webapi.Repository;
 
-namespace stockmarrdk_api.Services
+namespace Pinsetur.Webapi.Services
 {
     public class TokenService : ITokenService
     {

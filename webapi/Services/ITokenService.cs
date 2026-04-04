@@ -1,4 +1,4 @@
-﻿namespace stockmarrdk_api.Services
+﻿namespace Pinsetur.Webapi.Services
 {
     public interface ITokenService
     {

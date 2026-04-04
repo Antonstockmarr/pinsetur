@@ -7,7 +7,7 @@
         <div class="gallery-display-box">
             <div v-for="image in images" :key="image.id" class="image" @click="select(image)">
                 <img
-                :src="image.uri + '?' + token ?? require('@/assets/Loading_icon.gif')"
+                :src="(image.thumbUri ?? image.uri) + '?' + token"
                 />
             </div>
         </div>

@@ -1,4 +1,4 @@
-﻿namespace stockmarrdk_api.Dto
+﻿namespace Pinsetur.Webapi.Dto
 {
     public class ImageUploadDto
     {

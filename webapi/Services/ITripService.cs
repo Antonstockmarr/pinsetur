@@ -1,7 +1,7 @@
-﻿using stockmarrdk_api.Dto;
-using stockmarrdk_api.Models;
+﻿using Pinsetur.Webapi.Dto;
+using Pinsetur.Webapi.Models;
 
-namespace stockmarrdk_api.Services
+namespace Pinsetur.Webapi.Services
 {
     public interface ITripService
     {

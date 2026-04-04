@@ -1,6 +1,6 @@
-﻿using stockmarrdk_api.Dto;
+﻿using Pinsetur.Webapi.Dto;
 
-namespace stockmarrdk_api.Models
+namespace Pinsetur.Webapi.Models
 {
     public class Image
     {
@@ -14,6 +14,8 @@ namespace stockmarrdk_api.Models
         public string ThumbUri => ContainerUri + "/" + ThumbName;
         public string? Description { get; set; } 
         public string? UploadedBy { get; set; }
+        public DateTime? UploadedAt { get; set; }
+        public DateTime? LastUpdated {  get; set; }
 
         public ImageDto ToImageDto()
         {
