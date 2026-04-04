@@ -60,7 +60,7 @@ namespace Pinsetur.Webapi.Controllers
         {
             var token = Request.Cookies[CookieName];
             if (token is not null)
-                _refreshTokenService.Revoke(token);
+                _refreshTokenService.Delete(token);
 
             Response.Cookies.Delete(CookieName);
             return Ok();

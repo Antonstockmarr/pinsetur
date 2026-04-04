@@ -8,7 +8,6 @@ namespace Pinsetur.Webapi.TableEntities
     {
         public string UserName { get; set; } = string.Empty;
         public DateTime ExpiresAt { get; set; }
-        public bool Revoked { get; set; }
 
         // ITableEntity Properties
         public string PartitionKey { get; set; } = "RefreshToken";
@@ -23,7 +22,6 @@ namespace Pinsetur.Webapi.TableEntities
             RowKey = token.Token;
             UserName = token.UserName;
             ExpiresAt = token.ExpiresAt;
-            Revoked = token.Revoked;
         }
 
         public RefreshToken ToRefreshToken()
@@ -32,8 +30,7 @@ namespace Pinsetur.Webapi.TableEntities
             {
                 Token = RowKey,
                 UserName = UserName,
-                ExpiresAt = ExpiresAt,
-                Revoked = Revoked
+                ExpiresAt = ExpiresAt
             };
         }
     }

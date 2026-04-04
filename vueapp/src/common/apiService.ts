@@ -20,7 +20,7 @@ axios.interceptors.response.use(
   response => response,
   async error => {
     const originalRequest = error.config;
-    const isAuthEndpoint = originalRequest?.url?.includes('/api/auth') || originalRequest?.url?.includes('/api/login');
+    const isAuthEndpoint = originalRequest?.url?.includes('api/auth') || originalRequest?.url?.includes('api/login');
 
     if (error.response?.status === 401 && !originalRequest._retry && !isAuthEndpoint) {
       if (isRefreshing) {
@@ -45,7 +45,7 @@ axios.interceptors.response.use(
       } catch (err) {
         processQueue(err, null);
         store.dispatch('logOut');
-        window.location.href = '/#/login';
+        window.location.href = '/login';
         return Promise.reject(err);
       } finally {
         isRefreshing = false;

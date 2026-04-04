@@ -6,6 +6,6 @@ namespace Pinsetur.Webapi.Services
     {
         string CreateRefreshToken(string userName);
         (SessionDto session, string newToken)? Refresh(string token);
-        void Revoke(string token);
+        void Delete(string token);
     }
 }

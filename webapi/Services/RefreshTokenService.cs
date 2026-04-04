@@ -33,24 +33,24 @@ namespace Pinsetur.Webapi.Services
         public (SessionDto session, string newToken)? Refresh(string token)
         {
             var refreshToken = _refreshTokenRepository.Get(token);
-            if (refreshToken is null || refreshToken.Revoked || refreshToken.ExpiresAt < DateTime.UtcNow)
+            if (refreshToken is null || refreshToken.ExpiresAt < DateTime.UtcNow)
                 return null;
 
             var user = _userRepository.GetUserFromUserName(refreshToken.UserName);
             if (user is null)
                 return null;
 
-            // Rotate: revoke old token, issue new one
-            _refreshTokenRepository.Revoke(token);
+            // Rotate: delete old token, issue new one
+            _refreshTokenRepository.Delete(token);
             var newToken = _refreshTokenRepository.Create(user.UserName);
 
             var session = new SessionDto { User = user.ToUserDto(), Jwt = CreateJwt(user) };
             return (session, newToken.Token);
         }
 
-        public void Revoke(string token)
+        public void Delete(string token)
         {
-            _refreshTokenRepository.Revoke(token);
+            _refreshTokenRepository.Delete(token);
         }
 
         private string CreateJwt(User user)

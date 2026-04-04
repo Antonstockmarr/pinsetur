@@ -6,6 +6,6 @@ namespace Pinsetur.Webapi.Repository
     {
         RefreshToken Create(string userName);
         RefreshToken? Get(string token);
-        void Revoke(string token);
+        void Delete(string token);
     }
 }

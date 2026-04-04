@@ -21,8 +21,7 @@ namespace Pinsetur.Webapi.Repository
             {
                 Token = Guid.NewGuid().ToString(),
                 UserName = userName,
-                ExpiresAt = DateTime.UtcNow.AddDays(30),
-                Revoked = false
+                ExpiresAt = DateTime.UtcNow.AddDays(30)
             };
             _tableClient.AddEntity(new RefreshTokenEntity(token));
             return token;
@@ -36,16 +35,10 @@ namespace Pinsetur.Webapi.Repository
             return entity?.ToRefreshToken();
         }
 
-        public void Revoke(string token)
+        public void Delete(string token)
         {
-            var entity = _tableClient
-                .Query<RefreshTokenEntity>(e => e.PartitionKey == "RefreshToken" && e.RowKey == token)
-                .SingleOrDefault();
-            if (entity is not null)
-            {
-                entity.Revoked = true;
-                _tableClient.UpdateEntity(entity, entity.ETag, TableUpdateMode.Replace);
-            }
+            _tableClient.DeleteEntity(partitionKey: "RefreshToken", rowKey: token);
         }
+
     }
 }
