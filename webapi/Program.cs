@@ -114,6 +114,8 @@ try
     builder.Services.AddTransient<ITripRepository, TripRepository>();
     builder.Services.AddTransient<ITokenService, TokenService>();
     builder.Services.AddTransient<ITokenRepository, TokenRepository>();
+    builder.Services.AddTransient<IRefreshTokenRepository, RefreshTokenRepository>();
+    builder.Services.AddTransient<IRefreshTokenService, RefreshTokenService>();
     builder.Services.AddTransient<ILoginService, LoginService>();
     builder.Services.AddTransient<IUserService, UserService>();
     builder.Services.AddTransient<IUserRepository, UserRepository>();

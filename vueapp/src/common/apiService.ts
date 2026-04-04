@@ -6,6 +6,56 @@ import { Session } from "@/Models/Session";
 import { User } from "@/Models/User";
 import { NewTrip } from "@/Models/NewTrip";
 
+// Axios interceptor: silently refresh JWT on 401, retry original request once.
+// Queues concurrent requests while a refresh is in flight.
+let isRefreshing = false;
+let failedQueue: Array<{ resolve: (token: string) => void; reject: (err: unknown) => void }> = [];
+
+const processQueue = (error: unknown, token: string | null = null) => {
+  failedQueue.forEach(p => error ? p.reject(error) : p.resolve(token!));
+  failedQueue = [];
+};
+
+axios.interceptors.response.use(
+  response => response,
+  async error => {
+    const originalRequest = error.config;
+    const isAuthEndpoint = originalRequest?.url?.includes('/api/auth') || originalRequest?.url?.includes('/api/login');
+
+    if (error.response?.status === 401 && !originalRequest._retry && !isAuthEndpoint) {
+      if (isRefreshing) {
+        return new Promise<string>((resolve, reject) => {
+          failedQueue.push({ resolve, reject });
+        }).then(token => {
+          originalRequest.headers['Authorization'] = 'bearer ' + token;
+          return axios(originalRequest);
+        });
+      }
+
+      originalRequest._retry = true;
+      isRefreshing = true;
+
+      try {
+        const response = await axios.post<Session>('api/auth/refresh');
+        const session = response.data;
+        store.dispatch('setSession', session);
+        processQueue(null, session.jwt);
+        originalRequest.headers['Authorization'] = 'bearer ' + session.jwt;
+        return axios(originalRequest);
+      } catch (err) {
+        processQueue(err, null);
+        store.dispatch('logOut');
+        window.location.href = '/#/login';
+        return Promise.reject(err);
+      } finally {
+        isRefreshing = false;
+      }
+    }
+
+    return Promise.reject(error);
+  }
+);
+
 function formFromObject(object: Object) {
   const form = new FormData()
   Object.entries(object).forEach(([key, value]) => {
@@ -204,19 +254,29 @@ class BaseApiService {
 
   class AuthService extends BaseApiService {
     constructor() {
-        super("login");
+      super("auth");
     }
 
-    async login(userName: string, password: string) : Promise<Session | null> {
+    async login(userName: string, password: string): Promise<Session | null> {
       const form = new FormData()
       form.append('userName', userName)
       form.append('password', password)
-      return axios.post<Session>(super.getUrl(), form)
+      return axios.post<Session>(super.getUrl("login"), form)
         .then(response => response.data)
         .catch(err => {
           this.handleErrors(err);
           return null;
         })
+    }
+
+    async refresh(): Promise<Session | null> {
+      return axios.post<Session>(super.getUrl("refresh"))
+        .then(response => response.data)
+        .catch(() => null);
+    }
+
+    async logout(): Promise<void> {
+      await axios.post(super.getUrl("logout")).catch(() => null);
     }
   }
   

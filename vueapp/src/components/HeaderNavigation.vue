@@ -11,11 +11,13 @@
   
 <script lang="ts">
 import { defineComponent } from 'vue'
+import { $api } from '../common/apiService'
 
 export default defineComponent({
   name: 'HeaderNavigation',
   methods: {
     async logOut() {
+      await $api.auth.logout()
       await this.$store.dispatch('logOut')
       location.reload()
     },

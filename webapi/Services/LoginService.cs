@@ -70,7 +70,7 @@ namespace Pinsetur.Webapi.Services
                 issuer: _jwtIssuer,
                 audience: _jwtAudience,
                 claims: claims,
-                expires: DateTime.UtcNow.AddDays(1),
+                expires: DateTime.UtcNow.AddMinutes(30),
                 signingCredentials: cred
             );
             var jwt = new JwtSecurityTokenHandler().WriteToken(token);
