@@ -42,7 +42,7 @@
         </router-link>
         <p class="upload-prompt">
           {{ config?.uploadPrompt }}
-          <router-link :to="`/trips/${collageTrip.year}`">Upload dem her.</router-link>
+          <router-link :to="`/trips/${collageTrip.year}?upload=true`">Upload dem her.</router-link>
         </p>
       </div>
 

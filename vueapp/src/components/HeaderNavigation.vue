@@ -6,8 +6,8 @@
 
       <!-- Desktop nav -->
       <div class="desktop-nav">
-        <div class="navigation-button item" @click="navigate('/trips/past')">Tidligere ture</div>
-        <div class="navigation-button item" @click="navigate('/trips/future')">Kommende ture</div>
+        <div class="navigation-button item" v-if="loggedIn" @click="navigate('/trips/past')">Tidligere ture</div>
+        <div class="navigation-button item" v-if="loggedIn" @click="navigate('/trips/future')">Kommende ture</div>
         <div class="navigation-button item" v-if="adminAccess" @click="navigate('/admin')">Admin</div>
         <div class="navigation-button logout" v-if="loggedIn" @click="logOut">Log ud</div>
       </div>
@@ -22,8 +22,8 @@
 
     <!-- Mobile dropdown -->
     <div class="mobile-menu" v-if="menuOpen" @click="menuOpen = false">
-      <div class="mobile-item" @click="navigate('/trips/past')">Tidligere ture</div>
-      <div class="mobile-item" @click="navigate('/trips/future')">Kommende ture</div>
+      <div class="mobile-item" v-if="loggedIn" @click="navigate('/trips/past')">Tidligere ture</div>
+      <div class="mobile-item" v-if="loggedIn" @click="navigate('/trips/future')">Kommende ture</div>
       <div class="mobile-item" v-if="adminAccess" @click="navigate('/admin')">Admin</div>
       <div class="mobile-item" v-if="loggedIn" @click="logOut">Log ud</div>
     </div>

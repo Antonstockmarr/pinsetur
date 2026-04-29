@@ -140,6 +140,10 @@ export default defineComponent ({
         }
         await this.fetchGallery()
         this.loading = false
+        if (this.$route.query.upload === 'true') {
+            this.showUploadImage = true
+            this.$router.replace({ query: {} })
+        }
     },
     methods: {
         async fetchGallery() {
