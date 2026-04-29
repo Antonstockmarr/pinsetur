@@ -76,5 +76,8 @@ export default defineComponent({
 
 </script>
 <style scoped>
-
+:deep(.card-img-top) {
+    aspect-ratio: 16 / 9;
+    object-fit: cover;
+}
 </style>

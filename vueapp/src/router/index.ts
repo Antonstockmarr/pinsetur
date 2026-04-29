@@ -3,6 +3,8 @@ import HomePage from "@/pages/HomePage.vue"
 import TripPage from "@/pages/TripPage.vue"
 import LoginPage from "@/pages/LoginPage.vue"
 import AdminPage from "@/pages/AdminPage.vue"
+import PastTripsPage from "@/pages/PastTripsPage.vue"
+import FutureTripsPage from "@/pages/FutureTripsPage.vue"
 
 import { store } from '@/store'
 
@@ -13,6 +15,22 @@ const routes = [
       component: HomePage,
       meta: {
         title: "Pinsetur"
+      }
+    },
+    {
+      path: '/trips/past',
+      name: 'past-trips',
+      component: PastTripsPage,
+      meta: {
+        title: "Pinsetur - Tidligere ture"
+      }
+    },
+    {
+      path: '/trips/future',
+      name: 'future-trips',
+      component: FutureTripsPage,
+      meta: {
+        title: "Pinsetur - Kommende ture"
       }
     },
     {
@@ -44,7 +62,7 @@ const routes = [
 const router = createRouter({
     history: createWebHistory(),
     routes,
-    scrollBehavior(to, from, savedPosition) {
+    scrollBehavior(_to, _from, _savedPosition) {
       // always scroll to top
       return { top: 0 }
     }

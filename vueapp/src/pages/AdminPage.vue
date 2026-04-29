@@ -22,6 +22,9 @@
                 <b-tab title="Funktioner">
                     <AdminUtilities />
                 </b-tab>
+                <b-tab title="Forside">
+                    <EditHomepageForm />
+                </b-tab>
             </b-tabs>
         </b-card>
     </div>
@@ -38,6 +41,7 @@ import { Trip } from '@/Models/Trip';
 import ImageTable from '@/components/Admin/ImageTable.vue';
 import { Image } from '@/Models/Image';
 import AdminUtilities from '@/components/Admin/AdminUtilities.vue';
+import EditHomepageForm from '@/components/Admin/EditHomepageForm.vue';
 
 export default defineComponent ({
     name: "AdminPage",
@@ -45,7 +49,8 @@ export default defineComponent ({
     UserTable,
     TripTable,
     ImageTable,
-    AdminUtilities
+    AdminUtilities,
+    EditHomepageForm
 },
     data() {
         return {

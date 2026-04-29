@@ -1,5 +1,6 @@
 import { Image } from "@/Models/Image";
 import { Trip } from "@/Models/Trip";
+import { HomepageConfig } from "@/Models/HomepageConfig";
 import axios from 'axios'
 import { store } from "@/store"
 import { Session } from "@/Models/Session";
@@ -280,6 +281,30 @@ class BaseApiService {
     }
   }
   
+  class HomepageConfigApiService extends BaseApiService {
+    constructor() {
+      super("homepageconfig");
+    }
+
+    async get(): Promise<HomepageConfig | null> {
+      return axios.get<HomepageConfig>(super.getUrl(), { headers: this.getAuthorizationHeaders() })
+        .then(response => response.data)
+        .catch(err => {
+          this.handleErrors(err);
+          return null;
+        });
+    }
+
+    async save(config: HomepageConfig): Promise<HomepageConfig | null> {
+      return axios.patch<HomepageConfig>(super.getUrl(), config, { headers: this.getAuthorizationHeaders() })
+        .then(response => response.data)
+        .catch(err => {
+          this.handleErrors(err);
+          return null;
+        });
+    }
+  }
+
   class UserService extends BaseApiService {
     constructor() {
       super("users");
@@ -364,5 +389,6 @@ class BaseApiService {
     trips: new TripsApiService(),
     token: new TokenService(),
     auth: new AuthService(),
-    users: new UserService()
+    users: new UserService(),
+    homepageConfig: new HomepageConfigApiService()
   }

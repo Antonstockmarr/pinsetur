@@ -119,6 +119,8 @@ try
     builder.Services.AddTransient<ILoginService, LoginService>();
     builder.Services.AddTransient<IUserService, UserService>();
     builder.Services.AddTransient<IUserRepository, UserRepository>();
+    builder.Services.AddTransient<IHomepageConfigRepository, HomepageConfigRepository>();
+    builder.Services.AddTransient<IHomepageConfigService, HomepageConfigService>();
     Log.Information("Services has been successfully added...");
 
     var app = builder.Build();

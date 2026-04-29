@@ -2,14 +2,5 @@
     "Login": {
         "LoginFailed": "Login fejlede. Prøv igen.",
         "Hint": "Glemt koden? Skriv til Anton på antonstockmarr@gmail.com."
-    },
-    "Homepage": {
-        "Title": "Velkommen til Pinsetur.dk",
-        "Subtitle": "2026: Turen går til Langeland",
-        "Items": [
-            "Pinsen falder d. 22. - 25. maj",
-            "Vi skal til Strandlyst i Lohals på Langeland",
-            "Husk at lægge billeder op fra turerne, så vi kan dele dem med hinanden"
-        ]
     }
 }
