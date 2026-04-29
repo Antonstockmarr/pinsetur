@@ -1,9 +1,9 @@
 <template>
   <div class="future-trips">
     <h1>Kommende ture</h1>
-    <BCardGroup deck v-if="futureTrips.length > 0">
+    <div class="trip-grid" v-if="futureTrips.length > 0">
       <TripTile v-for="trip in futureTrips" :key="trip.year" :trip="trip" />
-    </BCardGroup>
+    </div>
     <p v-else class="empty">Ingen kommende ture er planlagt endnu.</p>
   </div>
 </template>
@@ -35,6 +35,8 @@ export default defineComponent({
 
 
 <style scoped>
+@import '../colors.css';
+
 .future-trips {
   padding: 36px 30px;
 }
@@ -43,11 +45,34 @@ h1 {
   font-size: 32px;
   font-weight: 300;
   margin-bottom: 30px;
+  color: var(--col4);
+}
+
+.trip-grid {
+  display: grid;
+  grid-template-columns: repeat(3, 1fr);
+  gap: 16px;
 }
 
 .empty {
   color: #888;
   font-size: 18px;
+}
+
+@media only screen and (max-width: 1000px) {
+  .trip-grid {
+    grid-template-columns: repeat(2, 1fr);
+  }
+}
+
+@media only screen and (max-width: 600px) {
+  .future-trips {
+    padding: 28px 16px;
+  }
+
+  .trip-grid {
+    grid-template-columns: 1fr;
+  }
 }
 
 @media only screen and (min-width: 1000px) {

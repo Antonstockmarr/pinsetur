@@ -23,44 +23,34 @@
             <p>{{ trip?.address }}</p>
             <p>{{ trip?.description }}</p>
         </ContentCard>
-        <ContentCard class="location-image">
-            <img v-if="trip?.locationImageId || loading" :src="loading ? require('@/assets/Loading_icon.gif') : locationImageUri">
-            <p v-else>Billede af stedet mangler</p>
-        </ContentCard>
         <ContentCard class="map">
             <GoogleMap :address="trip?.address" v-if="trip?.address"></GoogleMap>
             <img v-else-if="loading" :src="require('@/assets/Loading_icon.gif')">
             <p v-else>Addresse mangler</p>
         </ContentCard>
+        <ContentCard class="location-image" v-if="locationImageUri">
+            <img :src="locationImageUri">
+        </ContentCard>
     </div>
 
-    <div class="image-gallery">
-        <b-card
-            v-if="gallery"
-            :style="'border: 2px black solid; box-shadow: 6px 6px 2px 1px rgba(0, 0, 0, .5);'"
-        >
-            <b-card-header class="gallery-header">
-                <div class="gallery-header-content">
-                    <h1 class="gallery-title">Billedgalleri</h1>
-
-                    <div class="gallery-toggle">
-                        Mine billeder
-                        <SliderToggle v-model:toggle="galleryFilterMyImages" />
-                    </div>
-
-                    <b-button class="upload-button" size="lg" variant="primary" @click="() => showUploadImage = true">
-                        Upload
-                    </b-button>
+    <div class="image-gallery" v-if="gallery">
+        <div class="gallery-header">
+            <h2 class="gallery-title">Billedgalleri</h2>
+            <div class="gallery-actions">
+                <div class="gallery-toggle">
+                    Mine billeder
+                    <SliderToggle v-model:toggle="galleryFilterMyImages" />
                 </div>
-            </b-card-header>
-            <div class="gallery-display-box">
-                <div v-for="image, index in gallery" :key="image.id" class="image" @click="showGalleryCarousel(index)">
-                    <img
-                    :src="(image.thumbUri ?? image.uri) + '?' + token"
-                    />
-                </div>
+                <button class="upload-button" @click="() => showUploadImage = true">
+                    Upload
+                </button>
             </div>
-        </b-card>
+        </div>
+        <div class="gallery-grid">
+            <div v-for="image, index in gallery" :key="image.id" class="gallery-item" @click="showGalleryCarousel(index)">
+                <img :src="(image.thumbUri ?? image.uri) + '?' + token" />
+            </div>
+        </div>
     </div>
 
     <ImageUploadForm
@@ -127,7 +117,6 @@ export default defineComponent ({
     },
     async mounted() {
         this.loading = true
-        this.locationImageUri = require('@/assets/Loading_icon.gif')
         this.token = this.$store.getters.getSasToken
         this.trip = await $api.trips.get(Number.parseInt(this.id));
 
@@ -138,7 +127,11 @@ export default defineComponent ({
         if (this.trip?.locationImageId) {
             const locationImage = await $api.images.get(this.trip.locationImageId)
             if (locationImage) {
-                this.locationImageUri = locationImage.uri + '?' + this.token;
+                if (this.heroImages.length === 0) {
+                    this.heroImages = [locationImage.uri + '?' + this.token];
+                } else {
+                    this.locationImageUri = locationImage.uri + '?' + this.token;
+                }
             }
         }
         await this.fetchGallery()
@@ -226,8 +219,18 @@ export default defineComponent ({
 }
 
 .map {
-    min-height: 500px;
+    min-height: 400px;
+}
+
+.location-image {
     grid-column: 1 / span 2;
+}
+
+.location-image img {
+    width: 100%;
+    max-height: 400px;
+    object-fit: cover;
+    display: block;
 }
 
 .description {
@@ -245,9 +248,9 @@ export default defineComponent ({
 
     .grid {
         grid-template-columns: 1fr;
-    }    
+    }
 
-.map {
+    .location-image {
         grid-column: 1;
     }
 }
@@ -263,74 +266,95 @@ export default defineComponent ({
     
 }
 
-.gallery-display-box {
-    display: flex;
-    flex-wrap: wrap;
-    justify-content: space-between;
-    row-gap: 20px;
-}
-
-.image {
-    cursor: pointer;
-    flex-shrink: 1;
-    transition-duration: 0.2s;
-    border-radius: 10px;
-}
-
-.image:hover {
-    box-shadow: 6px 6px 2px 1px rgba(0, 0, 0, .5);
-}
-
-.image img {
-    border-radius: 10px;
-    border: 1px solid black;
-    width: auto;
-    max-height: 200px;
-    max-width: 100%;
-}
-
 .image-gallery {
-    padding: 30px 30px;
+    padding: 30px;
 }
 
 .gallery-header {
-    margin-bottom: 10px;
-}
-
-.gallery-header-content {
     display: flex;
     align-items: center;
     justify-content: space-between;
-    gap: 20px;
     flex-wrap: wrap;
+    gap: 16px;
+    margin-bottom: 20px;
 }
 
 .gallery-title {
-    font-size: 32px;
+    font-size: 28px;
+    font-weight: 300;
     margin: 0;
-    line-height: 52px;
+    color: var(--col4);
+}
+
+.gallery-actions {
+    display: flex;
+    align-items: center;
+    gap: 20px;
 }
 
 .gallery-toggle {
     display: flex;
     align-items: center;
     gap: 10px;
-    height: 52px;
+    font-size: 14px;
+    color: #555;
 }
 
 .upload-button {
-    height: 52px;
+    padding: 10px 22px;
+    font-size: 13px;
+    font-weight: 500;
+    letter-spacing: 1.5px;
+    text-transform: uppercase;
+    background-color: var(--col4);
+    color: white;
+    border: none;
+    border-radius: 3px;
+    cursor: pointer;
+    transition: background-color 0.2s ease;
 }
 
-.upload-button {
-    float: right;
-    height: 52px;
+.upload-button:hover {
+    background-color: var(--col5);
 }
 
-.gallery-header::after { 
-   content: " ";
-   display: block; 
-   height: 0; 
-   clear: both;
+.gallery-grid {
+    display: grid;
+    grid-template-columns: repeat(4, 1fr);
+    gap: 4px;
+}
+
+.gallery-item {
+    cursor: pointer;
+    overflow: hidden;
+    aspect-ratio: 1 / 1;
+}
+
+.gallery-item img {
+    width: 100%;
+    height: 100%;
+    object-fit: cover;
+    display: block;
+    transition: transform 0.35s ease;
+}
+
+.gallery-item:hover img {
+    transform: scale(1.05);
+}
+
+@media only screen and (max-width: 1000px) {
+    .gallery-grid {
+        grid-template-columns: repeat(3, 1fr);
+    }
+}
+
+@media only screen and (max-width: 600px) {
+    .image-gallery {
+        padding: 20px 16px;
+    }
+
+    .gallery-grid {
+        grid-template-columns: repeat(2, 1fr);
+    }
 }
 </style>
