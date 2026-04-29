@@ -1,4 +1,11 @@
 <template>
+    <HeroSection
+        v-if="trip"
+        :images="heroImages"
+        :title="trip.location"
+        :dates="formatDateRange(trip.startDate, trip.endDate)"
+    />
+
     <div class="trip-header">
         <div class="back-button">
             <b-button style="height: 65px;" @click="$router.back()">
@@ -11,9 +18,6 @@
         </div>
     </div>
     <div class="grid">
-        <ContentCard class="banner-image" v-if="trip?.coverImageId">
-            <img :src="coverUri">
-        </ContentCard>
         <ContentCard class="description">
             <h1 v-if="trip">{{ trip?.location + ($store.getters.windowWidthLessThan600px ? ` (${trip?.year})` : "") }}</h1>
             <p>{{ trip?.address }}</p>
@@ -83,6 +87,7 @@ import CalendarCard from '@/components/CalendarCard.vue';
 import ContentCard from '@/components/ContentCard.vue'
 import ImageUploadForm from '@/components/ImageUploadForm.vue';
 import ImageCarousel from '@/components/ImageCarousel.vue';
+import HeroSection from '@/components/HeroSection.vue';
 import { Image } from '@/Models/Image';
 import { $api } from '@/common/apiService';
 import { defineComponent } from 'vue';
@@ -97,6 +102,7 @@ export default defineComponent ({
         ContentCard,
         ImageUploadForm,
         ImageCarousel,
+        HeroSection,
         SliderToggle
     },
     props: {
@@ -109,7 +115,7 @@ export default defineComponent ({
         return {
             token: null as string | null,
             trip: null as Trip | null,
-            coverUri: "" as string,
+            heroImages: [] as string[],
             locationImageUri: "" as string,
             gallery: [] as Image[] | null,
             galleryFilterMyImages: false as boolean,
@@ -121,19 +127,16 @@ export default defineComponent ({
     },
     async mounted() {
         this.loading = true
-        this.coverUri = require('@/assets/Loading_icon.gif')
         this.locationImageUri = require('@/assets/Loading_icon.gif')
         this.token = this.$store.getters.getSasToken
         this.trip = await $api.trips.get(Number.parseInt(this.id));
 
         if (this.trip?.coverImageId) {
-            const coverImage = await $api.images.get(this.trip?.coverImageId)
-            if (coverImage) {
-                this.coverUri = coverImage.uri + '?' + this.token;
-            }
+            const coverImage = await $api.images.get(this.trip.coverImageId)
+            if (coverImage) this.heroImages = [coverImage.uri + '?' + this.token];
         }
         if (this.trip?.locationImageId) {
-            const locationImage = await $api.images.get(this.trip?.locationImageId)
+            const locationImage = await $api.images.get(this.trip.locationImageId)
             if (locationImage) {
                 this.locationImageUri = locationImage.uri + '?' + this.token;
             }
@@ -146,6 +149,14 @@ export default defineComponent ({
         }
     },
     methods: {
+        formatDateRange(startDate: string, endDate: string): string {
+            const start = new Date(startDate);
+            const end = new Date(endDate);
+            const opts: Intl.DateTimeFormatOptions = { day: 'numeric', month: 'long' };
+            const s = start.toLocaleDateString('da-DK', opts);
+            const e = end.toLocaleDateString('da-DK', { ...opts, year: 'numeric' });
+            return `${s} – ${e}`;
+        },
         async fetchGallery() {
             const images = await $api.images.fetch(this.trip?.year, this.galleryFilterMyImages);
             if (images) {
@@ -203,15 +214,6 @@ export default defineComponent ({
     margin-right: 15px;
 }
 
-.banner-image {
-    grid-column: 1 / span 2;
-    height: fit-content;
-    
-    & img {
-        width: 100%;
-        height: 100%;
-    }
-}
 
 .location-image img{
     width: 100%;
@@ -245,11 +247,7 @@ export default defineComponent ({
         grid-template-columns: 1fr;
     }    
 
-    .banner-image {
-        grid-column: 1;
-    }
-
-    .map {
+.map {
         grid-column: 1;
     }
 }

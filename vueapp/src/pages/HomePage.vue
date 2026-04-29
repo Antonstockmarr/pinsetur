@@ -1,52 +1,47 @@
 <template>
   <div class="home">
 
-    <!-- HERO -->
-    <div class="hero">
-      <div
-        v-for="(img, idx) in heroImages"
-        :key="idx"
-        class="hero-slide"
-        :class="{ active: idx === currentSlide }"
-        :style="{ backgroundImage: `url(${img})` }"
-      />
-      <div class="hero-gradient" />
-      <div class="hero-content" v-if="featuredTrip">
-        <span class="hero-eyebrow">{{ isFutureTrip ? 'Næste tur' : 'Seneste tur' }}</span>
-        <h1 class="hero-title">{{ featuredTrip.location }}</h1>
-        <p class="hero-dates">{{ formatDateRange(featuredTrip.startDate, featuredTrip.endDate) }}</p>
-        <router-link :to="`/trips/${featuredTrip.year}`" class="hero-link">
+    <!-- HERO — always most recent past trip -->
+    <HeroSection
+      v-if="pastTrip"
+      :images="heroImages"
+      eyebrow="Seneste tur"
+      :title="pastTrip.location"
+      :dates="formatDateRange(pastTrip.startDate, pastTrip.endDate)"
+      :link-to="`/trips/${pastTrip.year}`"
+    />
+
+    <!-- UPCOMING TRIP STRIP -->
+    <div class="upcoming" v-if="futureTrip">
+      <div class="upcoming-inner">
+        <span class="upcoming-eyebrow">Næste tur</span>
+        <h2 class="upcoming-title">{{ futureTrip.location }}</h2>
+        <p class="upcoming-dates">{{ formatDateRange(futureTrip.startDate, futureTrip.endDate) }}</p>
+        <router-link :to="`/trips/${futureTrip.year}`" class="upcoming-link">
           Se turen &rarr;
         </router-link>
       </div>
     </div>
 
-    <!-- CONTENT -->
-    <div class="content" :class="{ 'single-col': collageImages.length === 0 }">
-
-      <div class="welcome">
-        <h2>{{ config?.welcomeTitle }}</h2>
-        <p>{{ config?.welcomeText }}</p>
-      </div>
-
-      <div class="collage" v-if="collageImages.length > 0 && collageTrip">
-        <router-link :to="`/trips/${collageTrip.year}`" class="collage-link">
-          <div class="collage-grid">
-            <img
-              v-for="(img, idx) in collageImages"
-              :key="idx"
-              :src="img"
-              :class="{ 'span-rows': idx === 0 }"
-            />
-          </div>
-        </router-link>
-        <p class="upload-prompt">
-          {{ config?.uploadPrompt }}
-          <router-link :to="`/trips/${collageTrip.year}?upload=true`">Upload dem her.</router-link>
-        </p>
-      </div>
-
+    <!-- WELCOME TEXT -->
+    <div class="welcome" v-if="config?.welcomeTitle || config?.welcomeText">
+      <h2 v-if="config?.welcomeTitle">{{ config.welcomeTitle }}</h2>
+      <p v-if="config?.welcomeText">{{ config.welcomeText }}</p>
     </div>
+
+    <!-- COLLAGE STRIP -->
+    <div class="collage-section" v-if="collageImages.length > 0 && pastTrip">
+      <router-link :to="`/trips/${pastTrip.year}`" class="collage-link">
+        <div class="collage-strip">
+          <img v-for="(img, idx) in collageImages" :key="idx" :src="img" />
+        </div>
+      </router-link>
+      <p class="upload-prompt">
+        {{ config?.uploadPrompt }}
+        <router-link :to="`/trips/${pastTrip.year}?upload=true`">Upload dem her.</router-link>
+      </p>
+    </div>
+
   </div>
 </template>
 
@@ -56,25 +51,19 @@ import { defineComponent } from 'vue';
 import { $api } from '../common/apiService';
 import { Trip } from '@/Models/Trip';
 import { HomepageConfig } from '@/Models/HomepageConfig';
+import HeroSection from '@/components/HeroSection.vue';
 
 export default defineComponent({
   name: 'HomePage',
+  components: { HeroSection },
   data() {
     return {
       config: null as HomepageConfig | null,
-      featuredTrip: null as Trip | null,
-      collageTrip: null as Trip | null,
+      pastTrip: null as Trip | null,
+      futureTrip: null as Trip | null,
       heroImages: [] as string[],
       collageImages: [] as string[],
-      currentSlide: 0,
-      slideInterval: null as ReturnType<typeof setInterval> | null,
     };
-  },
-  computed: {
-    isFutureTrip(): boolean {
-      if (!this.featuredTrip) return false;
-      return new Date(this.featuredTrip.startDate) >= new Date();
-    },
   },
   async mounted() {
     this.config = await $api.homepageConfig.get();
@@ -87,16 +76,13 @@ export default defineComponent({
     const past = trips.filter(t => new Date(t.startDate) < today);
     const future = trips.filter(t => new Date(t.startDate) >= today);
 
-    this.featuredTrip = future[0] ?? past[0] ?? null;
-    this.collageTrip = past[0] ?? null;
+    this.pastTrip = past[0] ?? null;
+    this.futureTrip = future[0] ?? null;
 
     await Promise.all([
       this.loadHeroImages(token),
       this.loadCollageImages(token),
     ]);
-  },
-  beforeUnmount() {
-    if (this.slideInterval) clearInterval(this.slideInterval);
   },
   methods: {
     async loadHeroImages(token: string) {
@@ -108,56 +94,53 @@ export default defineComponent({
           .filter(img => img !== null)
           .map(img => img!.uri + '?' + token);
       } else {
-        if (!this.featuredTrip) return;
-        const ft = this.featuredTrip;
-        const images: string[] = [];
+        if (!this.pastTrip) return;
+        const pt = this.pastTrip;
 
-        if (ft.coverImageId) {
-          const cover = await $api.images.get(ft.coverImageId);
-          if (cover) images.push(cover.uri + '?' + token);
-        }
-
-        const gallery = await $api.images.fetch(ft.year);
+        // Hero uses only gallery images — cover + location are reserved for the collage
+        const gallery = await $api.images.fetch(pt.year);
         if (gallery) {
-          const filtered = gallery.filter(
-            img => img.id !== ft.coverImageId && img.id !== ft.locationImageId
-          );
-          images.push(
-            ...filtered.slice(0, 5 - images.length).map(img => img.uri + '?' + token)
-          );
+          this.heroImages = gallery
+            .filter(img => img.id !== pt.coverImageId && img.id !== pt.locationImageId)
+            .slice(0, 5)
+            .map(img => img.uri + '?' + token);
         }
-
-        this.heroImages = images;
       }
 
-      if (this.heroImages.length > 1) {
-        this.slideInterval = setInterval(() => {
-          this.currentSlide = (this.currentSlide + 1) % this.heroImages.length;
-        }, 5000);
-      }
     },
 
     async loadCollageImages(token: string) {
-      const curatedIds = this.config?.frontpageImageIds ?? [];
+      if (!this.pastTrip) return;
+      const pt = this.pastTrip;
+      const images: string[] = [];
 
-      if (curatedIds.length > 0) {
-        const fetched = await Promise.all(curatedIds.slice(0, 3).map(id => $api.images.get(id)));
-        this.collageImages = fetched
-          .filter(img => img !== null)
-          .map(img => (img!.thumbUri || img!.uri) + '?' + token);
-      } else {
-        if (!this.collageTrip) return;
-        const ct = this.collageTrip;
-        const gallery = await $api.images.fetch(ct.year);
+      // Collage uses the trip's curated images (cover + location) — always different from hero
+      if (pt.coverImageId) {
+        const img = await $api.images.get(pt.coverImageId);
+        if (img) images.push((img.thumbUri || img.uri) + '?' + token);
+      }
+      if (pt.locationImageId && images.length < 3) {
+        const img = await $api.images.get(pt.locationImageId);
+        if (img) images.push((img.thumbUri || img.uri) + '?' + token);
+      }
+
+      // Fill remaining slots from gallery if needed
+      if (images.length < 3) {
+        const curatedIds = new Set(this.config?.frontpageImageIds ?? []);
+        const gallery = await $api.images.fetch(pt.year);
         if (gallery) {
-          const filtered = gallery.filter(
-            img => img.id !== ct.coverImageId && img.id !== ct.locationImageId
+          const remaining = gallery
+            .filter(img => img.id !== pt.coverImageId && img.id !== pt.locationImageId)
+            .filter(img => !curatedIds.has(img.id));
+          images.push(
+            ...remaining
+              .slice(0, 3 - images.length)
+              .map(img => (img.thumbUri || img.uri) + '?' + token)
           );
-          this.collageImages = filtered
-            .slice(0, 3)
-            .map(img => (img.thumbUri || img.uri) + '?' + token);
         }
       }
+
+      this.collageImages = images;
     },
 
     formatDateRange(startDate: string, endDate: string): string {
@@ -176,74 +159,43 @@ export default defineComponent({
 <style scoped>
 @import '../colors.css';
 
-/* ── Hero ────────────────────────────────────────────────── */
-.hero {
-  position: relative;
-  height: calc(100vh - 100px);
-  min-height: 420px;
-  overflow: hidden;
+/* ── Upcoming trip strip ─────────────────────────────────── */
+.upcoming {
   background-color: var(--col4);
+  border-top: 1px solid rgba(255, 255, 255, 0.08);
 }
 
-.hero-slide {
-  position: absolute;
-  inset: 0;
-  background-size: cover;
-  background-position: center;
-  opacity: 0;
-  transition: opacity 1.2s ease-in-out;
+.upcoming-inner {
+  padding: 44px 64px;
 }
 
-.hero-slide.active {
-  opacity: 1;
-}
-
-.hero-gradient {
-  position: absolute;
-  inset: 0;
-  background: linear-gradient(
-    to top,
-    rgba(2, 18, 48, 0.88) 0%,
-    rgba(2, 18, 48, 0.15) 55%,
-    transparent 100%
-  );
-  z-index: 1;
-}
-
-.hero-content {
-  position: absolute;
-  bottom: 64px;
-  left: 64px;
-  z-index: 2;
-}
-
-.hero-eyebrow {
+.upcoming-eyebrow {
   display: block;
   font-size: 11px;
   font-weight: 600;
   letter-spacing: 4px;
   text-transform: uppercase;
   color: var(--col1);
-  margin-bottom: 14px;
+  margin-bottom: 10px;
 }
 
-.hero-title {
-  font-size: 72px;
+.upcoming-title {
+  font-size: 38px;
   font-weight: 300;
-  line-height: 1.05;
   color: white;
-  margin: 0 0 14px;
+  margin: 0 0 8px;
+  line-height: 1.1;
 }
 
-.hero-dates {
-  font-size: 18px;
+.upcoming-dates {
+  font-size: 16px;
   font-weight: 300;
-  letter-spacing: 0.5px;
   color: var(--col2);
-  margin: 0 0 32px;
+  margin: 0 0 22px;
+  letter-spacing: 0.3px;
 }
 
-.hero-link {
+.upcoming-link {
   font-size: 13px;
   font-weight: 500;
   letter-spacing: 2.5px;
@@ -255,31 +207,23 @@ export default defineComponent({
   transition: color 0.2s ease, text-decoration-color 0.2s ease;
 }
 
-.hero-link:hover {
+.upcoming-link:hover {
   color: var(--col1);
   text-decoration-color: var(--col1);
 }
 
-/* ── Content section ─────────────────────────────────────── */
-.content {
-  display: grid;
-  grid-template-columns: 1fr 1fr;
-  gap: 80px;
-  padding: 80px 64px;
+/* ── Welcome ─────────────────────────────────────────────── */
+.welcome {
   background-color: var(--col2);
-  align-items: start;
-}
-
-.content.single-col {
-  grid-template-columns: 1fr;
-  max-width: 680px;
+  padding: 64px;
+  text-align: center;
 }
 
 .welcome h2 {
   font-size: 34px;
   font-weight: 300;
   color: var(--col4);
-  margin: 0 0 22px;
+  margin: 0 0 18px;
   line-height: 1.2;
 }
 
@@ -287,48 +231,47 @@ export default defineComponent({
   font-size: 18px;
   line-height: 1.9;
   color: #3a3a3a;
-  margin: 0;
+  max-width: 660px;
+  margin: 0 auto;
 }
 
-/* ── Collage ─────────────────────────────────────────────── */
+/* ── Collage strip ───────────────────────────────────────── */
+.collage-section {
+  background-color: var(--col2);
+  padding-bottom: 52px;
+}
+
 .collage-link {
   display: block;
   text-decoration: none;
   overflow: hidden;
-  border-radius: 4px;
 }
 
-.collage-grid {
+.collage-strip {
   display: grid;
-  grid-template-columns: 3fr 2fr;
-  grid-template-rows: 1fr 1fr;
-  gap: 4px;
-  aspect-ratio: 4 / 3;
-  overflow: hidden;
-  border-radius: 4px;
+  grid-template-columns: repeat(3, 1fr);
+  gap: 3px;
 }
 
-.collage-grid img {
+.collage-strip img {
   width: 100%;
-  height: 100%;
+  aspect-ratio: 4 / 3;
   object-fit: cover;
   display: block;
   transition: transform 0.5s ease;
 }
 
-.collage-grid img.span-rows {
-  grid-row: 1 / span 2;
-}
-
-.collage-link:hover .collage-grid img {
-  transform: scale(1.04);
+.collage-link:hover .collage-strip img {
+  transform: scale(1.03);
 }
 
 .upload-prompt {
-  margin-top: 16px;
+  text-align: center;
+  margin-top: 18px;
   font-size: 14px;
   color: #888;
   line-height: 1.7;
+  padding: 0 24px;
 }
 
 .upload-prompt a {
@@ -347,10 +290,16 @@ export default defineComponent({
     font-size: 48px;
   }
 
-  .content {
-    grid-template-columns: 1fr;
-    padding: 50px 36px;
-    gap: 48px;
+  .upcoming-inner {
+    padding: 36px;
+  }
+
+  .welcome {
+    padding: 48px 36px;
+  }
+
+  .upcoming-title {
+    font-size: 30px;
   }
 }
 
@@ -370,9 +319,16 @@ export default defineComponent({
     margin-bottom: 22px;
   }
 
-  .content {
-    padding: 40px 20px;
-    gap: 36px;
+  .upcoming-inner {
+    padding: 28px 20px;
+  }
+
+  .upcoming-title {
+    font-size: 26px;
+  }
+
+  .welcome {
+    padding: 36px 20px;
   }
 
   .welcome h2 {
@@ -381,6 +337,11 @@ export default defineComponent({
 
   .welcome p {
     font-size: 16px;
+  }
+
+  .collage-strip {
+    grid-template-columns: repeat(3, 1fr);
+    gap: 2px;
   }
 }
 </style>
