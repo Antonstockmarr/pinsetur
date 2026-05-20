@@ -382,6 +382,17 @@ class BaseApiService {
           return null;
         })
     }
+
+    async setPasswords(newPassword: string): Promise<String> {
+      const form = new FormData()
+      form.append('newPassword', newPassword)
+      return axios.post<String>(super.getUrl()+"reset-user-passwords", form, {headers: this.getAuthorizationHeaders()})
+        .then(res => res.data)
+        .catch(err => {
+          this.handleErrors(err);
+          return err;
+        })
+    }
   }
     
   export const $api = {

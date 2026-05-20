@@ -126,5 +126,23 @@ namespace Pinsetur.Webapi.Controllers
                 return StatusCode(StatusCodes.Status200OK, user);
             }
         }
+
+        [HttpPost("reset-user-passwords")]
+        [Authorize("Admins")]
+        [ProducesResponseType(StatusCodes.Status200OK)]
+        [ProducesResponseType(StatusCodes.Status500InternalServerError, Type = typeof(string))]
+        public async Task<IActionResult> ResetUserPasswords([FromForm] string newPassword)
+        {
+            try
+            {
+                var users = _userService.ResetUserPasswords(newPassword);
+                return StatusCode(StatusCodes.Status200OK, $"Opdaterede kodeordet for {users.Count()} brugere");
+            }
+            catch (Exception ex)
+            {
+                return StatusCode(StatusCodes.Status500InternalServerError, ex.Message);
+            }
+        }
+
     }
 }

@@ -10,5 +10,6 @@ namespace Pinsetur.Webapi.Services
         UserDto? UpdatePassword(string userName, string newPassword);
         UserDto? UpdateUser(UserDto user);
         UserDto? DeleteUser(UserDto user);
+        IEnumerable<UserDto> ResetUserPasswords(string newPassword);
     }
 }

@@ -3,6 +3,9 @@
     <div v-else>
         <b-button @click="generateThumbnails" variant="primary">Generér thumbnails</b-button>
         <p>{{ thumbnailMessage }}</p>
+        <b-button @click="setPasswords" variant="primary">Set alle bruger-passwords</b-button>
+        <b-form-input v-model="newPassword" />
+        <p>{{ passwordMessage }}</p>
     </div>
 </template>
 
@@ -15,14 +18,21 @@ export default defineComponent ({
     name: "AdminUtilities",
     data() {
         return {
-            loading: false as Boolean,
-            thumbnailMessage: "" as String,
+            loading: false,
+            thumbnailMessage: "",
+            passwordMessage: "" as String,
+            newPassword: ""
         }
     },
     methods: {
         async generateThumbnails() {
             this.loading = true;
             this.thumbnailMessage = await $api.images.generateThumbnails();
+            this.loading = false;
+        },
+        async setPasswords() {
+            this.loading = true;
+            this.passwordMessage = await $api.users.setPasswords(this.newPassword.toString());
             this.loading = false;
         }
     }

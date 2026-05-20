@@ -85,6 +85,19 @@ namespace Pinsetur.Webapi.Services
             }
         }
 
+        public IEnumerable<UserDto> ResetUserPasswords(string newPassword)
+        {
+            if (string.IsNullOrEmpty(newPassword)) throw new Exception("Passwordet var tomt");
+
+            var users = ListUsers()
+                .Where(user => user.Role == UserRole.User)
+                .ToList();
+            
+            users.ForEach(user => UpdatePassword(user.UserName, newPassword));
+
+            return users;
+        }
+
         public UserDto? UpdatePassword(string userName, string newPassword)
         {
             // TODO: Validate user token before
