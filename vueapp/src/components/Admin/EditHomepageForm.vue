@@ -90,9 +90,17 @@ export default defineComponent({
   async mounted() {
     this.token = this.$store.getters.getSasToken;
 
+    const trips = await $api.trips.fetch();
+    if (!trips || trips.length === 0) return;
+
+    const today = new Date();
+    const past = trips.filter(t => new Date(t.startDate) < today);
+
+    const pastTrip = past[0] ?? null;
+    
     const [config, images] = await Promise.all([
       $api.homepageConfig.get(),
-      $api.images.fetch(),
+      $api.images.fetch(pastTrip.year),
     ]);
 
     if (images) this.allImages = images;
