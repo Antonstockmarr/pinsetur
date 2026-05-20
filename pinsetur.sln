@@ -1,10 +1,8 @@
 ﻿
 Microsoft Visual Studio Solution File, Format Version 12.00
-# Visual Studio Version 17
-VisualStudioVersion = 17.6.33815.320
+# Visual Studio Version 18
+VisualStudioVersion = 18.6.11806.211 stable
 MinimumVisualStudioVersion = 10.0.40219.1
-Project("{54A90642-561A-4BB1-A94E-469ADEE60C69}") = "vueapp", "vueapp\vueapp.esproj", "{BABDF668-8181-4323-AE72-2873D799482B}"
-EndProject
 Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "webapi", "webapi\webapi.csproj", "{228DF22D-A675-4587-988F-C9576ACAD1F2}"
 EndProject
 Global
@@ -13,12 +11,6 @@ Global
 		Release|Any CPU = Release|Any CPU
 	EndGlobalSection
 	GlobalSection(ProjectConfigurationPlatforms) = postSolution
-		{BABDF668-8181-4323-AE72-2873D799482B}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
-		{BABDF668-8181-4323-AE72-2873D799482B}.Debug|Any CPU.Build.0 = Debug|Any CPU
-		{BABDF668-8181-4323-AE72-2873D799482B}.Debug|Any CPU.Deploy.0 = Debug|Any CPU
-		{BABDF668-8181-4323-AE72-2873D799482B}.Release|Any CPU.ActiveCfg = Release|Any CPU
-		{BABDF668-8181-4323-AE72-2873D799482B}.Release|Any CPU.Build.0 = Release|Any CPU
-		{BABDF668-8181-4323-AE72-2873D799482B}.Release|Any CPU.Deploy.0 = Release|Any CPU
 		{228DF22D-A675-4587-988F-C9576ACAD1F2}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
 		{228DF22D-A675-4587-988F-C9576ACAD1F2}.Debug|Any CPU.Build.0 = Debug|Any CPU
 		{228DF22D-A675-4587-988F-C9576ACAD1F2}.Release|Any CPU.ActiveCfg = Release|Any CPU

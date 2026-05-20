@@ -2,7 +2,9 @@
 bin
 obj
 .env
-
+webapi/publish
+publish.zip
+logs
 # Ignore system specific settings
 webapi.csproj.user
 
