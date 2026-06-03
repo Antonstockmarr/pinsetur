@@ -73,8 +73,10 @@ export default defineComponent({
     if (!trips || trips.length === 0) return;
 
     const today = new Date();
-    const past = trips.filter(t => new Date(t.startDate) < today);
-    const future = trips.filter(t => new Date(t.startDate) >= today);
+    const tomorrow = new Date();
+    tomorrow.setDate(today.getDate() + 1)
+    const past = trips.filter(t => new Date(t.endDate) < tomorrow);
+    const future = trips.filter(t => new Date(t.endDate) >= tomorrow);
 
     this.pastTrip = past[0] ?? null;
     this.futureTrip = future[0] ?? null;
